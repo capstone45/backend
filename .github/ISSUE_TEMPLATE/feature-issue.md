@@ -7,9 +7,9 @@ assignees: ''
 
 ---
 
-# Title
+# 제목
 
-# Details
+# 세부 구현 사항
 - [ ] .
 
 # 주의사항
