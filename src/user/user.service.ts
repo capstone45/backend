@@ -1,8 +1,18 @@
-import { getUserByNickname } from './user.repository';
+import UserRepository from './user.repository';
+import { User } from './user';
 
-async function getUserByNickname_service(nickname: string) {
-	const findUserList = await getUserByNickname(nickname);
-	return findUserList;
+export default class UserService {
+	private readonly userService: UserService;
+	private readonly userRepository: UserRepository;
+
+	constructor(userRepository: UserRepository) {
+		if (this.userService) return this.userService;
+		this.userService = this;
+		this.userRepository = userRepository;
+	}
+
+	async getUserList(nickname: string): Promise<User[]> {
+		const findUserList = await this.userRepository.findUserByNickname(nickname);
+		return findUserList;
+	}
 }
-
-export { getUserByNickname_service };

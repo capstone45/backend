@@ -1,26 +1,23 @@
-async function getUserByNickname(nickname: string) {
-	const findUserList = await new Promise((res) => {
-		setTimeout(() => {
-			res(
-				Object.values(DUMMY_DATA).filter((user) => user.nickname === nickname)
-			);
-		}, 3000);
-	});
-	return findUserList;
+import { User } from './user';
+import DUMMY_DATA from './dummy_data';
+
+export default class UserRepository {
+	private readonly userRepository: UserRepository;
+
+	constructor() {
+		if (this.userRepository) return this.userRepository;
+	}
+
+	async findUserByNickname(nickname: string): Promise<User[]> {
+		const findUserList: User[] = await new Promise((res) => {
+			setTimeout(() => {
+				res(
+					Object.values(DUMMY_DATA).filter(
+						(userData) => userData.nickname === nickname
+					)
+				);
+			}, 3000);
+		});
+		return findUserList;
+	}
 }
-
-const DUMMY_DATA = {
-	1: {
-		id: 'id1',
-		password: 'password1',
-		nickname: 'nickname1',
-	},
-	2: { id: 'id2', password: 'password2', nickname: 'nickname2' },
-	3: {
-		id: 'id3',
-		password: 'password3',
-		nickname: 'nickname3',
-	},
-};
-
-export { getUserByNickname };
