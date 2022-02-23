@@ -1,21 +1,26 @@
 import express, { Request, Response } from 'express';
-import { getUserByNickname_service } from './user.service';
+import UserService from './user.service';
 
-const router = express.Router();
+export default class UserController {
+	private readonly userController: UserController;
+	private readonly userService: UserService;
+	private router = express.Router();
+	private PATH = '/users';
 
-router.get('/users', async (req: Request, res: Response) => {
-	const name = String(req.query.name);
-	const findUserList = await getUserByNickname_service(name);
-	res.send(findUserList); // response
-});
+	constructor(userService: UserService) {
+		if (this.userController) return this.userController;
+		this.userController = this;
+		this.userService = userService;
+		this.initRouter();
+	}
 
-/*
-쉐프 이름 검색 Query
-get     우리서비스주소/users?name=이름
+	private initRouter(): void {
+		this.router.get(this.PATH, this.getUserList);
+	}
 
-rest api
-
-HTTP Method     path
-get             우리서비스주소/users : 전체 유저 목록 받아오기
-
-*/
+	private async getUserList(req: Request, res: Response): Promise<void> {
+		const nickname = String(req.query.nickname);
+		const findUserList = await this.userService.getUserList(nickname);
+		res.send(findUserList);
+	}
+}
