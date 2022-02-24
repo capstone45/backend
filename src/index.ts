@@ -1,48 +1,42 @@
 import 'reflect-metadata';
-import { createConnection } from 'typeorm';
+import { Connection, createConnection } from 'typeorm';
 import express from 'express';
 
 import initUserController from './user';
 
-export default class App {
-	private readonly app: express.Application = express();
+export default class Application {
+	private static readonly app: express.Application = express();
+	private static initialized: Application;
 
-	constructor() {
-		this.init();
+	public static init(): void {
+		if (Application.initialized) return;
+		Application.initialized = new Application();
 	}
 
-	public getApp(): express.Application {
-		return this.app;
-	}
-
-	private init() {
-		// this.initMiiddleware();
-		this.initController();
-		this.initDatabase();
+	private constructor() {
+		this.initDatabase().then((connection) => {
+			this.initController(connection);
+		});
 		this.initApplication();
 	}
 
-	// private initMiiddleware(): void {}
-
-	private initController(): void {
-		initUserController();
+	private initDatabase(): Promise<Connection> {
+		return new Promise((res) => {
+			createConnection().then((connection) => {
+				res(connection);
+			});
+		});
 	}
 
-	private initDatabase(): void {
-		createConnection()
-			.then(() => {
-				console.log('DB has connected successfully');
-			})
-			.catch((error) => {
-				console.log(error);
-			});
+	private initController(connection: Connection): void {
+		initUserController(Application.app, connection);
 	}
 
 	private initApplication(): void {
-		this.app.listen(3000, () => {
+		Application.app.listen(3000, () => {
 			console.log('Application started successfully');
 		});
 	}
 }
 
-new App();
+Application.init();
