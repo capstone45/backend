@@ -1,9 +1,9 @@
 import { User } from './user';
-import DUMMY_DATA from './dummy_data';
 import UserEntity from './user.entity';
 import { Connection } from 'typeorm';
+import { AbstractUserRepository } from './user';
 
-export default class UserRepository {
+export default class UserRepository implements AbstractUserRepository {
 	private static instance: UserRepository;
 	private static connection: Connection;
 
@@ -18,23 +18,17 @@ export default class UserRepository {
 		UserRepository.connection = connection;
 	}
 
-	async findUserByNickname(nickname: string): Promise<User[]> {
-		const findUserList: User[] = await new Promise((res) => {
-			setTimeout(() => {
-				res(
-					Object.values(DUMMY_DATA).filter(
-						(userData) => userData.nickname === nickname
-					)
-				);
-			}, 3000);
-		});
-		return findUserList;
-	}
-
-	async findUserById(id: number) {
+	async findUserById(id: number): Promise<User> {
 		const findResult = await UserRepository.connection
 			.getRepository(UserEntity)
 			.findOne(id);
 		return findResult;
+	}
+
+	async findUserByNickname(nickname: string): Promise<User[]> {
+		const findResultList = await UserRepository.connection
+			.getRepository(UserEntity)
+			.find({ where: { nickname: nickname } });
+		return findResultList;
 	}
 }

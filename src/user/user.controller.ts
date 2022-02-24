@@ -23,24 +23,22 @@ export default class UserController {
 	}
 
 	private initRouter(app: express.Application): void {
-		UserController.router.get('', this.getUserListByNickname);
+		UserController.router.get('', this.getUserByNickname);
 		UserController.router.get('/:id', this.getUserById);
 		app.use(UserController.PATH, UserController.router);
 	}
 
-	private async getUserListByNickname(
-		req: Request,
-		res: Response
-	): Promise<void> {
-		const nickname = String(req.query.nickname);
-		const findUserList = await UserController.userService.getUserListByNickname(
-			nickname
-		);
-		res.send(findUserList);
-	}
 	private async getUserById(req: Request, res: Response) {
 		const id = Number(req.params.id);
-		const findUser = await UserController.userService.getUserById(id);
+		const findUser = await UserController.userService.findUserById(id);
+		res.send(findUser);
+	}
+
+	private async getUserByNickname(req: Request, res: Response) {
+		const nickname = String(req.query.nickname);
+		const findUser = await UserController.userService.findUserByNickname(
+			nickname
+		);
 		res.send(findUser);
 	}
 }
