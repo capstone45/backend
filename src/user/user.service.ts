@@ -16,15 +16,15 @@ export default class UserService {
 		UserService.userRepository = userRepository;
 	}
 
-	async getUserListByNickname(nickname: string): Promise<User[]> {
+	async findUserById(id: number) {
+		const findUser = await UserService.userRepository.findUserById(id);
+		return findUser;
+	}
+
+	async findUserByNickname(nickname: string) {
 		const findUserList = await UserService.userRepository.findUserByNickname(
 			nickname
 		);
 		return findUserList;
-	}
-
-	async getUserById(id: number) {
-		const findUser = await UserService.userRepository.findUserById(id);
-		return findUser;
 	}
 }
