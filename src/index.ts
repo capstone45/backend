@@ -3,6 +3,8 @@ import { Connection, createConnection } from 'typeorm';
 import express from 'express';
 
 import initUserController from './user';
+import initTagController from './tag';
+import initRecipeController from './recipe';
 
 export default class Application {
 	private static readonly app: express.Application = express();
@@ -30,6 +32,8 @@ export default class Application {
 
 	private initController(connection: Connection): void {
 		initUserController(Application.app, connection);
+		initTagController(Application.app, connection);
+		initRecipeController(Application.app, connection);
 	}
 
 	private initApplication(): void {
