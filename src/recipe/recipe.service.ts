@@ -1,8 +1,27 @@
-import { getRecipeByTitle } from './recipe.repository';
+import { AbstractRecipeRepository, AbstractRecipeService, Recipe } from './recipe';
 
-async function getRecipeByTitle_service(title: string) {
-	const findRecipeList = await getRecipeByTitle(title);
-	return findRecipeList;
+export default class RecipeService implements AbstractRecipeService {
+	private static instance: AbstractRecipeService;
+	private static RecipeRepository: AbstractRecipeRepository;
+
+	public static getInstance(RecipeRepository: AbstractRecipeRepository): AbstractRecipeService {
+		if (!RecipeService.instance) {
+			RecipeService.instance = new RecipeService(RecipeRepository);
+		}
+		return RecipeService.instance;
+	}
+
+	private constructor(RecipeRepository: AbstractRecipeRepository) {
+		RecipeService.RecipeRepository = RecipeRepository;
+	}
+
+	async findTagById(id: number): Promise<Recipe> {
+		const findRecipe = await RecipeService.RecipeRepository.findTagById(id);
+		return findRecipe;
+	}
+
+	async findRecipeByTitle(title: string): Promise<Recipe[]> {
+		const findRecipeList = await RecipeService.RecipeRepository.findRecipeByTitle(title);
+		return findRecipeList;
+	}
 }
-
-export { getRecipeByTitle_service };

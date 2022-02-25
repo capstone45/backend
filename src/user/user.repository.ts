@@ -1,6 +1,5 @@
-import { User } from './user';
 import { Connection, EntitySchema } from 'typeorm';
-import { AbstractUserRepository } from './user';
+import { User, AbstractUserRepository } from './user';
 
 export default class UserRepository implements AbstractUserRepository {
 	private static instance: AbstractUserRepository;
@@ -21,6 +20,7 @@ export default class UserRepository implements AbstractUserRepository {
 
 	async findUserById(id: number): Promise<User> {
 		const findResult = await UserRepository.connection.getRepository(UserRepository.entity).findOne(id);
+
 		return findResult;
 	}
 

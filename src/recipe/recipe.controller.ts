@@ -1,10 +1,40 @@
-import express from 'express';
-import { getRecipeByTitle_service } from './recipe.service';
+import express, { Request, Response } from 'express';
+import { AbstractRecipeController, AbstractRecipeService } from './recipe';
 
-const router = express.Router();
+export default class RecipeController implements AbstractRecipeController {
+	private static instance: AbstractRecipeController;
+	private static recipeService: AbstractRecipeService;
+	private static readonly router = express.Router();
+	private static readonly PATH = '/recipes';
 
-router.get('/recipes', async (req, res) => {
-	const title = String(req.query.title);
-	const findRecipeList = await getRecipeByTitle_service(title);
-	res.send(findRecipeList); // response
-});
+	public static getInstance(RecipeService: AbstractRecipeService, app: express.Application): AbstractRecipeController {
+		if (!RecipeController.instance) {
+			RecipeController.instance = new RecipeController(RecipeService, app);
+		}
+		return RecipeController.instance;
+	}
+
+	private constructor(recipeService: AbstractRecipeService, app: express.Application) {
+		RecipeController.recipeService = recipeService;
+		this.initRouter(app);
+	}
+
+	initRouter(app: express.Application): void {
+		if (RecipeController.instance) return;
+		RecipeController.router.get('', this.getRecipeByTitle);
+		RecipeController.router.get('/:id', this.getTagById);
+		app.use(RecipeController.PATH, RecipeController.router);
+	}
+
+	async getTagById(req: Request, res: Response): Promise<void> {
+		const id = Number(req.params.id);
+		const findRecipe = await RecipeController.recipeService.findTagById(id);
+		res.send(findRecipe);
+	}
+
+	async getRecipeByTitle(req: Request, res: Response): Promise<void> {
+		const title = String(req.query.title);
+		const findRecipe = await RecipeController.recipeService.findRecipeByTitle(title);
+		res.send(findRecipe);
+	}
+}
