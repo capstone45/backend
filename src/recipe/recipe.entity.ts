@@ -37,7 +37,7 @@ export default class RecipeEntity extends Date {
 	bookmarks: Bookmark[];
 
 	@Column({ name: 'THUMBNAIL_URL', type: 'varchar', length: 2048, nullable: false })
-	thumbnail: string;
+	thumbnailUrl: string;
 
 	@Column({ name: 'TITLE', type: 'varchar', length: 90, nullable: false })
 	title: string;

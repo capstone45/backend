@@ -22,7 +22,8 @@ export default class TagController implements AbstractTagController {
 	initRouter(app: express.Application): void {
 		if (TagController.instance) return;
 
-		TagController.router.get('/', this.getTagByName);
+		// api/tags/search?name=name1;
+		TagController.router.get('/search', this.getTagByName);
 
 		app.use(TagController.PATH, TagController.router);
 	}

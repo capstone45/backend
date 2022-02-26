@@ -22,15 +22,16 @@ export default class RecipeController implements AbstractRecipeController {
 	initRouter(app: express.Application): void {
 		if (RecipeController.instance) return;
 
-		RecipeController.router.get('/todaysMostLiked', this.getTodaysMostLikedRecipe);
+		RecipeController.router.get('/today-Most-Liked', this.getTodaysMostLikedRecipe);
 		RecipeController.router.get('/latest', this.getLatestCreatedRecipe);
-		RecipeController.router.get('/:title', this.getRecipeByTitle);
+		RecipeController.router.get('/search', this.getRecipeByTitle);
+		RecipeController.router.get('/subscribe-chef-latest', this.getSubscribingChefsLatestRecipe);
 
 		app.use(RecipeController.PATH, RecipeController.router);
 	}
 
 	async getRecipeByTitle(req: Request, res: Response): Promise<void> {
-		const title = String(req.params.title);
+		const title = String(req.query.title);
 		const findRecipeList = await RecipeController.recipeService.findRecipeByTitle(title);
 		res.send(findRecipeList);
 	}
@@ -42,6 +43,11 @@ export default class RecipeController implements AbstractRecipeController {
 
 	async getLatestCreatedRecipe(req: Request, res: Response): Promise<void> {
 		const findRecipeList = await RecipeController.recipeService.findLatestCreatedRecipe();
+		res.send(findRecipeList);
+	}
+
+	async getSubscribingChefsLatestRecipe(req: Request, res: Response): Promise<void> {
+		const findRecipeList = await RecipeController.recipeService.findSubscribingChefsLatestRecipe(3);
 		res.send(findRecipeList);
 	}
 }

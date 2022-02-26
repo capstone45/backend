@@ -49,4 +49,10 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 			.getMany();
 		return findRecipeList;
 	}
+
+	async findSubscribingChefsLatestRecipe(id: number): Promise<Recipe[]> {
+		const findRecipeList = await RecipeRepository.connection.query(`
+			select * from recipe as r where (r.user_id, r.create_date) in (SELECT r.user_id, max(r.create_date) FROM (select PUBLISHER_ID from SUBSCRIBE where SUBSCRIBER_ID = ${id}) as p JOIN RECIPE as r ON p.PUBLISHER_ID = r.USER_ID group by r.user_id);`);
+		return findRecipeList;
+	}
 }

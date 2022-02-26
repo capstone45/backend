@@ -12,6 +12,7 @@ export abstract class AbstractRecipeRepository {
 	findRecipeByTitle(title: string): Promise<Recipe[]>;
 	findTodaysMostLikedRecipe(): Promise<Recipe[]>;
 	findLatestCreatedRecipe(): Promise<Recipe[]>;
+	findSubscribingChefsLatestRecipe(id: number): Promise<Recipe[]>;
 }
 
 export abstract class AbstractRecipeService {
@@ -24,6 +25,7 @@ export abstract class AbstractRecipeService {
 	findRecipeByTitle(title: string): Promise<Recipe[]>;
 	findTodaysMostLikedRecipe(): Promise<Recipe[]>;
 	findLatestCreatedRecipe(): Promise<Recipe[]>;
+	findSubscribingChefsLatestRecipe(id: number): Promise<Recipe[]>;
 }
 
 export abstract class AbstractRecipeController {
@@ -39,14 +41,15 @@ export abstract class AbstractRecipeController {
 	getRecipeByTitle(req: Request, res: Response): Promise<void>;
 	getTodaysMostLikedRecipe(req: Request, res: Response): Promise<void>;
 	getLatestCreatedRecipe(req: Request, res: Response): Promise<void>;
+	getSubscribingChefsLatestRecipe(req: Request, res: Response): Promise<void>;
 }
 
 export type Recipe = {
 	id: number;
-	chefId: number;
 	title: string;
 	createdDate: Date;
-	modifiedDate: Date;
+	updatedDate: Date;
 	referenceUrl: string;
-	serving: string;
+	serving: number;
+	thumbnailUrl: string;
 };

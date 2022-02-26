@@ -8,10 +8,10 @@ export default class Subscribe {
 	id: number;
 
 	@ManyToOne(() => UserEntity, (user) => user.id, { lazy: true, nullable: false })
-	@JoinColumn({ name: 'SUBSCRIBER' })
+	@JoinColumn({ name: 'SUBSCRIBER_ID' })
 	subscriber: UserEntity;
 
 	@ManyToOne(() => UserEntity, (user) => user.id, { lazy: true, nullable: false })
-	@JoinColumn({ name: 'PUBLISHER' })
+	@JoinColumn({ name: 'PUBLISHER_ID' })
 	publisher: UserEntity;
 }
