@@ -60,7 +60,7 @@ export default class UserEntity extends Date {
 	nickname: string;
 
 	@Column({ name: 'THUMBNAIL_URL', type: 'varchar', length: 2048, nullable: false })
-	thumbnail: string;
+	thumbnailUrl: string;
 
 	@Column({
 		name: 'DESCRIPTION',

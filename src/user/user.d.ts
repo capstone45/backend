@@ -44,8 +44,9 @@ export type User = {
 	loginPassword: string;
 	loginMethod: string;
 	nickname: string;
-	hasThumbnail: boolean;
-	joinDate: Date;
+	thumbnailUrl: string;
 	description: string;
 	grade: number;
+	createdDate: Date;
+	updatedDate: Date;
 };
