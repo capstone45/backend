@@ -22,14 +22,7 @@ export default class RecipeController implements AbstractRecipeController {
 	initRouter(app: express.Application): void {
 		if (RecipeController.instance) return;
 		RecipeController.router.get('', this.getRecipeByTitle);
-		RecipeController.router.get('/:id', this.getTagById);
 		app.use(RecipeController.PATH, RecipeController.router);
-	}
-
-	async getTagById(req: Request, res: Response): Promise<void> {
-		const id = Number(req.params.id);
-		const findRecipe = await RecipeController.recipeService.findTagById(id);
-		res.send(findRecipe);
 	}
 
 	async getRecipeByTitle(req: Request, res: Response): Promise<void> {

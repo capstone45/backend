@@ -18,12 +18,6 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 		RecipeRepository.entity = entity;
 	}
 
-	async findTagById(id: number): Promise<Recipe> {
-		const findResult = await RecipeRepository.connection.getRepository(RecipeRepository.entity).findOne(id);
-
-		return findResult;
-	}
-
 	async findRecipeByTitle(title: string): Promise<Recipe[]> {
 		const findResultList = await RecipeRepository.connection.getRepository(RecipeRepository.entity).find({ where: { title: title } });
 		return findResultList;

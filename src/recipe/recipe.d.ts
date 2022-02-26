@@ -9,7 +9,6 @@ export abstract class AbstractRecipeRepository {
 	public static getInstance(connection: Connection, entity: EntitySchema): AbstractRecipeRepository;
 	private constructor(connection: Connection, entity: EntitySchema);
 
-	findTagById(id: number): Promise<Recipe>;
 	findRecipeByTitle(title: string): Promise<Recipe[]>;
 }
 
@@ -20,7 +19,6 @@ export abstract class AbstractRecipeService {
 	public static getInstance(recipeRepository: AbstractRecipeRepository): AbstractRecipeService;
 	private constructor(recipeRepository: AbstractRecipeRepository);
 
-	findTagById(id: number): Promise<Recipe>;
 	findRecipeByTitle(title: string): Promise<Recipe[]>;
 }
 
@@ -34,7 +32,6 @@ export abstract class AbstractRecipeController {
 	private constructor(recipeService: AbstractRecipeService, app: express.Application);
 	initRouter(app: express.Application): void;
 
-	getTagById(req: Request, res: Response): Promise<void>;
 	getRecipeByTitle(req: Request, res: Response): Promise<void>;
 }
 

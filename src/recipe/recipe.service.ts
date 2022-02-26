@@ -15,11 +15,6 @@ export default class RecipeService implements AbstractRecipeService {
 		RecipeService.RecipeRepository = RecipeRepository;
 	}
 
-	async findTagById(id: number): Promise<Recipe> {
-		const findRecipe = await RecipeService.RecipeRepository.findTagById(id);
-		return findRecipe;
-	}
-
 	async findRecipeByTitle(title: string): Promise<Recipe[]> {
 		const findRecipeList = await RecipeService.RecipeRepository.findRecipeByTitle(title);
 		return findRecipeList;
