@@ -5,7 +5,7 @@ export default class TagController implements AbstractTagController {
 	private static instance: AbstractTagController;
 	private static tagService: AbstractTagService;
 	private static readonly router = express.Router();
-	private static readonly PATH = '/tags';
+	private static readonly PATH = '/api/tags';
 
 	public static getInstance(tagService: AbstractTagService, app: express.Application): AbstractTagController {
 		if (!TagController.instance) {
@@ -21,7 +21,9 @@ export default class TagController implements AbstractTagController {
 
 	initRouter(app: express.Application): void {
 		if (TagController.instance) return;
-		TagController.router.get('', this.getTagByName);
+
+		TagController.router.get('/', this.getTagByName);
+
 		app.use(TagController.PATH, TagController.router);
 	}
 

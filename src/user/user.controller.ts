@@ -5,7 +5,7 @@ export default class UserController implements AbstractUserController {
 	private static instance: AbstractUserController;
 	private static userService: AbstractUserService;
 	private static readonly router = express.Router();
-	private static readonly PATH = '/users';
+	private static readonly PATH = '/api/users';
 
 	public static getInstance(userService: AbstractUserService, app: express.Application): AbstractUserController {
 		if (!UserController.instance) {
@@ -21,8 +21,10 @@ export default class UserController implements AbstractUserController {
 
 	initRouter(app: express.Application): void {
 		if (UserController.instance) return;
-		UserController.router.get('', this.getUserByNickname);
+
+		UserController.router.get('/', this.getUserByNickname);
 		UserController.router.get('/:id', this.getUserById);
+
 		app.use(UserController.PATH, UserController.router);
 	}
 
