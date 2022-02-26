@@ -22,7 +22,7 @@ export default class RecipeController implements AbstractRecipeController {
 	initRouter(app: express.Application): void {
 		if (RecipeController.instance) return;
 
-		RecipeController.router.get('/today-Most-Liked', this.getTodaysMostLikedRecipe);
+		RecipeController.router.get('/today-most-liked', this.getTodaysMostLikedRecipe);
 		RecipeController.router.get('/latest', this.getLatestCreatedRecipe);
 		RecipeController.router.get('/search', this.getRecipeByTitle);
 		RecipeController.router.get('/subscribe-chef-latest', this.getSubscribingChefsLatestRecipe);
