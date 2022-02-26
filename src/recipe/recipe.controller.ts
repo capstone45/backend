@@ -5,7 +5,7 @@ export default class RecipeController implements AbstractRecipeController {
 	private static instance: AbstractRecipeController;
 	private static recipeService: AbstractRecipeService;
 	private static readonly router = express.Router();
-	private static readonly PATH = '/recipes';
+	private static readonly PATH = '/api/recipes';
 
 	public static getInstance(RecipeService: AbstractRecipeService, app: express.Application): AbstractRecipeController {
 		if (!RecipeController.instance) {
@@ -21,13 +21,27 @@ export default class RecipeController implements AbstractRecipeController {
 
 	initRouter(app: express.Application): void {
 		if (RecipeController.instance) return;
-		RecipeController.router.get('', this.getRecipeByTitle);
+
+		RecipeController.router.get('/todaysMostLiked', this.getTodaysMostLikedRecipe);
+		RecipeController.router.get('/latest', this.getLatestCreatedRecipe);
+		RecipeController.router.get('/:title', this.getRecipeByTitle);
+
 		app.use(RecipeController.PATH, RecipeController.router);
 	}
 
 	async getRecipeByTitle(req: Request, res: Response): Promise<void> {
-		const title = String(req.query.title);
-		const findRecipe = await RecipeController.recipeService.findRecipeByTitle(title);
-		res.send(findRecipe);
+		const title = String(req.params.title);
+		const findRecipeList = await RecipeController.recipeService.findRecipeByTitle(title);
+		res.send(findRecipeList);
+	}
+
+	async getTodaysMostLikedRecipe(req: Request, res: Response): Promise<void> {
+		const findRecipeList = await RecipeController.recipeService.findTodaysMostLikedRecipe();
+		res.send(findRecipeList);
+	}
+
+	async getLatestCreatedRecipe(req: Request, res: Response): Promise<void> {
+		const findRecipeList = await RecipeController.recipeService.findLatestCreatedRecipe();
+		res.send(findRecipeList);
 	}
 }

@@ -19,4 +19,14 @@ export default class RecipeService implements AbstractRecipeService {
 		const findRecipeList = await RecipeService.RecipeRepository.findRecipeByTitle(title);
 		return findRecipeList;
 	}
+
+	async findTodaysMostLikedRecipe(): Promise<Recipe[]> {
+		const findRecipeList = await RecipeService.RecipeRepository.findTodaysMostLikedRecipe();
+		return findRecipeList;
+	}
+
+	async findLatestCreatedRecipe(): Promise<Recipe[]> {
+		const findRecipeList = await RecipeService.RecipeRepository.findLatestCreatedRecipe();
+		return findRecipeList;
+	}
 }

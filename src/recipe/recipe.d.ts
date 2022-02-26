@@ -10,6 +10,8 @@ export abstract class AbstractRecipeRepository {
 	private constructor(connection: Connection, entity: EntitySchema);
 
 	findRecipeByTitle(title: string): Promise<Recipe[]>;
+	findTodaysMostLikedRecipe(): Promise<Recipe[]>;
+	findLatestCreatedRecipe(): Promise<Recipe[]>;
 }
 
 export abstract class AbstractRecipeService {
@@ -20,6 +22,8 @@ export abstract class AbstractRecipeService {
 	private constructor(recipeRepository: AbstractRecipeRepository);
 
 	findRecipeByTitle(title: string): Promise<Recipe[]>;
+	findTodaysMostLikedRecipe(): Promise<Recipe[]>;
+	findLatestCreatedRecipe(): Promise<Recipe[]>;
 }
 
 export abstract class AbstractRecipeController {
@@ -33,6 +37,8 @@ export abstract class AbstractRecipeController {
 	initRouter(app: express.Application): void;
 
 	getRecipeByTitle(req: Request, res: Response): Promise<void>;
+	getTodaysMostLikedRecipe(req: Request, res: Response): Promise<void>;
+	getLatestCreatedRecipe(req: Request, res: Response): Promise<void>;
 }
 
 export type Recipe = {
