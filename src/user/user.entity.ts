@@ -3,6 +3,7 @@ import { Column, Entity, Generated, OneToMany, PrimaryColumn } from 'typeorm';
 import { Date } from '../entity/date.entity';
 import RecipeEntity from '../recipe/recipe.entity';
 import Bookmark from '../entity/bookmark.entity';
+import Subscribe from './subscribe.entity';
 
 export enum loginMethod {
 	LOCAL = 'local',
@@ -36,6 +37,9 @@ export default class UserEntity extends Date {
 
 	@OneToMany(() => Bookmark, (bookmark) => bookmark.recipe)
 	bookmarks: Bookmark[];
+
+	@OneToMany(() => Subscribe, (subscribe) => subscribe.subscriber)
+	subscribers: Subscribe[];
 
 	@Column({
 		name: 'LOGIN_ID',
