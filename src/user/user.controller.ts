@@ -22,7 +22,9 @@ export default class UserController implements AbstractUserController {
 	initRouter(app: express.Application): void {
 		if (UserController.instance) return;
 
-		UserController.router.get('/', this.getUserByNickname);
+		// api/users/search?nickname=nickname1
+		UserController.router.get('/search', this.getUserByNickname);
+		// api/users/:id
 		UserController.router.get('/:id', this.getUserById);
 
 		app.use(UserController.PATH, UserController.router);
