@@ -10,8 +10,8 @@ enum category {
 }
 
 @Entity({ name: 'INGREDIENT' })
-export default class IngredientEntity {
-	@PrimaryColumn({ name: 'ID', type: 'bigint', unsigned: true })
+export default class Ingredient {
+	@PrimaryColumn({ name: 'INGREDIENT_ID', type: 'bigint', unsigned: true })
 	@Generated('increment')
 	id: number;
 

@@ -1,7 +1,7 @@
 import { Column, Entity, Generated, OneToMany, PrimaryColumn } from 'typeorm';
 
-import { Date } from '../date/date.entity';
-import RecipeEntity from '../recipe/recipe.entity';
+import { Date } from '../entity/date.entity';
+import Recipe from '../recipe/recipe.entity';
 import Bookmark from '../bookmark/bookmark.entity';
 import Subscribe from '../subscribe/subscribe.entity';
 
@@ -22,24 +22,22 @@ export enum grade {
 }
 
 @Entity({ name: 'USER' })
-export default class UserEntity extends Date {
-	@PrimaryColumn({ name: 'ID', type: 'bigint', unsigned: true })
+export default class User extends Date {
+	@PrimaryColumn({ name: 'USER_ID', type: 'bigint', unsigned: true })
 	@Generated('increment')
 	id: number;
 
-	@OneToMany(
-		() => RecipeEntity,
-		(recipe) => {
-			recipe.id;
-		}
-	)
-	recipes: RecipeEntity[];
+	@OneToMany(() => Recipe, (recipe) => recipe.id, { lazy: true })
+	recipes: Recipe[] = [];
 
-	@OneToMany(() => Bookmark, (bookmark) => bookmark.recipe)
-	bookmarks: Bookmark[];
+	@OneToMany(() => Bookmark, (bookmark) => bookmark.recipe, { lazy: true })
+	bookmarks: Bookmark[] = [];
 
-	@OneToMany(() => Subscribe, (subscribe) => subscribe.subscriber)
-	subscribers: Subscribe[];
+	@OneToMany(() => Subscribe, (subscribe) => subscribe.publisher, { lazy: true })
+	publishers: User[] = [];
+
+	@OneToMany(() => Subscribe, (subscribe) => subscribe.publisher, { lazy: true })
+	subscribers: User[] = [];
 
 	@Column({
 		name: 'LOGIN_ID',

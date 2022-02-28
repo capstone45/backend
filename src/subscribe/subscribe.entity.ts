@@ -1,17 +1,17 @@
 import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn } from 'typeorm';
-import UserEntity from '../user/user.entity';
+import User from '../user/user.entity';
 
 @Entity({ name: 'SUBSCRIBE' })
 export default class Subscribe {
-	@PrimaryColumn({ name: 'ID', type: 'bigint', unsigned: true })
+	@PrimaryColumn({ name: 'SUBSCRIBE,ID', type: 'bigint', unsigned: true })
 	@Generated('increment')
 	id: number;
 
-	@ManyToOne(() => UserEntity, (user) => user.id, { lazy: true, nullable: false })
+	@ManyToOne(() => User, (user) => user.id, { lazy: true, nullable: false, primary: true })
 	@JoinColumn({ name: 'SUBSCRIBER_ID' })
-	subscriber: UserEntity;
+	subscriber: User;
 
-	@ManyToOne(() => UserEntity, (user) => user.id, { lazy: true, nullable: false })
+	@ManyToOne(() => User, (user) => user.id, { lazy: true, nullable: false, primary: true })
 	@JoinColumn({ name: 'PUBLISHER_ID' })
-	publisher: UserEntity;
+	publisher: User;
 }

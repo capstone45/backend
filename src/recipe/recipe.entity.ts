@@ -1,9 +1,10 @@
 import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn, Column, OneToMany } from 'typeorm';
-import Bookmark from '../bookmark/bookmark.entity';
 
-import { Date } from '../date/date.entity';
-import RecipeHasTag from '../recipe-has-tag/recipeHasTag.entity';
-import UserEntity from '../user/user.entity';
+import { Date } from '../entity/date.entity';
+import RecipeTag from '../recipe-tag/recipe-tag.entity';
+import User from '../user/user.entity';
+import RecipeIngredient from '../recipe-ingredient/recipe-ingredient';
+import Description from '../recipe-description/description';
 
 enum serving {
 	DONTKNOW = 0,
@@ -15,26 +16,23 @@ enum serving {
 }
 
 @Entity({ name: 'RECIPE' })
-export default class RecipeEntity extends Date {
-	@PrimaryColumn({ name: 'ID', type: 'bigint', unsigned: true })
+export default class Recipe extends Date {
+	@PrimaryColumn({ name: 'RECIPE_ID', type: 'bigint', unsigned: true })
 	@Generated('increment')
 	id: number;
 
-	@ManyToOne(
-		() => UserEntity,
-		(user) => {
-			user.recipes;
-		},
-		{ nullable: false, lazy: true }
-	)
+	@ManyToOne(() => User, (user) => user.recipes, { nullable: false, lazy: true })
 	@JoinColumn({ name: 'USER_ID', referencedColumnName: 'id' })
-	user: UserEntity;
+	user: User;
 
-	@OneToMany(() => RecipeHasTag, (recipeHasTag) => recipeHasTag.recipe)
-	recipeHasTags: RecipeHasTag[];
+	@OneToMany(() => Description, (description) => description.recipe, { lazy: true })
+	descriptions: Description[] = [];
 
-	@OneToMany(() => Bookmark, (bookmark) => bookmark.recipe)
-	bookmarks: Bookmark[];
+	@OneToMany(() => RecipeIngredient, (recipeIngredient) => recipeIngredient.recipe, { lazy: true })
+	recipeIngredients: RecipeIngredient[] = [];
+
+	@OneToMany(() => RecipeTag, (recipeTag) => recipeTag.recipe, { lazy: true })
+	recipeTags: RecipeTag[] = [];
 
 	@Column({ name: 'THUMBNAIL_URL', type: 'varchar', length: 2048, nullable: false })
 	thumbnailUrl: string;
