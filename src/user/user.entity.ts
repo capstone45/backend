@@ -1,9 +1,9 @@
 import { Column, Entity, Generated, OneToMany, PrimaryColumn } from 'typeorm';
 
-import { Date } from '../entity/date.entity';
+import { Date } from '../date/date.entity';
 import RecipeEntity from '../recipe/recipe.entity';
-import Bookmark from '../entity/bookmark.entity';
-import Subscribe from './subscribe.entity';
+import Bookmark from '../bookmark/bookmark.entity';
+import Subscribe from '../subscribe/subscribe.entity';
 
 export enum loginMethod {
 	LOCAL = 'local',

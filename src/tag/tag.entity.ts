@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Generated, Column, OneToMany } from 'typeorm';
 
-import RecipeHasTag from '../entity/recipeHasTag.entity';
+import RecipeHasTag from '../recipe-has-tag/recipeHasTag.entity';
 
 @Entity({ name: 'TAG' })
 export default class Tag {
