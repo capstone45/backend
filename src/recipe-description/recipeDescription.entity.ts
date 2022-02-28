@@ -1,5 +1,5 @@
 import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn, Column } from 'typeorm';
-import RecipeEntity from './recipe.entity';
+import RecipeEntity from '../recipe/recipe.entity';
 
 @Entity({ name: 'RECIPE_DESCRIPTION' })
 export default class RecipeDescription {

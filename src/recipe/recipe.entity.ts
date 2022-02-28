@@ -1,8 +1,8 @@
 import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn, Column, OneToMany } from 'typeorm';
-import Bookmark from '../entity/bookmark.entity';
+import Bookmark from '../bookmark/bookmark.entity';
 
-import { Date } from '../entity/date.entity';
-import RecipeHasTag from '../entity/recipeHasTag.entity';
+import { Date } from '../date/date.entity';
+import RecipeHasTag from '../recipe-has-tag/recipeHasTag.entity';
 import UserEntity from '../user/user.entity';
 
 enum serving {
