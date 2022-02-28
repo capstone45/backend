@@ -1,18 +1,18 @@
 import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn } from 'typeorm';
-import UserEntity from '../user/user.entity';
-import RecipeEntity from '../recipe/recipe.entity';
+import User from '../user/user.entity';
+import Recipe from '../recipe/recipe.entity';
 
 @Entity({ name: 'BOOKMARK' })
 export default class Bookmark {
-	@PrimaryColumn({ name: 'ID', type: 'bigint', unsigned: true })
+	@PrimaryColumn({ name: 'BOOKMARK_ID', type: 'bigint', unsigned: true })
 	@Generated('increment')
 	id: number;
 
-	@ManyToOne(() => RecipeEntity, (recipe) => recipe.id, { lazy: true, nullable: false })
+	@ManyToOne(() => Recipe, (recipe) => recipe.id, { lazy: true, nullable: false, primary: true })
 	@JoinColumn({ name: 'RECIPE_ID' })
-	recipe: RecipeEntity;
+	recipe: Recipe;
 
-	@ManyToOne(() => UserEntity, (user) => user.id, { lazy: true, nullable: false })
+	@ManyToOne(() => User, (user) => user.id, { lazy: true, nullable: false, primary: true })
 	@JoinColumn({ name: 'USER_ID' })
-	user: UserEntity;
+	user: User;
 }
