@@ -1,47 +1,47 @@
-import { Connection, EntitySchema } from 'typeorm';
+import { EntityManager } from 'typeorm';
+
+import { AbstractRecipeRepository } from './recipe';
+import Recipe from './recipe.entity';
 import { getFormattedDate } from '../helper/helper';
-import { Recipe, AbstractRecipeRepository } from './recipe';
 
 export default class RecipeRepository implements AbstractRecipeRepository {
 	private static instance: AbstractRecipeRepository;
-	private static connection: Connection;
-	private static entity: EntitySchema;
+	private static em: EntityManager;
 	private LIMIT: 6;
 
-	public static getInstance(connection: Connection, entity: EntitySchema): AbstractRecipeRepository {
+	public static getInstance(em: EntityManager): AbstractRecipeRepository {
 		if (!RecipeRepository.instance) {
-			RecipeRepository.instance = new RecipeRepository(connection, entity);
+			RecipeRepository.instance = new RecipeRepository(em);
 		}
 		return RecipeRepository.instance;
 	}
 
-	private constructor(connection: Connection, entity: EntitySchema) {
-		RecipeRepository.connection = connection;
-		RecipeRepository.entity = entity;
+	private constructor(em: EntityManager) {
+		RecipeRepository.em = em;
 	}
 
-	async findRecipeByTitle(title: string): Promise<Recipe[]> {
-		const findRecipeList = await RecipeRepository.connection.getRepository(RecipeRepository.entity).find({ where: { title: title } });
+	async findRecipeByTitle(title: string): Promise<Partial<Recipe>[]> {
+		const findRecipeList = await RecipeRepository.em.getRepository(Recipe).find({ where: { title: title } });
 		return findRecipeList;
 	}
 
-	async findTodaysMostLikedRecipe(): Promise<Recipe[]> {
-		const findRecipeList = await RecipeRepository.connection
-			.getRepository(RecipeRepository.entity)
+	async findTodaysMostLikedRecipe(): Promise<Partial<Recipe>[]> {
+		const findRecipeList = await RecipeRepository.em
+			.getRepository(Recipe)
 			.createQueryBuilder('recipe')
 			.select()
-			.leftJoin('recipe.recipeHasTags', 'rht')
+			.leftJoin('recipe.bookmarks', 'bookmark')
 			.where('recipe.createDate = :today', { today: getFormattedDate(new Date()) })
 			.groupBy('recipe.id')
-			.orderBy('COUNT(rht.id)', 'DESC')
+			.orderBy('COUNT(bookmark.id)', 'DESC')
 			.limit(this.LIMIT)
 			.getMany();
 		return findRecipeList;
 	}
 
-	async findLatestCreatedRecipe(): Promise<Recipe[]> {
-		const findRecipeList = await RecipeRepository.connection
-			.getRepository(RecipeRepository.entity)
+	async findLatestCreatedRecipe(): Promise<Partial<Recipe>[]> {
+		const findRecipeList = await RecipeRepository.em
+			.getRepository(Recipe)
 			.createQueryBuilder('recipe')
 			.select()
 			.orderBy('recipe.createDate', 'DESC')
@@ -49,9 +49,8 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 			.getMany();
 		return findRecipeList;
 	}
-
-	async findSubscribingChefsLatestRecipe(id: number): Promise<Recipe[]> {
-		const findRecipeList = await RecipeRepository.connection.query(`
+	async findSubscribingChefsLatestRecipe(id: number): Promise<Partial<Recipe>[]> {
+		const findRecipeList = await RecipeRepository.em.query(`
 			select * from recipe as r where (r.user_id, r.create_date) in (SELECT r.user_id, max(r.create_date) FROM (select PUBLISHER_ID from SUBSCRIBE where SUBSCRIBER_ID = ${id}) as p JOIN RECIPE as r ON p.PUBLISHER_ID = r.USER_ID group by r.user_id);`);
 		return findRecipeList;
 	}

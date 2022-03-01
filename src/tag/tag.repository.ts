@@ -1,25 +1,25 @@
-import { Connection, EntitySchema } from 'typeorm';
-import { Tag, AbstractTagRepository } from './tag';
+import { EntityManager } from 'typeorm';
+
+import { AbstractTagRepository } from './tag';
+import Tag from './tag.entity';
 
 export default class TagRepository implements AbstractTagRepository {
 	private static instance: AbstractTagRepository;
-	private static connection: Connection;
-	private static entity: EntitySchema;
+	private static em: EntityManager;
 
-	public static getInstance(connection: Connection, entity: EntitySchema): AbstractTagRepository {
+	public static getInstance(em: EntityManager): AbstractTagRepository {
 		if (!TagRepository.instance) {
-			TagRepository.instance = new TagRepository(connection, entity);
+			TagRepository.instance = new TagRepository(em);
 		}
 		return TagRepository.instance;
 	}
 
-	private constructor(connection: Connection, entity: EntitySchema) {
-		TagRepository.connection = connection;
-		TagRepository.entity = entity;
+	private constructor(em: EntityManager) {
+		TagRepository.em = em;
 	}
 
-	async findTagByName(name: string): Promise<Tag[]> {
-		const findResultList = await TagRepository.connection.getRepository(TagRepository.entity).find({ where: { name: name } });
+	async findTagByName(name: string): Promise<Partial<Tag>[]> {
+		const findResultList = await TagRepository.em.getRepository(Tag).find({ where: { name: name } });
 		return findResultList;
 	}
 }

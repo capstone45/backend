@@ -1,15 +1,14 @@
-import { Connection, EntitySchema } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import express, { Request, Response, Router } from 'express';
 
 export abstract class AbstractTagRepository {
 	private static instance: AbstractTagRepository;
-	private static connection: Connection;
-	private static entity: EntitySchema;
+	private static em: EntityManager;
 
-	public static getInstance(connection: Connection, entity: EntitySchema): AbstractTagRepository;
-	private constructor(connection: Connection, entity: EntitySchema);
+	public static getInstance(em: EntityManager): AbstractTagRepository;
+	private constructor(em: EntityManager);
 
-	findTagByName(name: string): Promise<Tag[]>;
+	findTagByName(name: string): Promise<Partial<Tag>[]>;
 }
 
 export abstract class AbstractTagService {
@@ -19,7 +18,7 @@ export abstract class AbstractTagService {
 	public static getInstance(tagRepository: AbstractTagRepository): AbstractTagService;
 	private constructor(tagRepository: AbstractTagRepository);
 
-	findTagByName(name: string): Promise<Tag[]>;
+	findTagByName(name: string): Promise<Partial<Tag>[]>;
 }
 
 export abstract class AbstractTagController {
