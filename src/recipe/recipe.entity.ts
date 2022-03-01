@@ -1,7 +1,7 @@
 import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn, Column, OneToMany } from 'typeorm';
 
 import { Date } from '../entity/date.entity';
-import Description from '../recipe-description/description.entity';
+import Description from '../recipe-description/recipe-description.entity';
 import RecipeIngredient from '../recipe-ingredient/recipe-ingredient.entity';
 import RecipeTag from '../recipe-tag/recipe-tag.entity';
 import User from '../user/user.entity';
