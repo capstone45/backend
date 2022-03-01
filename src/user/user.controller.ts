@@ -22,21 +22,21 @@ export default class UserController implements AbstractUserController {
 	initRouter(app: express.Application): void {
 		if (UserController.instance) return;
 
-		UserController.router.get('/search', this.getUserByNickname);
-		UserController.router.get('/:id', this.getUserById);
+		UserController.router.get('/search', this.getByNickname);
+		UserController.router.get('/:id', this.getById);
 
 		app.use(UserController.PATH, UserController.router);
 	}
 
-	async getUserById(req: Request, res: Response): Promise<void> {
+	async getById(req: Request, res: Response): Promise<void> {
 		const id = Number(req.params.id);
-		const findUser = await UserController.userService.findUserById(id);
+		const findUser = await UserController.userService.findById(id);
 		res.send(findUser);
 	}
 
-	async getUserByNickname(req: Request, res: Response): Promise<void> {
+	async getByNickname(req: Request, res: Response): Promise<void> {
 		const nickname = String(req.query.nickname);
-		const findUser = await UserController.userService.findUserByNickname(nickname);
-		res.send(findUser);
+		const findUsers = await UserController.userService.findByNickname(nickname);
+		res.send(findUsers);
 	}
 }
