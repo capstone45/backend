@@ -28,16 +28,16 @@ export default class User extends Date {
 	id: number;
 
 	@OneToMany(() => Recipe, (recipe) => recipe.id, { lazy: true })
-	recipes: Recipe[] = [];
+	recipes: Recipe[];
 
-	@OneToMany(() => Bookmark, (bookmark) => bookmark.recipe, { lazy: true })
-	bookmarks: Bookmark[] = [];
-
-	@OneToMany(() => Subscribe, (subscribe) => subscribe.publisher, { lazy: true })
-	publishers: User[] = [];
+	@OneToMany(() => Bookmark, (bookmark) => bookmark.user, { lazy: true })
+	bookmarks: Bookmark[];
 
 	@OneToMany(() => Subscribe, (subscribe) => subscribe.publisher, { lazy: true })
-	subscribers: User[] = [];
+	publishers: User[];
+
+	@OneToMany(() => Subscribe, (subscribe) => subscribe.subscriber, { lazy: true })
+	subscribers: User[];
 
 	@Column({
 		name: 'LOGIN_ID',

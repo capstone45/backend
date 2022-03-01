@@ -8,9 +8,9 @@ export default class Tag {
 	@Generated('increment')
 	id: number;
 
+	@OneToMany(() => RecipeTag, (recipeTag) => recipeTag.tag, { lazy: true })
+	recipes: RecipeTag[];
+
 	@Column({ name: 'NAME', length: 24, nullable: false })
 	name: string;
-
-	@OneToMany(() => RecipeTag, (recipeTag) => recipeTag.tag, { lazy: true })
-	recipeTags: RecipeTag[];
 }
