@@ -1,9 +1,8 @@
-import { Column, Entity, Generated, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Generated, JoinTable, ManyToMany, OneToMany, PrimaryColumn, AfterLoad } from 'typeorm';
 
 import { Date } from '../entity/date.entity';
 import Recipe from '../recipe/recipe.entity';
 import Bookmark from '../bookmark/bookmark.entity';
-import Subscribe from '../subscribe/subscribe.entity';
 
 export enum loginMethod {
 	LOCAL = 'local',
@@ -27,17 +26,20 @@ export default class User extends Date {
 	@Generated('increment')
 	id: number;
 
-	@OneToMany(() => Recipe, (recipe) => recipe.id, { lazy: true })
-	recipes: Recipe[];
+	@OneToMany(() => Recipe, (recipe) => recipe.user, { lazy: true })
+	recipes: Promise<Recipe[]>;
 
 	@OneToMany(() => Bookmark, (bookmark) => bookmark.user, { lazy: true })
-	bookmarks: Bookmark[];
+	bookmarks: Promise<Bookmark[]>;
 
-	@OneToMany(() => Subscribe, (subscribe) => subscribe.publisher, { lazy: true })
-	publishers: User[];
+	// 나를 구독하는 사람들
+	@ManyToMany(() => User, (user) => user.stars, { lazy: true, nullable: false })
+	@JoinTable({ name: 'SUBSCRIBE', joinColumn: { name: 'STAR_ID' }, inverseJoinColumn: { name: 'FAN_ID' } })
+	fans: User[];
 
-	@OneToMany(() => Subscribe, (subscribe) => subscribe.subscriber, { lazy: true })
-	subscribers: User[];
+	// 내가 구독하는 사람들
+	@ManyToMany(() => User, (user) => user.fans, { lazy: true, nullable: false })
+	stars: User[];
 
 	@Column({
 		name: 'LOGIN_ID',
