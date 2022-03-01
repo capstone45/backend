@@ -1,18 +1,19 @@
-import { Connection, EntitySchema } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import express, { Request, Response, Router } from 'express';
+
+import Recipe from './recipe.entity';
 
 export abstract class AbstractRecipeRepository {
 	private static instance: AbstractRecipeRepository;
-	private static connection: Connection;
-	private static entity: EntitySchema;
+	private static em: EntityManager;
 
-	public static getInstance(connection: Connection, entity: EntitySchema): AbstractRecipeRepository;
-	private constructor(connection: Connection, entity: EntitySchema);
+	public static getInstance(em: EntityManager): AbstractRecipeRepository;
+	private constructor(em: EntityManager);
 
-	findRecipeByTitle(title: string): Promise<Recipe[]>;
-	findTodaysMostLikedRecipe(): Promise<Recipe[]>;
-	findLatestCreatedRecipe(): Promise<Recipe[]>;
-	findSubscribingChefsLatestRecipe(id: number): Promise<Recipe[]>;
+	findRecipeByTitle(title: string): Promise<Partial<Recipe>[]>;
+	findTodaysMostLikedRecipe(): Promise<Partial<Recipe>[]>;
+	findLatestCreatedRecipe(): Promise<Partial<Recipe>[]>;
+	findSubscribingChefsLatestRecipe(id: number): Promise<Partial<Recipe>[]>;
 }
 
 export abstract class AbstractRecipeService {
@@ -22,10 +23,10 @@ export abstract class AbstractRecipeService {
 	public static getInstance(recipeRepository: AbstractRecipeRepository): AbstractRecipeService;
 	private constructor(recipeRepository: AbstractRecipeRepository);
 
-	findRecipeByTitle(title: string): Promise<Recipe[]>;
-	findTodaysMostLikedRecipe(): Promise<Recipe[]>;
-	findLatestCreatedRecipe(): Promise<Recipe[]>;
-	findSubscribingChefsLatestRecipe(id: number): Promise<Recipe[]>;
+	findRecipeByTitle(title: string): Promise<Partial<Recipe>[]>;
+	findTodaysMostLikedRecipe(): Promise<Partial<Recipe>[]>;
+	findLatestCreatedRecipe(): Promise<Partial<Recipe>[]>;
+	findSubscribingChefsLatestRecipe(id: number): Promise<Partial<Recipe>[]>;
 }
 
 export abstract class AbstractRecipeController {
@@ -43,13 +44,3 @@ export abstract class AbstractRecipeController {
 	getLatestCreatedRecipe(req: Request, res: Response): Promise<void>;
 	getSubscribingChefsLatestRecipe(req: Request, res: Response): Promise<void>;
 }
-
-export type Recipe = {
-	id: number;
-	title: string;
-	createdDate: Date;
-	updatedDate: Date;
-	referenceUrl: string;
-	serving: number;
-	thumbnailUrl: string;
-};

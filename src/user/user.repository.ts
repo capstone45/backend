@@ -1,31 +1,41 @@
-import { Connection, EntitySchema } from 'typeorm';
-import { User, AbstractUserRepository } from './user';
+import { EntityManager } from 'typeorm';
+
+import { AbstractUserRepository } from './user';
+import User from './user.entity';
 
 export default class UserRepository implements AbstractUserRepository {
 	private static instance: AbstractUserRepository;
-	private static connection: Connection;
-	private static entity: EntitySchema;
+	private static em: EntityManager;
+	private static PUBLIC_INFO = ['user.id', 'user.nickname', 'user.thumbnailUrl', 'user.description', 'user.grade'];
 
-	public static getInstance(connection: Connection, entity: EntitySchema): AbstractUserRepository {
+	public static getInstance(em: EntityManager): AbstractUserRepository {
 		if (!UserRepository.instance) {
-			UserRepository.instance = new UserRepository(connection, entity);
+			UserRepository.instance = new UserRepository(em);
 		}
 		return UserRepository.instance;
 	}
 
-	private constructor(connection: Connection, entity: EntitySchema) {
-		UserRepository.connection = connection;
-		UserRepository.entity = entity;
+	private constructor(em: EntityManager) {
+		UserRepository.em = em;
 	}
 
-	async findUserById(id: number): Promise<User> {
-		const findResult = await UserRepository.connection.getRepository(UserRepository.entity).findOne(id);
-
+	async findUserById(id: number): Promise<Partial<User>> {
+		const findResult = await UserRepository.em
+			.getRepository(User)
+			.createQueryBuilder('user')
+			.select(UserRepository.PUBLIC_INFO)
+			.where('user.id=:id', { id })
+			.getOne();
 		return findResult;
 	}
 
-	async findUserByNickname(nickname: string): Promise<User[]> {
-		const findResultList = await UserRepository.connection.getRepository(UserRepository.entity).find({ where: { nickname: nickname } });
+	async findUserByNickname(nickname: string): Promise<Partial<User>[]> {
+		const findResultList = await UserRepository.em
+			.getRepository(User)
+			.createQueryBuilder('user')
+			.select(UserRepository.PUBLIC_INFO)
+			.where('user.nickname = :nickname', { nickname })
+			.getMany();
 		return findResultList;
 	}
 }

@@ -1,16 +1,17 @@
-import { Connection, EntitySchema } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import express, { Request, Response, Router } from 'express';
+
+import User from './user.entity';
 
 export abstract class AbstractUserRepository {
 	private static instance: AbstractUserRepository;
-	private static connection: Connection;
-	private static entity: EntitySchema;
+	private static em: EntityManager;
 
-	public static getInstance(connection: Connection, entity: EntitySchema): AbstractUserRepository;
-	private constructor(connection: Connection, entity: EntitySchema);
+	public static getInstance(em: EntityManager): AbstractUserRepository;
+	private constructor(em: EntityManager);
 
-	findUserById(id: number): Promise<User>;
-	findUserByNickname(nickname: string): Promise<User[]>;
+	findUserById(id: number): Promise<Partial<User>>;
+	findUserByNickname(nickname: string): Promise<Partial<User>[]>;
 }
 
 export abstract class AbstractUserService {
@@ -20,8 +21,8 @@ export abstract class AbstractUserService {
 	public static getInstance(userRepository: AbstractUserRepository): AbstractUserService;
 	private constructor(userRepository: AbstractUserRepository);
 
-	findUserById(id: number): Promise<User>;
-	findUserByNickname(nickname: string): Promise<User[]>;
+	findUserById(id: number): Promise<Partial<User>>;
+	findUserByNickname(nickname: string): Promise<Partial<User>[]>;
 }
 
 export abstract class AbstractUserController {
@@ -37,16 +38,3 @@ export abstract class AbstractUserController {
 	getUserById(req: Request, res: Response): Promise<void>;
 	getUserByNickname(req: Request, res: Response): Promise<void>;
 }
-
-export type User = {
-	id: number;
-	loginId: string;
-	loginPassword: string;
-	loginMethod: string;
-	nickname: string;
-	thumbnailUrl: string;
-	description: string;
-	grade: number;
-	createdDate: Date;
-	updatedDate: Date;
-};
