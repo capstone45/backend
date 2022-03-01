@@ -2,6 +2,7 @@ import { EntityManager } from 'typeorm';
 import express, { Request, Response, Router } from 'express';
 
 import User from './user.entity';
+import Recipe from '../recipe/recipe.entity';
 
 export abstract class AbstractUserRepository {
 	private static instance: AbstractUserRepository;
@@ -10,8 +11,9 @@ export abstract class AbstractUserRepository {
 	public static getInstance(em: EntityManager): AbstractUserRepository;
 	private constructor(em: EntityManager);
 
-	findUserById(id: number): Promise<Partial<User>>;
-	findUserByNickname(nickname: string): Promise<Partial<User>[]>;
+	findById(id: number): Promise<Partial<User>>;
+	findByNickname(nickname: string): Promise<Partial<User>[]>;
+	findBeLovedRecipe(id: number): Promise<Partial<Recipe>[]>;
 }
 
 export abstract class AbstractUserService {
@@ -21,8 +23,8 @@ export abstract class AbstractUserService {
 	public static getInstance(userRepository: AbstractUserRepository): AbstractUserService;
 	private constructor(userRepository: AbstractUserRepository);
 
-	findUserById(id: number): Promise<Partial<User>>;
-	findUserByNickname(nickname: string): Promise<Partial<User>[]>;
+	findById(id: number): Promise<BasicInfomationWithList>;
+	findByNickname(nickname: string): Promise<BasicInfomation[]>;
 }
 
 export abstract class AbstractUserController {
@@ -35,6 +37,18 @@ export abstract class AbstractUserController {
 	private constructor(userService: AbstractUserService, app: express.Application);
 	initRouter(app: express.Application): void;
 
-	getUserById(req: Request, res: Response): Promise<void>;
-	getUserByNickname(req: Request, res: Response): Promise<void>;
+	getById(req: Request, res: Response): Promise<void>;
+	getByNickname(req: Request, res: Response): Promise<void>;
+}
+
+export interface BasicInfomation {
+	user: Partial<User>;
+	numberOfFans: number;
+	numberOfLikes: number;
+}
+
+export interface BasicInfomationWithList extends BasicInfomation {
+	recipes: Partial<Recipe>[];
+	likeRecipes: Partial<Recipe>[];
+	subscribingUsers: Partial<User>[];
 }
