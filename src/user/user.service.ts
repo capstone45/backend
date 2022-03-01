@@ -1,4 +1,5 @@
-import { AbstractUserRepository, AbstractUserService, User } from './user';
+import { AbstractUserRepository, AbstractUserService } from './user';
+import User from './user.entity';
 
 export default class UserService implements AbstractUserService {
 	private static instance: AbstractUserService;
@@ -15,12 +16,12 @@ export default class UserService implements AbstractUserService {
 		UserService.userRepository = userRepository;
 	}
 
-	async findUserById(id: number): Promise<User> {
+	async findUserById(id: number): Promise<Partial<User>> {
 		const findUser = await UserService.userRepository.findUserById(id);
 		return findUser;
 	}
 
-	async findUserByNickname(nickname: string): Promise<User[]> {
+	async findUserByNickname(nickname: string): Promise<Partial<User>[]> {
 		const findUserList = await UserService.userRepository.findUserByNickname(nickname);
 		return findUserList;
 	}

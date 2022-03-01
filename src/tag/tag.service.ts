@@ -15,7 +15,7 @@ export default class TagService implements AbstractTagService {
 		TagService.tagRepository = TagRepository;
 	}
 
-	async findTagByName(name: string): Promise<Tag[]> {
+	async findTagByName(name: string): Promise<Partial<Tag>[]> {
 		const findTagList = await TagService.tagRepository.findTagByName(name);
 		return findTagList;
 	}
