@@ -24,8 +24,19 @@ export default class UserController implements AbstractUserController {
 
 		UserController.router.get('/search', this.getByNickname);
 		UserController.router.get('/:id', this.getById);
+		UserController.router.put('/:id', this.updateById);
 
 		app.use(UserController.PATH, UserController.router);
+	}
+
+	async updateById(req: Request, res: Response): Promise<void> {
+		const id = Number(req.params.id);
+		try {
+			await UserController.userService.updateById(id, req.body);
+			res.status(201).send();
+		} catch (error) {
+			res.status(400).send();
+		}
 	}
 
 	async getById(req: Request, res: Response): Promise<void> {

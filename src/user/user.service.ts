@@ -1,4 +1,4 @@
-import { AbstractUserRepository, AbstractUserService } from './user';
+import { AbstractUserRepository, AbstractUserService, UpdateBody } from './user';
 
 import { BasicInfomation, BasicInfomationWithList } from './user';
 
@@ -15,6 +15,13 @@ export default class UserService implements AbstractUserService {
 
 	private constructor(userRepository: AbstractUserRepository) {
 		UserService.userRepository = userRepository;
+	}
+
+	async updateById(id: number, body: UpdateBody): Promise<void> {
+		if (body.loginPassword !== body.confirmPassword) {
+			throw new Error('비밀번호가 다릅니다');
+		}
+		await UserService.userRepository.updateById(id, body);
 	}
 
 	async findById(id: number): Promise<BasicInfomationWithList> {
