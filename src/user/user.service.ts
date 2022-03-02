@@ -17,10 +17,15 @@ export default class UserService implements AbstractUserService {
 		UserService.userRepository = userRepository;
 	}
 
+	async deleteThumbnail(id: number): Promise<void> {
+		await UserService.userRepository.deleteThumbnail(id);
+	}
+
 	async updateById(id: number, body: UpdateBody): Promise<void> {
 		if (body.loginPassword !== body.confirmPassword) {
 			throw new Error('비밀번호가 다릅니다');
 		}
+		// password 암호화 필요
 		await UserService.userRepository.updateById(id, body);
 	}
 

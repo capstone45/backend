@@ -11,6 +11,7 @@ export abstract class AbstractUserRepository {
 	public static getInstance(em: EntityManager): AbstractUserRepository;
 	private constructor(em: EntityManager);
 
+	deleteThumbnail(id: number): Promise<void>;
 	updateById(id: number, body: UpdateBody): Promise<void>;
 	findById(id: number): Promise<Partial<User>>;
 	findByNickname(nickname: string): Promise<Partial<User>[]>;
@@ -24,6 +25,7 @@ export abstract class AbstractUserService {
 	public static getInstance(userRepository: AbstractUserRepository): AbstractUserService;
 	private constructor(userRepository: AbstractUserRepository);
 
+	deleteThumbnail(id: number): Promise<void>;
 	updateById(id: number, body: UpdateBody): Promise<void>;
 	findById(id: number): Promise<BasicInfomationWithList>;
 	findByNickname(nickname: string): Promise<BasicInfomation[]>;
@@ -39,6 +41,7 @@ export abstract class AbstractUserController {
 	private constructor(userService: AbstractUserService, app: express.Application);
 	initRouter(app: express.Application): void;
 
+	deleteThumbnail(req: Request, res: Response): Promise<void>;
 	updateById(req: Request, res: Response): Promise<void>;
 	getById(req: Request, res: Response): Promise<void>;
 	getByNickname(req: Request, res: Response): Promise<void>;

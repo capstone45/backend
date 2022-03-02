@@ -25,8 +25,19 @@ export default class UserController implements AbstractUserController {
 		UserController.router.get('/search', this.getByNickname);
 		UserController.router.get('/:id', this.getById);
 		UserController.router.put('/:id', this.updateById);
+		UserController.router.get('/:id/thumbnail', this.deleteThumbnail);
 
 		app.use(UserController.PATH, UserController.router);
+	}
+
+	async deleteThumbnail(req: Request, res: Response): Promise<void> {
+		try {
+			const id = Number(req.params.id);
+			await UserController.userService.deleteThumbnail(id);
+			res.status(200).send();
+		} catch (error) {
+			res.status(400).send();
+		}
 	}
 
 	async updateById(req: Request, res: Response): Promise<void> {

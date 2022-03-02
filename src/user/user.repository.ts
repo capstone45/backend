@@ -21,9 +21,12 @@ export default class UserRepository implements AbstractUserRepository {
 		UserRepository.em = em;
 	}
 
+	async deleteThumbnail(id: number): Promise<void> {
+		await UserRepository.em.createQueryBuilder().update(User).set({ thumbnailUrl: 'empty' }).where('id = :id', { id }).execute();
+	}
+
 	async updateById(id: number, body: UpdateBody): Promise<void> {
 		await UserRepository.em
-			.getRepository(User)
 			.createQueryBuilder()
 			.update(User)
 			.set({ nickname: body.nickname, loginPassword: body.loginPassword, description: body.description })
