@@ -7,7 +7,7 @@ import { getFormattedDate } from '../helper/helper';
 export default class RecipeRepository implements AbstractRecipeRepository {
 	private static instance: AbstractRecipeRepository;
 	private static em: EntityManager;
-	private LIMIT: 6;
+	private static SEARCH_LIMIT = 6;
 
 	public static getInstance(em: EntityManager): AbstractRecipeRepository {
 		if (!RecipeRepository.instance) {
@@ -20,13 +20,13 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 		RecipeRepository.em = em;
 	}
 
-	async findRecipeByTitle(title: string): Promise<Partial<Recipe>[]> {
-		const findRecipeList = await RecipeRepository.em.getRepository(Recipe).find({ where: { title: title } });
-		return findRecipeList;
+	async findByTitle(title: string): Promise<Partial<Recipe>[]> {
+		const findRecipes = await RecipeRepository.em.getRepository(Recipe).find({ where: { title: title } });
+		return findRecipes;
 	}
 
-	async findTodaysMostLikedRecipe(): Promise<Partial<Recipe>[]> {
-		const findRecipeList = await RecipeRepository.em
+	async findByTodaysMostLiked(): Promise<Partial<Recipe>[]> {
+		const findRecipes = await RecipeRepository.em
 			.getRepository(Recipe)
 			.createQueryBuilder('recipe')
 			.select()
@@ -34,24 +34,29 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 			.where('recipe.createDate = :today', { today: getFormattedDate(new Date()) })
 			.groupBy('recipe.id')
 			.orderBy('COUNT(bookmark.id)', 'DESC')
-			.limit(this.LIMIT)
+			.limit(RecipeRepository.SEARCH_LIMIT)
 			.getMany();
-		return findRecipeList;
+		return findRecipes;
 	}
 
-	async findLatestCreatedRecipe(): Promise<Partial<Recipe>[]> {
-		const findRecipeList = await RecipeRepository.em
+	async findByLatestCreated(): Promise<Partial<Recipe>[]> {
+		const findRecipes = await RecipeRepository.em
 			.getRepository(Recipe)
 			.createQueryBuilder('recipe')
 			.select()
 			.orderBy('recipe.createDate', 'DESC')
-			.limit(this.LIMIT)
+			.limit(RecipeRepository.SEARCH_LIMIT)
 			.getMany();
-		return findRecipeList;
+		return findRecipes;
 	}
-	async findSubscribingChefsLatestRecipe(id: number): Promise<Partial<Recipe>[]> {
-		const findRecipeList = await RecipeRepository.em.query(`
+
+	async findBySubscribingChefsLatest(id: number): Promise<Partial<Recipe>[]> {
+		const findRecipes = await RecipeRepository.em.query(`
 			select * from recipe as r where (r.user_id, r.create_date) in (SELECT r.user_id, max(r.create_date) FROM (select PUBLISHER_ID from SUBSCRIBE where SUBSCRIBER_ID = ${id}) as p JOIN RECIPE as r ON p.PUBLISHER_ID = r.USER_ID group by r.user_id);`);
-		return findRecipeList;
+		return findRecipes;
+	}
+
+	async findAll(): Promise<Partial<Recipe>[]> {
+		return await RecipeRepository.em.getRepository(Recipe).createQueryBuilder('recipe').select().getMany();
 	}
 }

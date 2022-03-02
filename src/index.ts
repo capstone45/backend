@@ -16,10 +16,15 @@ export default class Application {
 	}
 
 	private constructor() {
+		this.initMiddleware();
 		this.initDatabase().then((connection: Connection) => {
 			this.initController(connection.manager);
 		});
 		this.initApplication();
+	}
+
+	private initMiddleware(): void {
+		Application.app.use(express.json());
 	}
 
 	private initDatabase(): Promise<Connection> {
