@@ -22,32 +22,40 @@ export default class RecipeController implements AbstractRecipeController {
 	initRouter(app: express.Application): void {
 		if (RecipeController.instance) return;
 
-		RecipeController.router.get('/today-most-liked', this.getTodaysMostLikedRecipe);
-		RecipeController.router.get('/latest', this.getLatestCreatedRecipe);
-		RecipeController.router.get('/search', this.getRecipeByTitle);
-		RecipeController.router.get('/subscribe-chef-latest', this.getSubscribingChefsLatestRecipe);
+		RecipeController.router.get('/today-most-liked', this.getByTodaysMostLiked);
+		RecipeController.router.get('/latest', this.getByLatestCreated);
+		RecipeController.router.get('/search', this.getByTitle);
+		RecipeController.router.get('/subscribe-chef-latest', this.getBySubscribingChefsLatest);
+		RecipeController.router.get('/searchss', this.getByIngredient);
 
 		app.use(RecipeController.PATH, RecipeController.router);
 	}
 
-	async getRecipeByTitle(req: Request, res: Response): Promise<void> {
+	async getByTitle(req: Request, res: Response): Promise<void> {
 		const title = String(req.query.title);
-		const findRecipeList = await RecipeController.recipeService.findRecipeByTitle(title);
-		res.send(findRecipeList);
+		const findRecipes = await RecipeController.recipeService.findByTitle(title);
+		res.send(findRecipes);
 	}
 
-	async getTodaysMostLikedRecipe(req: Request, res: Response): Promise<void> {
-		const findRecipeList = await RecipeController.recipeService.findTodaysMostLikedRecipe();
-		res.send(findRecipeList);
+	async getByTodaysMostLiked(req: Request, res: Response): Promise<void> {
+		const findRecipes = await RecipeController.recipeService.findByTodaysMostLiked();
+		res.send(findRecipes);
 	}
 
-	async getLatestCreatedRecipe(req: Request, res: Response): Promise<void> {
-		const findRecipeList = await RecipeController.recipeService.findLatestCreatedRecipe();
-		res.send(findRecipeList);
+	async getByLatestCreated(req: Request, res: Response): Promise<void> {
+		const findRecipes = await RecipeController.recipeService.findByLatestCreated();
+		res.send(findRecipes);
 	}
 
-	async getSubscribingChefsLatestRecipe(req: Request, res: Response): Promise<void> {
-		const findRecipeList = await RecipeController.recipeService.findSubscribingChefsLatestRecipe(3);
-		res.send(findRecipeList);
+	async getBySubscribingChefsLatest(req: Request, res: Response): Promise<void> {
+		const findRecipes = await RecipeController.recipeService.findBySubscribingChefsLatest(3);
+		res.send(findRecipes);
+	}
+
+	async getByIngredient(req: Request, res: Response): Promise<void> {
+		const body = { args1: 'ingr1', args2: 'ingr2', args3: 'ingr3' };
+		const keywords = Object.values(body);
+		const findRecipes = await RecipeController.recipeService.findByIngredient(keywords);
+		res.send(findRecipes);
 	}
 }
