@@ -1,6 +1,6 @@
 import { EntityManager } from 'typeorm';
 
-import { AbstractUserRepository, UpdateBody } from './user';
+import { AbstractUserRepository, UpdateUserBody } from './user';
 import User from './user.entity';
 import Recipe from '../recipe/recipe.entity';
 import Bookmark from '../bookmark/bookmark.entity';
@@ -21,9 +21,16 @@ export default class UserRepository implements AbstractUserRepository {
 		UserRepository.em = em;
 	}
 
-	async updateById(id: number, body: UpdateBody): Promise<void> {
+	async updateThumbnail(id: number, thumbnailUrl: string): Promise<void> {
+		await UserRepository.em.createQueryBuilder().update(User).set({ thumbnailUrl }).where('id = :id', { id }).execute();
+	}
+
+	async deleteThumbnail(id: number): Promise<void> {
+		await UserRepository.em.createQueryBuilder().update(User).set({ thumbnailUrl: 'empty' }).where('id = :id', { id }).execute();
+	}
+
+	async updateById(id: number, body: UpdateUserBody): Promise<void> {
 		await UserRepository.em
-			.getRepository(User)
 			.createQueryBuilder()
 			.update(User)
 			.set({ nickname: body.nickname, loginPassword: body.loginPassword, description: body.description })
