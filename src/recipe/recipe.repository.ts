@@ -20,6 +20,16 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 		RecipeRepository.em = em;
 	}
 
+	async findById(id: number): Promise<Partial<Recipe>> {
+		const findResult = await RecipeRepository.em
+			.getRepository(Recipe)
+			.createQueryBuilder('recipe')
+			.select()
+			.where('recipe.id=:id', { id })
+			.getOne();
+		return findResult;
+	}
+
 	async findByTitle(title: string): Promise<Partial<Recipe>[]> {
 		const findRecipes = await RecipeRepository.em.getRepository(Recipe).find({ where: { title: title } });
 		return findRecipes;
