@@ -1,4 +1,4 @@
-import { AbstractUserRepository, AbstractUserService, UpdateBody } from './user';
+import { AbstractUserRepository, AbstractUserService, UpdateUserBody } from './user';
 
 import { BasicInfomation, BasicInfomationWithList } from './user';
 
@@ -17,11 +17,15 @@ export default class UserService implements AbstractUserService {
 		UserService.userRepository = userRepository;
 	}
 
+	async updateThumbnail(id: number, thumbnailUrl: string): Promise<void> {
+		await UserService.userRepository.updateThumbnail(id, thumbnailUrl);
+	}
+
 	async deleteThumbnail(id: number): Promise<void> {
 		await UserService.userRepository.deleteThumbnail(id);
 	}
 
-	async updateById(id: number, body: UpdateBody): Promise<void> {
+	async updateById(id: number, body: UpdateUserBody): Promise<void> {
 		if (body.loginPassword !== body.confirmPassword) {
 			throw new Error('비밀번호가 다릅니다');
 		}

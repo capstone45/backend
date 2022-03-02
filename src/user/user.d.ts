@@ -11,8 +11,9 @@ export abstract class AbstractUserRepository {
 	public static getInstance(em: EntityManager): AbstractUserRepository;
 	private constructor(em: EntityManager);
 
+	updateThumbnail(id: number, thumbnailUrl: string): Promise<void>;
 	deleteThumbnail(id: number): Promise<void>;
-	updateById(id: number, body: UpdateBody): Promise<void>;
+	updateById(id: number, body: UpdateUserBody): Promise<void>;
 	findById(id: number): Promise<Partial<User>>;
 	findByNickname(nickname: string): Promise<Partial<User>[]>;
 	findBeLovedRecipe(id: number): Promise<Partial<Recipe>[]>;
@@ -25,8 +26,9 @@ export abstract class AbstractUserService {
 	public static getInstance(userRepository: AbstractUserRepository): AbstractUserService;
 	private constructor(userRepository: AbstractUserRepository);
 
+	updateThumbnail(id: number, thumbnailUrl: string): Promise<void>;
 	deleteThumbnail(id: number): Promise<void>;
-	updateById(id: number, body: UpdateBody): Promise<void>;
+	updateById(id: number, body: UpdateUserBody): Promise<void>;
 	findById(id: number): Promise<BasicInfomationWithList>;
 	findByNickname(nickname: string): Promise<BasicInfomation[]>;
 }
@@ -41,6 +43,7 @@ export abstract class AbstractUserController {
 	private constructor(userService: AbstractUserService, app: express.Application);
 	initRouter(app: express.Application): void;
 
+	updateThumbnail(req: Request, res: Response): Promise<void>;
 	deleteThumbnail(req: Request, res: Response): Promise<void>;
 	updateById(req: Request, res: Response): Promise<void>;
 	getById(req: Request, res: Response): Promise<void>;
@@ -59,7 +62,7 @@ export interface BasicInfomationWithList extends BasicInfomation {
 	subscribingUsers: Partial<User>[];
 }
 
-export interface UpdateBody {
+export interface UpdateUserBody {
 	nickname: string;
 	loginPassword: string;
 	confirmPassword: string;
