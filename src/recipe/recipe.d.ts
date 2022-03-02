@@ -11,6 +11,7 @@ export abstract class AbstractRecipeRepository {
 	public static getInstance(em: EntityManager): AbstractRecipeRepository;
 	private constructor(em: EntityManager);
 
+	findById(id: number): Promise<Partial<Recipe>>;
 	findByTitle(title: string): Promise<Partial<Recipe>[]>;
 	findByTodaysMostLiked(): Promise<Partial<Recipe>[]>;
 	findByLatestCreated(): Promise<Partial<Recipe>[]>;
@@ -25,6 +26,7 @@ export abstract class AbstractRecipeService {
 	public static getInstance(recipeRepository: AbstractRecipeRepository): AbstractRecipeService;
 	private constructor(recipeRepository: AbstractRecipeRepository);
 
+	findById(id: number): Promise<Partial<Recipe>>;
 	findByTitle(title: string): Promise<Partial<Recipe>[]>;
 	findByTodaysMostLiked(): Promise<Partial<Recipe>[]>;
 	findByLatestCreated(): Promise<Partial<Recipe>[]>;
@@ -43,6 +45,7 @@ export abstract class AbstractRecipeController {
 	private constructor(recipeService: AbstractRecipeService, app: express.Application);
 	initRouter(app: express.Application): void;
 
+	getById(req: Request, res: Response): Promise<void>;
 	getByTitle(req: Request, res: Response): Promise<void>;
 	getByTodaysMostLiked(req: Request, res: Response): Promise<void>;
 	getByLatestCreated(req: Request, res: Response): Promise<void>;

@@ -29,6 +29,11 @@ export default class RecipeService implements AbstractRecipeService {
 		return count / ingredients.length >= RecipeService.INCLUDE_THRESHOLD ? true : false;
 	}
 
+	async findById(id: number): Promise<Partial<Recipe>> {
+		const findRecipes = await RecipeService.RecipeRepository.findById(id);
+		return findRecipes;
+	}
+
 	async findByTitle(title: string): Promise<Partial<Recipe>[]> {
 		const findRecipes = await RecipeService.RecipeRepository.findByTitle(title);
 		return findRecipes;

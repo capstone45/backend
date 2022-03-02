@@ -26,9 +26,15 @@ export default class RecipeController implements AbstractRecipeController {
 		RecipeController.router.get('/latest', this.getByLatestCreated);
 		RecipeController.router.get('/search', this.getByTitle);
 		RecipeController.router.get('/subscribe-chef-latest', this.getBySubscribingChefsLatest);
-		RecipeController.router.get('/searchss', this.getByIngredient);
-
+		RecipeController.router.post('/search', this.getByIngredient);
+		RecipeController.router.get('/:id', this.getById);
 		app.use(RecipeController.PATH, RecipeController.router);
+	}
+
+	async getById(req: Request, res: Response): Promise<void> {
+		const id = Number(req.params.id);
+		const findRecipes = await RecipeController.recipeService.findById(id);
+		res.send(findRecipes);
 	}
 
 	async getByTitle(req: Request, res: Response): Promise<void> {
