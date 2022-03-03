@@ -14,7 +14,7 @@ export abstract class AbstractUserRepository {
 	updateThumbnail(id: number, thumbnailUrl: string): Promise<void>;
 	deleteThumbnail(id: number): Promise<void>;
 	updateById(id: number, body: UpdateUserBody): Promise<void>;
-	findById(id: number): Promise<Partial<User>>;
+	findById(id: number): Promise<User>;
 	findByNickname(nickname: string): Promise<Partial<User>[]>;
 	findBeLovedRecipe(id: number): Promise<Partial<Recipe>[]>;
 }

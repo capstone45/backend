@@ -8,7 +8,9 @@ export abstract class AbstractTagRepository {
 	public static getInstance(em: EntityManager): AbstractTagRepository;
 	private constructor(em: EntityManager);
 
+	create(tag: Tag): Promise<number>;
 	findTagByName(name: string): Promise<Partial<Tag>[]>;
+	findById(id: number): Promise<Tag>;
 }
 
 export abstract class AbstractTagService {

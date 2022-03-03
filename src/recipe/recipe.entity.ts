@@ -1,12 +1,12 @@
 import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn, Column, OneToMany } from 'typeorm';
 
-import { Date } from '../entity/date.entity';
-import Description from '../recipe-description/recipe-description.entity';
+import Date from '../entity/date.entity';
+import DetailDescription from '../recipe-description/recipe-description.entity';
 import RecipeIngredient from '../recipe-ingredient/recipe-ingredient.entity';
 import RecipeTag from '../recipe-tag/recipe-tag.entity';
 import User from '../user/user.entity';
 
-enum serving {
+export enum serving {
 	DONTKNOW = 0,
 	FOR1 = 1,
 	FOR2 = 2,
@@ -25,14 +25,17 @@ export default class Recipe extends Date {
 	@JoinColumn({ name: 'USER_ID' })
 	user: User;
 
-	@OneToMany(() => Description, (description) => description.recipe, { lazy: true })
-	descriptions: Description[];
+	@OneToMany(() => DetailDescription, (description) => description.recipe, { lazy: true })
+	detailDescriptions: DetailDescription[];
 
 	@OneToMany(() => RecipeIngredient, (recipeIngredient) => recipeIngredient.recipe, { lazy: true })
 	ingredients: RecipeIngredient[];
 
 	@OneToMany(() => RecipeTag, (recipeTag) => recipeTag.recipe, { lazy: true })
 	tags: RecipeTag[];
+
+	@Column({ name: 'DESCRIPTION', type: 'varchar', length: 450, nullable: false })
+	description: string;
 
 	@Column({ name: 'THUMBNAIL_URL', type: 'varchar', length: 2048, nullable: false })
 	thumbnailUrl: string;
