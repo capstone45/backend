@@ -1,8 +1,11 @@
 import { EntityManager } from 'typeorm';
 import express, { Request, Response, Router } from 'express';
 
-import Recipe from './recipe.entity';
+import Recipe, { serving } from './recipe.entity';
 import RecipeIngredient from '../recipe-ingredient/recipe-ingredient.entity';
+import DetailDescription from '../recipe-description/recipe-description.entity';
+import { AbstractUserRepository } from '../user/user';
+import Tag from '../tag/tag.entity';
 
 export abstract class AbstractRecipeRepository {
 	private static instance: AbstractRecipeRepository;
@@ -11,6 +14,7 @@ export abstract class AbstractRecipeRepository {
 	public static getInstance(em: EntityManager): AbstractRecipeRepository;
 	private constructor(em: EntityManager);
 
+	create(userId: number, body: RecipeBody): Promise<number>;
 	findById(id: number): Promise<Partial<Recipe>>;
 	findByTitle(title: string): Promise<Partial<Recipe>[]>;
 	findByTodaysMostLiked(): Promise<Partial<Recipe>[]>;
@@ -22,10 +26,13 @@ export abstract class AbstractRecipeRepository {
 export abstract class AbstractRecipeService {
 	private static instance: AbstractRecipeService;
 	private static recipeRepository: AbstractRecipeRepository;
+	private static userRepository: AbstractUserRepository;
 
-	public static getInstance(recipeRepository: AbstractRecipeRepository): AbstractRecipeService;
-	private constructor(recipeRepository: AbstractRecipeRepository);
+	public static getInstance(recipeRepository: AbstractRecipeRepository, userRepository: AbstractUserRepository): AbstractRecipeService;
+	private constructor(recipeRepository: AbstractRecipeRepository, userRepository: AbstractUserRepository);
 
+	createRecipe(userId: number, body: RecipeBody, tags: Tag[]): Promise<void>;
+	updateRecipe(userId: number, body: RecipeBody): Promise<void>;
 	findById(id: number): Promise<Partial<Recipe>>;
 	findByTitle(title: string): Promise<Partial<Recipe>[]>;
 	findByTodaysMostLiked(): Promise<Partial<Recipe>[]>;
@@ -45,10 +52,21 @@ export abstract class AbstractRecipeController {
 	private constructor(recipeService: AbstractRecipeService, app: express.Application);
 	initRouter(app: express.Application): void;
 
+	createRecipe(req: Request, res: Response): Promise<void>;
 	getById(req: Request, res: Response): Promise<void>;
 	getByTitle(req: Request, res: Response): Promise<void>;
 	getByTodaysMostLiked(req: Request, res: Response): Promise<void>;
 	getByLatestCreated(req: Request, res: Response): Promise<void>;
 	getBySubscribingChefsLatest(req: Request, res: Response): Promise<void>;
 	getByIngredient(req: Request, res: Response): Promise<void>;
+}
+
+export interface RecipeBody {
+	title: string;
+	description: string;
+	thumbnailUrl: string;
+	referenceUrl: string;
+	serving: serving;
+	ingredients: RecipeIngredient[];
+	detailDescriptions: DetailDescription[];
 }

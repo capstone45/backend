@@ -1,8 +1,9 @@
-import { EntityManager } from 'typeorm';
+import { EntityManager, getManager } from 'typeorm';
 
-import { AbstractRecipeRepository } from './recipe';
+import { AbstractRecipeRepository, RecipeBody } from './recipe';
 import Recipe from './recipe.entity';
 import { getFormattedDate } from '../helper/helper';
+import UserRepository from '../user/user.repository';
 
 export default class RecipeRepository implements AbstractRecipeRepository {
 	private static instance: AbstractRecipeRepository;
@@ -18,6 +19,29 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 
 	private constructor(em: EntityManager) {
 		RecipeRepository.em = em;
+	}
+
+	async create(userId: number, body: RecipeBody): Promise<number> {
+		const user = await UserRepository.getInstance(getManager()).findById(userId);
+		const id = await RecipeRepository.em
+			.getRepository(Recipe)
+			.createQueryBuilder()
+			.insert()
+			.into(Recipe)
+			.values([
+				{
+					user: user,
+					title: body.title,
+					description: body.description,
+					thumbnailUrl: body.thumbnailUrl,
+					referenceUrl: body.referenceUrl,
+					serving: body.serving,
+					ingredients: body.ingredients,
+					detailDescriptions: body.detailDescriptions,
+				},
+			])
+			.execute();
+		return Number(id.identifiers[0].id);
 	}
 
 	async findById(id: number): Promise<Partial<Recipe>> {

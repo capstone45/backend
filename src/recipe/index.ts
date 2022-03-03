@@ -5,13 +5,14 @@ import { AbstractRecipeController, AbstractRecipeRepository, AbstractRecipeServi
 import RecipeController from './recipe.controller';
 import RecipeService from './recipe.service';
 import RecipeRepository from './recipe.repository';
+import UserRepository from '../user/user.repository';
 
 function recipeController(recipeService: RecipeService, app: express.Application): AbstractRecipeController {
 	return RecipeController.getInstance(recipeService, app);
 }
 
-function recipeService(recipeRepository: AbstractRecipeRepository): AbstractRecipeService {
-	return RecipeService.getInstance(recipeRepository);
+function recipeService(recipeRepository: AbstractRecipeRepository, em: EntityManager): AbstractRecipeService {
+	return RecipeService.getInstance(recipeRepository, UserRepository.getInstance(em));
 }
 
 function recipeRepository(em: EntityManager): AbstractRecipeRepository {
@@ -19,7 +20,7 @@ function recipeRepository(em: EntityManager): AbstractRecipeRepository {
 }
 
 function initController(app: express.Application, em: EntityManager) {
-	recipeController(recipeService(recipeRepository(em)), app);
+	recipeController(recipeService(recipeRepository(em), em), app);
 }
 
 export default initController;

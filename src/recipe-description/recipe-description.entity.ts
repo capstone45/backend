@@ -2,8 +2,8 @@ import { Entity, ManyToOne, Column } from 'typeorm';
 import Recipe from '../recipe/recipe.entity';
 
 @Entity({ name: 'RECIPE_DESCRIPTION' })
-export default class Description {
-	@ManyToOne(() => Recipe, (recipe) => recipe.descriptions, { lazy: true, primary: true })
+export default class DetailDescription {
+	@ManyToOne(() => Recipe, (recipe) => recipe.detailDescriptions, { lazy: true, primary: true })
 	recipe: Recipe;
 
 	@Column({ name: 'IMAGE_DESCRIPTION', type: 'varchar', length: 900, nullable: false })

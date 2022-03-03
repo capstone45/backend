@@ -38,7 +38,7 @@ export default class UserRepository implements AbstractUserRepository {
 			.execute();
 	}
 
-	async findById(id: number): Promise<Partial<User>> {
+	async findById(id: number): Promise<User> {
 		const findResult = await UserRepository.em
 			.getRepository(User)
 			.createQueryBuilder('user')
