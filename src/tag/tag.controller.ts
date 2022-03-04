@@ -7,16 +7,16 @@ export default class TagController implements AbstractTagController {
 	private static readonly router = express.Router();
 	private static readonly PATH = '/api/tags';
 
-	public static getInstance(tagService: AbstractTagService, app: express.Application): AbstractTagController {
+	public static getInstance(dependency): AbstractTagController {
 		if (!TagController.instance) {
-			TagController.instance = new TagController(tagService, app);
+			TagController.instance = new TagController(dependency);
 		}
 		return TagController.instance;
 	}
 
-	private constructor(tagService: AbstractTagService, app: express.Application) {
-		TagController.tagService = tagService;
-		this.initRouter(app);
+	private constructor(dependency) {
+		TagController.tagService = dependency.tagService;
+		this.initRouter(dependency.app);
 	}
 
 	initRouter(app: express.Application): void {

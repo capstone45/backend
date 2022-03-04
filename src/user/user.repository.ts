@@ -10,15 +10,15 @@ export default class UserRepository implements AbstractUserRepository {
 	private static em: EntityManager;
 	private static PUBLIC_USER_INFO = ['user.id', 'user.nickname', 'user.thumbnailUrl', 'user.description', 'user.grade'];
 
-	public static getInstance(em: EntityManager): AbstractUserRepository {
+	public static getInstance(dependency): AbstractUserRepository {
 		if (!UserRepository.instance) {
-			UserRepository.instance = new UserRepository(em);
+			UserRepository.instance = new UserRepository(dependency);
 		}
 		return UserRepository.instance;
 	}
 
-	private constructor(em: EntityManager) {
-		UserRepository.em = em;
+	private constructor(dependency) {
+		UserRepository.em = dependency.em;
 	}
 
 	async updateThumbnail(id: number, thumbnailUrl: string): Promise<void> {

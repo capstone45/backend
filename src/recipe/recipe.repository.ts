@@ -10,15 +10,15 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 	private static em: EntityManager;
 	private static SEARCH_LIMIT = 6;
 
-	public static getInstance(em: EntityManager): AbstractRecipeRepository {
+	public static getInstance(dependency): AbstractRecipeRepository {
 		if (!RecipeRepository.instance) {
-			RecipeRepository.instance = new RecipeRepository(em);
+			RecipeRepository.instance = new RecipeRepository(dependency);
 		}
 		return RecipeRepository.instance;
 	}
 
-	private constructor(em: EntityManager) {
-		RecipeRepository.em = em;
+	private constructor(dependency) {
+		RecipeRepository.em = dependency.em;
 	}
 
 	async create(userId: number, body: RecipeBody): Promise<number> {

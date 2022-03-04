@@ -6,15 +6,15 @@ export default class UserService implements AbstractUserService {
 	private static instance: AbstractUserService;
 	private static userRepository: AbstractUserRepository;
 
-	public static getInstance(userRepository: AbstractUserRepository): AbstractUserService {
+	public static getInstance(dependency): AbstractUserService {
 		if (!UserService.instance) {
-			UserService.instance = new UserService(userRepository);
+			UserService.instance = new UserService(dependency);
 		}
 		return UserService.instance;
 	}
 
-	private constructor(userRepository: AbstractUserRepository) {
-		UserService.userRepository = userRepository;
+	private constructor(dependency) {
+		UserService.userRepository = dependency.userRepository;
 	}
 
 	async updateThumbnail(id: number, thumbnailUrl: string): Promise<void> {

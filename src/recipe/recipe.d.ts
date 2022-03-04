@@ -11,8 +11,8 @@ export abstract class AbstractRecipeRepository {
 	private static instance: AbstractRecipeRepository;
 	private static em: EntityManager;
 
-	public static getInstance(em: EntityManager): AbstractRecipeRepository;
-	private constructor(em: EntityManager);
+	public static getInstance(dependency): AbstractRecipeRepository;
+	private constructor(dependency);
 
 	create(userId: number, body: RecipeBody): Promise<number>;
 	findById(id: number): Promise<Partial<Recipe>>;
@@ -28,8 +28,8 @@ export abstract class AbstractRecipeService {
 	private static recipeRepository: AbstractRecipeRepository;
 	private static userRepository: AbstractUserRepository;
 
-	public static getInstance(recipeRepository: AbstractRecipeRepository, userRepository: AbstractUserRepository): AbstractRecipeService;
-	private constructor(recipeRepository: AbstractRecipeRepository, userRepository: AbstractUserRepository);
+	public static getInstance(dependency): AbstractRecipeService;
+	private constructor(dependency);
 
 	createRecipe(userId: number, body: RecipeBody, tags: Tag[]): Promise<void>;
 	updateRecipe(userId: number, body: RecipeBody): Promise<void>;
@@ -48,8 +48,8 @@ export abstract class AbstractRecipeController {
 	private static readonly router: Router;
 	private static readonly PATH: string;
 
-	public static getInstance(recipeService: AbstractRecipeService, app: express.Application): AbstractRecipeController;
-	private constructor(recipeService: AbstractRecipeService, app: express.Application);
+	public static getInstance(dependency): AbstractRecipeController;
+	private constructor(dependency);
 	initRouter(app: express.Application): void;
 
 	createRecipe(req: Request, res: Response): Promise<void>;

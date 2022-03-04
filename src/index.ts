@@ -2,9 +2,7 @@ import 'reflect-metadata';
 import { Connection, createConnection, EntityManager } from 'typeorm';
 import express from 'express';
 
-import initUserController from './user';
-import initTagController from './tag';
-import initRecipeController from './recipe';
+import Container from './container';
 
 export default class Application {
 	private static readonly app: express.Application = express();
@@ -18,7 +16,7 @@ export default class Application {
 	private constructor() {
 		this.initMiddleware();
 		this.initDatabase().then((connection: Connection) => {
-			this.initController(connection.manager);
+			Container.initContainer();
 		});
 		this.initApplication();
 	}
@@ -33,12 +31,6 @@ export default class Application {
 				res(connection);
 			});
 		});
-	}
-
-	private initController(manager: EntityManager): void {
-		initUserController(Application.app, manager);
-		initTagController(Application.app, manager);
-		initRecipeController(Application.app, manager);
 	}
 
 	private initApplication(): void {

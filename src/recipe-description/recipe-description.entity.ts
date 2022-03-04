@@ -2,7 +2,7 @@ import { Entity, ManyToOne, Column } from 'typeorm';
 import Recipe from '../recipe/recipe.entity';
 
 @Entity({ name: 'RECIPE_DESCRIPTION' })
-export default class DetailDescription {
+export default class RecipeDescription {
 	@ManyToOne(() => Recipe, (recipe) => recipe.detailDescriptions, { lazy: true, primary: true })
 	recipe: Recipe;
 

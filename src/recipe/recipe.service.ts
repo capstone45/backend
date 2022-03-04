@@ -17,16 +17,16 @@ export default class RecipeService implements AbstractRecipeService {
 	private static userRepository: AbstractUserRepository;
 	private static INCLUDE_THRESHOLD = 0.5;
 
-	public static getInstance(recipeRepository: AbstractRecipeRepository, userRepository: AbstractUserRepository): AbstractRecipeService {
+	public static getInstance(dependency): AbstractRecipeService {
 		if (!RecipeService.instance) {
-			RecipeService.instance = new RecipeService(recipeRepository, userRepository);
+			RecipeService.instance = new RecipeService(dependency);
 		}
 		return RecipeService.instance;
 	}
 
-	private constructor(recipeRepository: AbstractRecipeRepository, userRepository: AbstractUserRepository) {
-		RecipeService.recipeRepository = recipeRepository;
-		RecipeService.userRepository = userRepository;
+	private constructor(dependency) {
+		RecipeService.recipeRepository = dependency.recipeRepository;
+		RecipeService.userRepository = dependency.userRepository;
 	}
 
 	private static getIncludeRate(ingredients: RecipeIngredient[], keywords: string[]): boolean {
@@ -49,7 +49,6 @@ export default class RecipeService implements AbstractRecipeService {
 			tags.map(async (rawTag) => {
 				const tagId = await TagRepository.getInstance(getManager()).create(rawTag);
 				const tag = await TagRepository.getInstance(getManager()).findById(tagId);
-				console.log(tag);
 				await getManager()
 					.createQueryBuilder()
 					.insert()

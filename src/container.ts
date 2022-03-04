@@ -1,0 +1,131 @@
+import express from 'express';
+
+import User from './user/user.entity';
+import Tag from './tag/tag.entity';
+import Recipe from './recipe/recipe.entity';
+import RecipeTag from './recipe-tag/recipe-tag.entity';
+import RecipeIngredient from './recipe-ingredient/recipe-ingredient.entity';
+import RecipeDescription from './recipe-description/recipe-description.entity';
+import Ingredient from './ingredient/ingredient.entity';
+import DateInfo from './entity/date.entity';
+import Bookmark from './bookmark/bookmark.entity';
+
+import UserController from './user/user.controller';
+import UserService from './user/user.service';
+import UserRepository from './user/user.repository';
+
+import TagController from './tag/tag.controller';
+import TagService from './tag/tag.service';
+import TagRepository from './tag/tag.repository';
+
+import RecipeController from './recipe/recipe.controller';
+import RecipeService from './recipe/recipe.service';
+import RecipeRepository from './recipe/recipe.repository';
+import { getManager } from 'typeorm';
+
+export default class Container {
+	private static isInitialzied = false;
+	private static readonly bean = {
+		Entity: {},
+		Controller: {},
+		Service: {},
+		Repository: {},
+	};
+
+	static getBean(layer: layer, domain: domain) {
+		return Container.bean[layer][domain];
+	}
+
+	static initContainer() {
+		if (Container.isInitialzied) return;
+		Container.initEntity();
+		Container.initRepository();
+		Container.initService();
+		Container.initController();
+		Container.isInitialzied = true;
+	}
+
+	private static initEntity() {
+		Container.bean[layer.ENTITY][domain.USER] = User;
+		Container.bean[layer.ENTITY][domain.TAG] = Tag;
+		Container.bean[layer.ENTITY][domain.RECIPE] = Recipe;
+		Container.bean[layer.ENTITY][domain.RECIPE_TAG] = RecipeTag;
+		Container.bean[layer.ENTITY][domain.RECIPE_INGREDIENT] = RecipeIngredient;
+		Container.bean[layer.ENTITY][domain.RECIPE_DESCRIPTION] = RecipeDescription;
+		Container.bean[layer.ENTITY][domain.INGREDIENT] = Ingredient;
+		Container.bean[layer.ENTITY][domain.DATEINFO] = DateInfo;
+		Container.bean[layer.ENTITY][domain.BOOKMAKR] = Bookmark;
+	}
+
+	private static initController() {
+		const commonDependency = { app: express() };
+		Container.bean[layer.CONTROLLER][domain.USER] = UserController.getInstance({
+			...commonDependency,
+			userService: Container.getBean(layer.SERVICE, domain.USER),
+		});
+		Container.bean[layer.CONTROLLER][domain.TAG] = TagController.getInstance({
+			...commonDependency,
+			tagService: Container.getBean(layer.SERVICE, domain.TAG),
+		});
+		Container.bean[layer.CONTROLLER][domain.RECIPE] = RecipeController.getInstance({
+			...commonDependency,
+			recipeService: Container.getBean(layer.SERVICE, domain.RECIPE),
+		});
+		//Container.bean[layer.CONTROLLER][domain.RECIPE_TAG] =
+		//Container.bean[layer.CONTROLLER][domain.RECIPE_INGREDIENT] =
+		//Container.bean[layer.CONTROLLER][domain.RECIPE_DESCRIPTION] =
+		//Container.bean[layer.CONTROLLER][domain.INGREDIENT] =
+		//Container.bean[layer.CONTROLLER][domain.DATEINFO] =
+		//Container.bean[layer.CONTROLLER][domain.BOOKMAKR] =
+	}
+
+	private static initService() {
+		Container.bean[layer.SERVICE][domain.USER] = UserService.getInstance({
+			userRepository: Container.getBean(layer.REPOSITORY, domain.USER),
+		});
+		Container.bean[layer.SERVICE][domain.TAG] = TagService.getInstance({
+			tagRepository: Container.getBean(layer.REPOSITORY, domain.TAG),
+		});
+		Container.bean[layer.SERVICE][domain.RECIPE] = RecipeService.getInstance({
+			recipeRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE),
+		});
+		//Container.bean[layer.SERVICE][domain.RECIPE_TAG] =
+		//Container.bean[layer.SERVICE][domain.RECIPE_INGREDIENT] =
+		//Container.bean[layer.SERVICE][domain.RECIPE_DESCRIPTION] =
+		//Container.bean[layer.SERVICE][domain.INGREDIENT] =
+		//Container.bean[layer.SERVICE][domain.DATEINFO] =
+		//Container.bean[layer.SERVICE][domain.BOOKMAKR] =
+	}
+
+	private static initRepository() {
+		const commonDependency = { em: getManager() };
+		Container.bean[layer.REPOSITORY][domain.USER] = UserRepository.getInstance({ ...commonDependency });
+		Container.bean[layer.REPOSITORY][domain.TAG] = TagRepository.getInstance({ ...commonDependency });
+		Container.bean[layer.REPOSITORY][domain.RECIPE] = RecipeRepository.getInstance({ ...commonDependency });
+		//Container.bean[layer.REPOSITORY][domain.RECIPE_TAG] =
+		//Container.bean[layer.REPOSITORY][domain.RECIPE_INGREDIENT] =
+		//Container.bean[layer.REPOSITORY][domain.RECIPE_DESCRIPTION] =
+		//Container.bean[layer.REPOSITORY][domain.INGREDIENT] =
+		//Container.bean[layer.REPOSITORY][domain.DATEINFO] =
+		//Container.bean[layer.REPOSITORY][domain.BOOKMAKR] =
+	}
+}
+
+export enum layer {
+	ENTITY = 'Entity',
+	CONTROLLER = 'Controller',
+	SERVICE = 'Service',
+	REPOSITORY = 'Repository',
+}
+
+export enum domain {
+	USER = 'User',
+	TAG = 'Tag',
+	RECIPE = 'Recipe',
+	RECIPE_TAG = 'RecipeTag',
+	RECIPE_INGREDIENT = 'RecipeIngredient',
+	RECIPE_DESCRIPTION = 'RecipeDescription',
+	INGREDIENT = 'Ingredient',
+	DATEINFO = 'DateInfo',
+	BOOKMAKR = 'Bookmark',
+}

@@ -7,15 +7,15 @@ export default class TagRepository implements AbstractTagRepository {
 	private static instance: AbstractTagRepository;
 	private static em: EntityManager;
 
-	public static getInstance(em: EntityManager): AbstractTagRepository {
+	public static getInstance(dependency): AbstractTagRepository {
 		if (!TagRepository.instance) {
-			TagRepository.instance = new TagRepository(em);
+			TagRepository.instance = new TagRepository(dependency);
 		}
 		return TagRepository.instance;
 	}
 
-	private constructor(em: EntityManager) {
-		TagRepository.em = em;
+	private constructor(dependency) {
+		TagRepository.em = dependency.em;
 	}
 
 	async findTagByName(name: string): Promise<Partial<Tag>[]> {
