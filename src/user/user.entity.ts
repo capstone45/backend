@@ -1,6 +1,6 @@
-import { Column, Entity, Generated, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, Generated, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from 'typeorm';
 
-import Date from '../entity/date.entity';
+import DateInfo from '../entity/dateInfo.entity';
 import Recipe from '../recipe/recipe.entity';
 import Bookmark from '../bookmark/bookmark.entity';
 
@@ -21,7 +21,7 @@ export enum grade {
 }
 
 @Entity({ name: 'USER' })
-export default class User extends Date {
+export default class User extends BaseEntity {
 	@PrimaryColumn({ name: 'USER_ID', type: 'bigint', unsigned: true })
 	@Generated('increment')
 	id: number;
@@ -40,6 +40,9 @@ export default class User extends Date {
 	// 내가 구독하는 사람들
 	@ManyToMany(() => User, (user) => user.fans, { lazy: true, nullable: false })
 	stars: User[];
+
+	@Column(() => DateInfo, { prefix: false })
+	date: DateInfo;
 
 	@Column({
 		name: 'LOGIN_ID',

@@ -7,7 +7,7 @@ import RecipeTag from './recipe-tag/recipe-tag.entity';
 import RecipeIngredient from './recipe-ingredient/recipe-ingredient.entity';
 import RecipeDescription from './recipe-description/recipe-description.entity';
 import Ingredient from './ingredient/ingredient.entity';
-import DateInfo from './entity/date.entity';
+import DateInfo from './entity/dateInfo.entity';
 import Bookmark from './bookmark/bookmark.entity';
 
 import UserController from './user/user.controller';
