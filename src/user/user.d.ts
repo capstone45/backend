@@ -8,8 +8,8 @@ export abstract class AbstractUserRepository {
 	private static instance: AbstractUserRepository;
 	private static em: EntityManager;
 
-	public static getInstance(em: EntityManager): AbstractUserRepository;
-	private constructor(em: EntityManager);
+	public static getInstance(dependency): AbstractUserRepository;
+	private constructor(dependency);
 
 	updateThumbnail(id: number, thumbnailUrl: string): Promise<void>;
 	deleteThumbnail(id: number): Promise<void>;
@@ -23,8 +23,8 @@ export abstract class AbstractUserService {
 	private static instance: AbstractUserService;
 	private static userRepository: AbstractUserRepository;
 
-	public static getInstance(userRepository: AbstractUserRepository): AbstractUserService;
-	private constructor(userRepository: AbstractUserRepository);
+	public static getInstance(dependency): AbstractUserService;
+	private constructor(dependency);
 
 	updateThumbnail(id: number, thumbnailUrl: string): Promise<void>;
 	deleteThumbnail(id: number): Promise<void>;
@@ -39,8 +39,8 @@ export abstract class AbstractUserController {
 	private static readonly router: Router;
 	private static readonly PATH: string;
 
-	public static getInstance(userService: AbstractUserService, app: express.Application): AbstractUserController;
-	private constructor(userService: AbstractUserService, app: express.Application);
+	public static getInstance(dependency): AbstractUserController;
+	private constructor(dependency);
 	initRouter(app: express.Application): void;
 
 	updateThumbnail(req: Request, res: Response): Promise<void>;

@@ -7,16 +7,16 @@ export default class UserController implements AbstractUserController {
 	private static readonly router = express.Router();
 	private static readonly PATH = '/api/users';
 
-	public static getInstance(userService: AbstractUserService, app: express.Application): AbstractUserController {
+	public static getInstance(dependency): AbstractUserController {
 		if (!UserController.instance) {
-			UserController.instance = new UserController(userService, app);
+			UserController.instance = new UserController(dependency);
 		}
 		return UserController.instance;
 	}
 
-	private constructor(userService: AbstractUserService, app: express.Application) {
-		UserController.userService = userService;
-		this.initRouter(app);
+	private constructor(dependency) {
+		UserController.userService = dependency.userService;
+		this.initRouter(dependency.app);
 	}
 
 	initRouter(app: express.Application): void {

@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express';
 import Ingredient from '../ingredient/ingredient.entity';
 import DetailDescription from '../recipe-description/recipe-description.entity';
 import RecipeIngredient from '../recipe-ingredient/recipe-ingredient.entity';
-import RecipeTag from '../recipe-tag/recipe-tag.entity';
 import Tag from '../tag/tag.entity';
 import { AbstractRecipeController, AbstractRecipeService } from './recipe';
 import { serving } from './recipe.entity';
@@ -13,16 +12,16 @@ export default class RecipeController implements AbstractRecipeController {
 	private static readonly router = express.Router();
 	private static readonly PATH = '/api/recipes';
 
-	public static getInstance(RecipeService: AbstractRecipeService, app: express.Application): AbstractRecipeController {
+	public static getInstance(dependency): AbstractRecipeController {
 		if (!RecipeController.instance) {
-			RecipeController.instance = new RecipeController(RecipeService, app);
+			RecipeController.instance = new RecipeController(dependency);
 		}
 		return RecipeController.instance;
 	}
 
-	private constructor(recipeService: AbstractRecipeService, app: express.Application) {
-		RecipeController.recipeService = recipeService;
-		this.initRouter(app);
+	private constructor(dependency) {
+		RecipeController.recipeService = dependency.recipeService;
+		this.initRouter(dependency.app);
 	}
 
 	initRouter(app: express.Application): void {

@@ -5,8 +5,8 @@ export abstract class AbstractTagRepository {
 	private static instance: AbstractTagRepository;
 	private static em: EntityManager;
 
-	public static getInstance(em: EntityManager): AbstractTagRepository;
-	private constructor(em: EntityManager);
+	public static getInstance(dependency): AbstractTagRepository;
+	private constructor(dependency);
 
 	create(tag: Tag): Promise<number>;
 	findTagByName(name: string): Promise<Partial<Tag>[]>;
@@ -17,8 +17,8 @@ export abstract class AbstractTagService {
 	private static instance: AbstractTagService;
 	private static tagRepository: AbstractTagRepository;
 
-	public static getInstance(tagRepository: AbstractTagRepository): AbstractTagService;
-	private constructor(tagRepository: AbstractTagRepository);
+	public static getInstance(dependency): AbstractTagService;
+	private constructor(dependency);
 
 	findTagByName(name: string): Promise<Partial<Tag>[]>;
 }
@@ -29,8 +29,8 @@ export abstract class AbstractTagController {
 	private static readonly router: Router;
 	private static readonly PATH: string;
 
-	public static getInstance(tagService: AbstractTagService, app: express.Application): AbstractTagController;
-	private constructor(tagService: AbstractTagService, app: express.Application);
+	public static getInstance(dependency): AbstractTagController;
+	private constructor(dependency);
 	initRouter(app: express.Application): void;
 
 	getTagByName(req: Request, res: Response): Promise<void>;
