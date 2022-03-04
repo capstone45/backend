@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Connection, createConnection, EntityManager } from 'typeorm';
+import { createConnection } from 'typeorm';
 import express from 'express';
 
 import Container from './container';
@@ -15,7 +15,7 @@ export default class Application {
 
 	private constructor() {
 		this.initMiddleware();
-		this.initDatabase().then((connection: Connection) => {
+		this.initDatabase().then(() => {
 			Container.initContainer();
 		});
 		this.initApplication();
@@ -25,10 +25,10 @@ export default class Application {
 		Application.app.use(express.json());
 	}
 
-	private initDatabase(): Promise<Connection> {
+	private initDatabase(): Promise<void> {
 		return new Promise((res) => {
-			createConnection().then((connection) => {
-				res(connection);
+			createConnection().then(() => {
+				res();
 			});
 		});
 	}

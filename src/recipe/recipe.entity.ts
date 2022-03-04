@@ -1,6 +1,6 @@
-import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn, Column, OneToMany, BaseEntity } from 'typeorm';
 
-import Date from '../entity/date.entity';
+import DateInfo from '../entity/dateInfo.entity';
 import DetailDescription from '../recipe-description/recipe-description.entity';
 import RecipeIngredient from '../recipe-ingredient/recipe-ingredient.entity';
 import RecipeTag from '../recipe-tag/recipe-tag.entity';
@@ -16,7 +16,7 @@ export enum serving {
 }
 
 @Entity({ name: 'RECIPE' })
-export default class Recipe extends Date {
+export default class Recipe extends BaseEntity {
 	@PrimaryColumn({ name: 'RECIPE_ID', type: 'bigint', unsigned: true })
 	@Generated('increment')
 	id: number;
@@ -33,6 +33,9 @@ export default class Recipe extends Date {
 
 	@OneToMany(() => RecipeTag, (recipeTag) => recipeTag.recipe, { lazy: true })
 	tags: RecipeTag[];
+
+	@Column(() => DateInfo, { prefix: false })
+	date: DateInfo;
 
 	@Column({ name: 'DESCRIPTION', type: 'varchar', length: 450, nullable: false })
 	description: string;
