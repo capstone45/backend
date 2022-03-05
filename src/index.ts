@@ -16,13 +16,14 @@ export default class Application {
 	private constructor() {
 		this.initMiddleware();
 		this.initDatabase().then(() => {
-			Container.initContainer();
+			Container.initContainer(Application.app);
 		});
 		this.initApplication();
 	}
 
 	private initMiddleware(): void {
 		Application.app.use(express.json());
+		Application.app.use(express.urlencoded({ extended: true }));
 	}
 
 	private initDatabase(): Promise<void> {

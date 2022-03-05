@@ -1,5 +1,3 @@
-import express from 'express';
-
 import User from './user/user.entity';
 import Tag from './tag/tag.entity';
 import Recipe from './recipe/recipe.entity';
@@ -36,12 +34,12 @@ export default class Container {
 		return Container.bean[layer][domain];
 	}
 
-	static initContainer() {
+	static initContainer(app: Express.Application) {
 		if (Container.isInitialzied) return;
 		Container.initEntity();
 		Container.initRepository();
 		Container.initService();
-		Container.initController();
+		Container.initController(app);
 		Container.isInitialzied = true;
 	}
 
@@ -57,8 +55,8 @@ export default class Container {
 		Container.bean[layer.ENTITY][domain.BOOKMAKR] = Bookmark;
 	}
 
-	private static initController() {
-		const commonDependency = { app: express() };
+	private static initController(app) {
+		const commonDependency = { app };
 		Container.bean[layer.CONTROLLER][domain.USER] = UserController.getInstance({
 			...commonDependency,
 			userService: Container.getBean(layer.SERVICE, domain.USER),
@@ -88,6 +86,7 @@ export default class Container {
 		});
 		Container.bean[layer.SERVICE][domain.RECIPE] = RecipeService.getInstance({
 			recipeRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE),
+			userRepository: Container.getBean(layer.REPOSITORY, domain.USER),
 		});
 		//Container.bean[layer.SERVICE][domain.RECIPE_TAG] =
 		//Container.bean[layer.SERVICE][domain.RECIPE_INGREDIENT] =
