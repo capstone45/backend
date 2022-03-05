@@ -1,6 +1,7 @@
 import { EntityManager } from 'typeorm';
 
-import { AbstractUserRepository, UpdateUserBody } from './user';
+import { UpdateUserBody } from './type/data';
+import { AbstractUserRepository } from './type/userRepository';
 import User from './user.entity';
 import Recipe from '../recipe/recipe.entity';
 import Bookmark from '../bookmark/bookmark.entity';
@@ -48,18 +49,18 @@ export default class UserRepository implements AbstractUserRepository {
 		return findResult;
 	}
 
-	async findByNickname(nickname: string): Promise<Partial<User>[]> {
+	async findByNickname(nickname: string): Promise<User[]> {
 		const findResultList = await UserRepository.em
 			.getRepository(User)
 			.createQueryBuilder('user')
-			.select(UserRepository.PUBLIC_USER_INFO)
+			.select()
 			.where('user.nickname = :nickname', { nickname })
 			.getMany();
 		return findResultList;
 	}
 
 	// 좋아요가 눌린 내 Recipe 검색
-	async findBeLovedRecipe(id: number): Promise<Partial<Recipe>[]> {
+	async findBeLovedRecipe(id: number): Promise<Recipe[]> {
 		const findRecipes = await UserRepository.em
 			.getRepository(Bookmark)
 			.createQueryBuilder('bookmark')
