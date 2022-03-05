@@ -3,7 +3,7 @@ import Recipe from '../recipe/recipe.entity';
 
 @Entity({ name: 'RECIPE_DESCRIPTION' })
 export default class RecipeDescription {
-	@ManyToOne(() => Recipe, (recipe) => recipe.detailDescriptions, { lazy: true, primary: true })
+	@ManyToOne(() => Recipe, (recipe) => recipe.recipeDescriptions, { lazy: true, primary: true })
 	recipe: Recipe;
 
 	@Column({ name: 'IMAGE_DESCRIPTION', type: 'varchar', length: 900, nullable: false })
