@@ -1,7 +1,7 @@
 import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn, Column, OneToMany, BaseEntity } from 'typeorm';
 
 import DateInfo from '../entity/dateInfo.entity';
-import DetailDescription from '../recipe-description/recipe-description.entity';
+import RecipeDescription from '../recipe-description/recipe-description.entity';
 import RecipeIngredient from '../recipe-ingredient/recipe-ingredient.entity';
 import RecipeTag from '../recipe-tag/recipe-tag.entity';
 import User from '../user/user.entity';
@@ -25,13 +25,13 @@ export default class Recipe extends BaseEntity {
 	@JoinColumn({ name: 'USER_ID' })
 	user: User;
 
-	@OneToMany(() => DetailDescription, (description) => description.recipe, { lazy: true })
-	detailDescriptions: DetailDescription[];
+	@OneToMany(() => RecipeDescription, (description) => description.recipe, { lazy: true })
+	recipeDescriptions: RecipeDescription[];
 
 	@OneToMany(() => RecipeIngredient, (recipeIngredient) => recipeIngredient.recipe, { lazy: true })
 	ingredients: RecipeIngredient[];
 
-	@OneToMany(() => RecipeTag, (recipeTag) => recipeTag.recipe, { lazy: true })
+	@OneToMany(() => RecipeTag, (recipeTag) => recipeTag.recipe, { lazy: true, cascade: ['insert', 'update'] })
 	tags: RecipeTag[];
 
 	@Column(() => DateInfo, { prefix: false })
