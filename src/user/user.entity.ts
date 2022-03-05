@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, Generated, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Generated, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from 'typeorm';
 
 import DateInfo from '../entity/dateInfo.entity';
 import Recipe from '../recipe/recipe.entity';
@@ -21,7 +21,7 @@ export enum grade {
 }
 
 @Entity({ name: 'USER' })
-export default class User extends BaseEntity {
+export default class User {
 	@PrimaryColumn({ name: 'USER_ID', type: 'bigint', unsigned: true })
 	@Generated('increment')
 	id: number;

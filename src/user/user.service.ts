@@ -1,6 +1,6 @@
-import { AbstractUserRepository, AbstractUserService, UpdateUserBody } from './user';
-
-import { BasicInfomation, BasicInfomationWithList } from './user';
+import { AbstractUserRepository } from './type/userRepository';
+import { AbstractUserService } from './type/userService';
+import { UpdateUserBody, BasicInfomation, BasicInfomationWithList } from './type/data';
 
 export default class UserService implements AbstractUserService {
 	private static instance: AbstractUserService;
@@ -34,20 +34,18 @@ export default class UserService implements AbstractUserService {
 	}
 
 	async findById(id: number): Promise<BasicInfomationWithList> {
-		const findUser = await UserService.userRepository.findById(id);
-		const fans = await findUser.fans;
-		const recipes = await findUser.recipes;
-		const likeRecipes = await findUser.bookmarks;
+		const user = await UserService.userRepository.findById(id);
+		const fans = await user.fans;
+		const likeRecipe = await user.bookmarks;
 		const likedRecipes = await UserService.userRepository.findBeLovedRecipe(id);
-		const subscribingUsers = await findUser.stars;
+		const subscribingUser = await user.stars;
 
 		return {
-			user: findUser,
+			user,
 			numberOfFans: fans.length,
 			numberOfLikes: likedRecipes.length,
-			recipes,
-			likeRecipes,
-			subscribingUsers,
+			likeRecipe,
+			subscribingUser,
 		};
 	}
 
@@ -57,15 +55,13 @@ export default class UserService implements AbstractUserService {
 			findUsers.map(async (user) => {
 				const numberOfFans = (await user.fans).length;
 				const numberOfLikes = (await UserService.userRepository.findBeLovedRecipe(user.id)).length;
-
 				return {
-					user: user,
+					user,
 					numberOfFans,
 					numberOfLikes,
-				};
+				} as BasicInfomation;
 			})
 		);
-
 		return UserBasicInfomation;
 	}
 }

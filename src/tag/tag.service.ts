@@ -1,4 +1,7 @@
-import { AbstractTagRepository, AbstractTagService, Tag } from './tag';
+import { AbstractTagRepository } from './type/tagRepository';
+import { AbstractTagService } from './type/tagService';
+
+import Tag from './tag.entity';
 
 export default class TagService implements AbstractTagService {
 	private static instance: AbstractTagService;

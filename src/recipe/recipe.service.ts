@@ -1,15 +1,10 @@
 import RecipeIngredient from '../recipe-ingredient/recipe-ingredient.entity';
-import { AbstractUserRepository } from '../user/user';
-import { AbstractRecipeRepository, AbstractRecipeService } from './recipe';
+import { AbstractUserRepository } from '../user/type/userRepository';
 
-import { RecipeBody } from './recipe';
-import Tag from '../tag/tag.entity';
+import { AbstractRecipeRepository } from './type/recipeRepository';
+import { AbstractRecipeService } from './type/recipeService';
 
 import Recipe from './recipe.entity';
-
-import TagRepository from '../tag/tag.repository';
-import { getManager } from 'typeorm';
-import RecipeTag from '../recipe-tag/recipe-tag.entity';
 
 export default class RecipeService implements AbstractRecipeService {
 	private static instance: AbstractRecipeService;
@@ -40,26 +35,25 @@ export default class RecipeService implements AbstractRecipeService {
 	}
 
 	// Domain Model Pattern
-	async createRecipe(userId: number, body: RecipeBody, tags: Tag[]): Promise<void> {
-		const recipeId = await RecipeService.recipeRepository.create(userId, body);
-
-		const recipe = await RecipeService.recipeRepository.findById(recipeId);
-
-		Promise.all(
-			tags.map(async (rawTag) => {
-				const tagId = await TagRepository.getInstance(getManager()).create(rawTag);
-				const tag = await TagRepository.getInstance(getManager()).findById(tagId);
-				await getManager()
-					.createQueryBuilder()
-					.insert()
-					.into(RecipeTag)
-					.values([{ recipe: recipe, tag: tag }])
-					.execute();
-			})
-		);
+	async createRecipe(userId: number, body: Partial<Recipe>): Promise<void> {
+		const user = await RecipeService.userRepository.findById(userId);
+		console.log(1);
+		const recipe = await RecipeService.recipeRepository.create(user, body);
+		// Promise.all(
+		// 	tags.map(async (rawTag) => {
+		// 		const tagId = await TagRepository.getInstance(getManager()).create(rawTag);
+		// 		const tag = await TagRepository.getInstance(getManager()).findById(tagId);
+		// 		await getManager()
+		// 			.createQueryBuilder()
+		// 			.insert()
+		// 			.into(RecipeTag)
+		// 			.values([{ recipe: recipe, tag: tag }])
+		// 			.execute();
+		// 	})
+		// );
 	}
 
-	async updateRecipe(userId: number, body: RecipeBody): Promise<void> {
+	async updateRecipe(userId: number, body: Partial<Recipe>): Promise<void> {
 		console.log();
 	}
 

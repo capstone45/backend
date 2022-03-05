@@ -1,9 +1,10 @@
-import { EntityManager, getManager } from 'typeorm';
+import { EntityManager } from 'typeorm';
 
-import { AbstractRecipeRepository, RecipeBody } from './recipe';
+import { AbstractRecipeRepository } from './type/recipeRepository';
+
 import Recipe from './recipe.entity';
+import User from '../user/user.entity';
 import { getFormattedDate } from '../helper/helper';
-import UserRepository from '../user/user.repository';
 
 export default class RecipeRepository implements AbstractRecipeRepository {
 	private static instance: AbstractRecipeRepository;
@@ -21,27 +22,20 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 		RecipeRepository.em = dependency.em;
 	}
 
-	async create(userId: number, body: RecipeBody): Promise<number> {
-		const user = await UserRepository.getInstance(getManager()).findById(userId);
-		const id = await RecipeRepository.em
-			.getRepository(Recipe)
-			.createQueryBuilder()
-			.insert()
-			.into(Recipe)
-			.values([
-				{
-					user: user,
-					title: body.title,
-					description: body.description,
-					thumbnailUrl: body.thumbnailUrl,
-					referenceUrl: body.referenceUrl,
-					serving: body.serving,
-					ingredients: body.ingredients,
-					detailDescriptions: body.detailDescriptions,
-				},
-			])
-			.execute();
-		return Number(id.identifiers[0].id);
+	async create(user: User, body: Partial<Recipe>): Promise<void> {
+		const recipe = await RecipeRepository.em.create(Recipe, { ...body, user });
+
+		await RecipeRepository.em.getRepository(Recipe).insert(recipe);
+		// const insertResult = await RecipeRepository.em
+		// 	.createQueryBuilder()
+		// 	.insert()
+		// 	.into(Recipe)
+		// 	.values({
+		// 		...body,
+		// 		user,
+		// 	})
+		// 	.execute();
+		console.log(recipe);
 	}
 
 	async findById(id: number): Promise<Partial<Recipe>> {

@@ -1,6 +1,7 @@
 import { EntityManager } from 'typeorm';
 
-import { AbstractTagRepository } from './tag';
+import { AbstractTagRepository } from './type/tagRepository';
+
 import Tag from './tag.entity';
 
 export default class TagRepository implements AbstractTagRepository {

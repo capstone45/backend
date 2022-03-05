@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
-import { AbstractTagController, AbstractTagService } from './tag';
+
+import { AbstractTagController } from './type/tagController';
+import { AbstractTagService } from './type/tagService';
 
 export default class TagController implements AbstractTagController {
 	private static instance: AbstractTagController;
