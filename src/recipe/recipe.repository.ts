@@ -2,7 +2,7 @@ import { EntityManager } from 'typeorm';
 
 import Recipe from './recipe.entity';
 
-import { CreateRecipeDto } from './type/data';
+import { CreateRecipe } from './type/data';
 import { AbstractRecipeRepository } from './type/recipeRepository';
 
 import { getFormattedDate } from '../helper/helper';
@@ -23,7 +23,7 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 		RecipeRepository.em = dependency.em;
 	}
 
-	create(rawRecipe: CreateRecipeDto): Recipe {
+	create(rawRecipe: CreateRecipe): Recipe {
 		return RecipeRepository.em.create(Recipe, { title: rawRecipe.title });
 	}
 

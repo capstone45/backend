@@ -4,7 +4,7 @@ import Recipe from '../recipe.entity';
 import { AbstractUserRepository } from '../../user/type/userRepository';
 import { AbstractTagRepository } from '../../tag/type/tagRepository';
 import { AbstractRecipeRepository } from './recipeRepository';
-import { CreateRecipeDto } from './data';
+import { CreateRecipe } from './data';
 
 export abstract class AbstractRecipeService {
 	private static recipeRepository: AbstractRecipeRepository;
@@ -16,7 +16,7 @@ export abstract class AbstractRecipeService {
 	public static getInstance(dependency): AbstractRecipeService;
 	private constructor(dependency);
 
-	createRecipe(userId: number, body: CreateRecipeDto): Promise<void>;
+	createRecipe(userId: number, body: CreateRecipe): Promise<void>;
 
 	findBySubscribingChefsLatest(id: number): Promise<Recipe[]>;
 	findByIngredient(ingredients: string[]): Promise<Recipe[]>;

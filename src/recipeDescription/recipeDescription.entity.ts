@@ -2,7 +2,7 @@ import { Entity, ManyToOne, Column } from 'typeorm';
 
 import Recipe from '../recipe/recipe.entity';
 
-import { CreateRecipeDtoRecipeDescription } from '../recipe/type/data';
+import { CreateRecipeDescription } from '../recipe/type/data';
 
 @Entity({ name: 'RECIPE_DESCRIPTION' })
 export default class RecipeDescription {
@@ -18,7 +18,7 @@ export default class RecipeDescription {
 	@Column({ name: 'DESCRIPTION_ORDER', type: 'smallint', nullable: false })
 	descriptionOrder: number;
 
-	static create(recipe: Recipe, rawRecipeDescription: CreateRecipeDtoRecipeDescription): RecipeDescription {
+	static create(recipe: Recipe, rawRecipeDescription: CreateRecipeDescription): RecipeDescription {
 		const recipeDescription = new RecipeDescription();
 		recipeDescription.recipe = recipe;
 		recipeDescription.imageDescription = rawRecipeDescription.imageDescription;
