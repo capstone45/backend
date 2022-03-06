@@ -113,6 +113,7 @@ export default class Container {
 		//Container.bean[layer.SERVICE][domain.BOOKMAKR] =
 		Container.bean[layer.SERVICE][domain.SUBSCRIBE] = SubscribeService.getInstance({
 			subscribeRepository: Container.getBean(layer.REPOSITORY, domain.SUBSCRIBE),
+			userRepository: Container.getBean(layer.REPOSITORY, domain.USER),
 		});
 	}
 

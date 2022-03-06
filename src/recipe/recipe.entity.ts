@@ -6,7 +6,7 @@ import RecipeTag from '../recipeTag/recipeTag.entity';
 import DateInfo from '../entity/dateInfo.entity';
 import User from '../user/user.entity';
 
-import { CreateRecipeDto } from './type/data';
+import { CreateRecipe } from './type/data';
 
 export enum serving {
 	DONTKNOW = 0,
@@ -54,7 +54,7 @@ export default class Recipe {
 	@Column({ name: 'SERVING', type: 'enum', enum: serving, nullable: false })
 	serving: serving;
 
-	static create(rawRecipe: CreateRecipeDto, user: User): Recipe {
+	static create(rawRecipe: CreateRecipe, user: User): Recipe {
 		const recipe = new Recipe();
 		recipe.user = user;
 		recipe.description = rawRecipe.description;
