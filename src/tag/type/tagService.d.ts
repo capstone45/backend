@@ -1,5 +1,6 @@
+import Tag from '../tag.entity';
+
 import { AbstractTagRepository } from './tagRepository';
-import { Tag } from './data';
 
 export abstract class AbstractTagService {
 	private static instance: AbstractTagService;
@@ -8,5 +9,5 @@ export abstract class AbstractTagService {
 	public static getInstance(dependency): AbstractTagService;
 	private constructor(dependency);
 
-	findTagByName(name: string): Promise<Partial<Tag>[]>;
+	findTagByName(name: string): Promise<Tag>;
 }

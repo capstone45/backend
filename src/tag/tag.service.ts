@@ -1,11 +1,11 @@
+import Tag from './tag.entity';
+
 import { AbstractTagRepository } from './type/tagRepository';
 import { AbstractTagService } from './type/tagService';
 
-import Tag from './tag.entity';
-
 export default class TagService implements AbstractTagService {
-	private static instance: AbstractTagService;
 	private static tagRepository: AbstractTagRepository;
+	private static instance: AbstractTagService;
 
 	public static getInstance(dependency): AbstractTagService {
 		if (!TagService.instance) {
@@ -18,7 +18,7 @@ export default class TagService implements AbstractTagService {
 		TagService.tagRepository = dependency.tagRepository;
 	}
 
-	async findTagByName(name: string): Promise<Partial<Tag>[]> {
+	async findTagByName(name: string): Promise<Tag> {
 		const findTagList = await TagService.tagRepository.findTagByName(name);
 		return findTagList;
 	}

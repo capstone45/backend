@@ -2,6 +2,7 @@ import { EntityManager } from 'typeorm';
 
 import User from '../user.entity';
 import Recipe from '../../recipe/recipe.entity';
+
 import { UpdateUserBody } from './data';
 
 export abstract class AbstractUserRepository {

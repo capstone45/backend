@@ -1,9 +1,11 @@
+import { getManager } from 'typeorm';
+
 import User from './user/user.entity';
 import Tag from './tag/tag.entity';
 import Recipe from './recipe/recipe.entity';
-import RecipeTag from './recipe-tag/recipe-tag.entity';
-import RecipeIngredient from './recipe-ingredient/recipe-ingredient.entity';
-import RecipeDescription from './recipe-description/recipe-description.entity';
+import RecipeTag from './recipeTag/recipeTag.entity';
+import RecipeIngredient from './recipeIngredient/recipeIngredient.entity';
+import RecipeDescription from './recipeDescription/recipeDescription.entity';
 import Ingredient from './ingredient/ingredient.entity';
 import DateInfo from './entity/dateInfo.entity';
 import Bookmark from './bookmark/bookmark.entity';
@@ -19,7 +21,9 @@ import TagRepository from './tag/tag.repository';
 import RecipeController from './recipe/recipe.controller';
 import RecipeService from './recipe/recipe.service';
 import RecipeRepository from './recipe/recipe.repository';
-import { getManager } from 'typeorm';
+import IngredientRepository from './ingredient/type/ingredient.repository';
+import RecipeTagRepository from './recipeTag/recipeTag.repository';
+import RecipeIngredientRepository from './recipeIngredient/recipeIngredient.repository';
 
 export default class Container {
 	private static isInitialzied = false;
@@ -87,6 +91,10 @@ export default class Container {
 		Container.bean[layer.SERVICE][domain.RECIPE] = RecipeService.getInstance({
 			recipeRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE),
 			userRepository: Container.getBean(layer.REPOSITORY, domain.USER),
+			tagRepository: Container.getBean(layer.REPOSITORY, domain.TAG),
+			ingredientRepository: Container.getBean(layer.REPOSITORY, domain.INGREDIENT),
+			recipeTagRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE_TAG),
+			recipeIngredientRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE_INGREDIENT),
 		});
 		//Container.bean[layer.SERVICE][domain.RECIPE_TAG] =
 		//Container.bean[layer.SERVICE][domain.RECIPE_INGREDIENT] =
@@ -101,10 +109,10 @@ export default class Container {
 		Container.bean[layer.REPOSITORY][domain.USER] = UserRepository.getInstance({ ...commonDependency });
 		Container.bean[layer.REPOSITORY][domain.TAG] = TagRepository.getInstance({ ...commonDependency });
 		Container.bean[layer.REPOSITORY][domain.RECIPE] = RecipeRepository.getInstance({ ...commonDependency });
-		//Container.bean[layer.REPOSITORY][domain.RECIPE_TAG] =
-		//Container.bean[layer.REPOSITORY][domain.RECIPE_INGREDIENT] =
+		Container.bean[layer.REPOSITORY][domain.RECIPE_TAG] = RecipeTagRepository.getInstance({ ...commonDependency });
+		Container.bean[layer.REPOSITORY][domain.RECIPE_INGREDIENT] = RecipeIngredientRepository.getInstance({ ...commonDependency });
 		//Container.bean[layer.REPOSITORY][domain.RECIPE_DESCRIPTION] =
-		//Container.bean[layer.REPOSITORY][domain.INGREDIENT] =
+		Container.bean[layer.REPOSITORY][domain.INGREDIENT] = IngredientRepository.getInstance({ ...commonDependency });
 		//Container.bean[layer.REPOSITORY][domain.DATEINFO] =
 		//Container.bean[layer.REPOSITORY][domain.BOOKMAKR] =
 	}

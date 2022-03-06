@@ -1,7 +1,8 @@
 import { EntityManager } from 'typeorm';
 
 import Recipe from '../recipe.entity';
-import User from '../../user/user.entity';
+
+import { CreateRecipeDto } from './data';
 
 export abstract class AbstractRecipeRepository {
 	private static instance: AbstractRecipeRepository;
@@ -10,11 +11,12 @@ export abstract class AbstractRecipeRepository {
 	public static getInstance(dependency): AbstractRecipeRepository;
 	private constructor(dependency);
 
-	create(user: User, body: Partial<Recipe>): Promise<void>;
-	findById(id: number): Promise<Partial<Recipe>>;
-	findByTitle(title: string): Promise<Partial<Recipe>[]>;
-	findByTodaysMostLiked(): Promise<Partial<Recipe>[]>;
-	findByLatestCreated(): Promise<Partial<Recipe>[]>;
-	findBySubscribingChefsLatest(id: number): Promise<Partial<Recipe>[]>;
-	findAll(): Promise<Partial<Recipe>[]>;
+	create(rawRecipe: CreateRecipeDto): Recipe;
+	save(recipe: Recipe): Promise<void>;
+	findBySubscribingChefsLatest(id: number): Promise<Recipe[]>;
+	findByTitle(title: string): Promise<Recipe[]>;
+	findByTodaysMostLiked(): Promise<Recipe[]>;
+	findByLatestCreated(): Promise<Recipe[]>;
+	findById(id: number): Promise<Recipe>;
+	findAll(): Promise<Recipe[]>;
 }

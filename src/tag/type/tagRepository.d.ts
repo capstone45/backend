@@ -9,7 +9,6 @@ export abstract class AbstractTagRepository {
 	public static getInstance(dependency): AbstractTagRepository;
 	private constructor(dependency);
 
-	create(tag: Tag): Promise<number>;
-	findTagByName(name: string): Promise<Partial<Tag>[]>;
+	findTagByName(name: string): Promise<Tag>;
 	findById(id: number): Promise<Tag>;
 }

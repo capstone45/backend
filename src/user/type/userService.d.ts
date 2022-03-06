@@ -1,4 +1,5 @@
 import User from '../user.entity';
+
 import { AbstractUserRepository } from './userRepository';
 import { BasicInfomation, BasicInfomationWithList } from './data';
 

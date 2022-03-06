@@ -1,8 +1,8 @@
 import { EntityManager } from 'typeorm';
 
-import { AbstractTagRepository } from './type/tagRepository';
-
 import Tag from './tag.entity';
+
+import { AbstractTagRepository } from './type/tagRepository';
 
 export default class TagRepository implements AbstractTagRepository {
 	private static instance: AbstractTagRepository;
@@ -19,24 +19,9 @@ export default class TagRepository implements AbstractTagRepository {
 		TagRepository.em = dependency.em;
 	}
 
-	async findTagByName(name: string): Promise<Partial<Tag>[]> {
-		const findResultList = await TagRepository.em.getRepository(Tag).find({ where: { name: name } });
+	async findTagByName(name: string): Promise<Tag> {
+		const findResultList = await TagRepository.em.getRepository(Tag).find({ where: { name: name } })[0];
 		return findResultList;
-	}
-
-	async create(rawTag: Tag): Promise<number> {
-		const tag = await TagRepository.em
-			.createQueryBuilder()
-			.insert()
-			.into(Tag)
-			.values([
-				{
-					name: rawTag.name,
-					recipes: rawTag.recipes,
-				},
-			])
-			.execute();
-		return Number(tag.identifiers[0].id);
 	}
 
 	async findById(id: number): Promise<Tag> {
