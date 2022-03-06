@@ -26,7 +26,7 @@ export default class UserController implements AbstractUserController {
 
 		UserController.router.get('/search', this.getByNickname);
 		UserController.router.get('/:id', this.getById);
-		UserController.router.patch('/:id', this.updateById);
+		UserController.router.patch('/:id', this.updateUserInfomation);
 		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
 		UserController.router.patch('/:id/thumbnail', this.updateThumbnail);
 		app.use(UserController.PATH, UserController.router);
@@ -34,9 +34,8 @@ export default class UserController implements AbstractUserController {
 
 	async updateThumbnail(req: Request, res: Response): Promise<void> {
 		try {
-			const id = Number(req.params.id);
-			const { thumbnailUrl } = req.body;
-			await UserController.userService.updateThumbnail(id, thumbnailUrl);
+			const { userId, thumbnailUrl } = req.body;
+			await UserController.userService.updateThumbnail(userId, thumbnailUrl);
 			res.status(200).send();
 		} catch (error) {
 			res.status(400).send();
@@ -45,18 +44,18 @@ export default class UserController implements AbstractUserController {
 
 	async deleteThumbnail(req: Request, res: Response): Promise<void> {
 		try {
-			const id = Number(req.params.id);
-			await UserController.userService.deleteThumbnail(id);
+			const { userId } = req.body;
+			await UserController.userService.deleteThumbnail(userId);
 			res.status(200).send();
 		} catch (error) {
 			res.status(400).send();
 		}
 	}
 
-	async updateById(req: Request, res: Response): Promise<void> {
+	async updateUserInfomation(req: Request, res: Response): Promise<void> {
 		try {
-			const id = Number(req.params.id);
-			await UserController.userService.updateById(id, req.body);
+			const { userId } = req.body;
+			await UserController.userService.updateUserInfomation(userId, req.body);
 			res.status(201).send();
 		} catch (error) {
 			res.status(400).send();
@@ -65,8 +64,8 @@ export default class UserController implements AbstractUserController {
 
 	async getById(req: Request, res: Response): Promise<void> {
 		try {
-			const id = Number(req.params.id);
-			const findUser = await UserController.userService.findById(id);
+			const { userId } = req.body;
+			const findUser = await UserController.userService.findById(userId);
 			res.status(200).send(findUser);
 		} catch (error) {
 			res.status(400).send();

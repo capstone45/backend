@@ -1,7 +1,8 @@
 import User from '../user.entity';
 
 import { AbstractUserRepository } from './userRepository';
-import { BasicInfomation, BasicInfomationWithList } from './data';
+
+import { PublicUserInfomation, PublicUserInfomationWithList } from './type';
 
 export abstract class AbstractUserService {
 	private static instance: AbstractUserService;
@@ -10,9 +11,11 @@ export abstract class AbstractUserService {
 	public static getInstance(dependency): AbstractUserService;
 	private constructor(dependency);
 
+	findById(id: number): Promise<PublicUserInfomationWithList>;
+	findByNickname(nickname: string): Promise<PublicUserInfomation[]>;
+
 	updateThumbnail(id: number, thumbnailUrl: string): Promise<void>;
+	updateUserInfomation(id: number, body: Partial<User>): Promise<void>;
+
 	deleteThumbnail(id: number): Promise<void>;
-	updateById(id: number, body: Partial<User>): Promise<void>;
-	findById(id: number): Promise<BasicInfomationWithList>;
-	findByNickname(nickname: string): Promise<BasicInfomation[]>;
 }
