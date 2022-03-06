@@ -21,6 +21,11 @@ import TagRepository from './tag/tag.repository';
 import RecipeController from './recipe/recipe.controller';
 import RecipeService from './recipe/recipe.service';
 import RecipeRepository from './recipe/recipe.repository';
+
+import subscribeRepository from './subscribe/subscribe.repository';
+import SubscribeService from './subscribe/subscribe.service';
+import SubscribeController from './subscribe/subscribe.controller';
+
 import IngredientRepository from './ingredient/type/ingredient.repository';
 import RecipeTagRepository from './recipeTag/recipeTag.repository';
 import RecipeIngredientRepository from './recipeIngredient/recipeIngredient.repository';
@@ -79,6 +84,10 @@ export default class Container {
 		//Container.bean[layer.CONTROLLER][domain.INGREDIENT] =
 		//Container.bean[layer.CONTROLLER][domain.DATEINFO] =
 		//Container.bean[layer.CONTROLLER][domain.BOOKMAKR] =
+		Container.bean[layer.CONTROLLER][domain.SUBSCRIBE] = SubscribeController.getInstance({
+			...commonDependency,
+			subscribeService: Container.getBean(layer.SERVICE, domain.SUBSCRIBE),
+		});
 	}
 
 	private static initService() {
@@ -102,6 +111,9 @@ export default class Container {
 		//Container.bean[layer.SERVICE][domain.INGREDIENT] =
 		//Container.bean[layer.SERVICE][domain.DATEINFO] =
 		//Container.bean[layer.SERVICE][domain.BOOKMAKR] =
+		Container.bean[layer.SERVICE][domain.SUBSCRIBE] = SubscribeService.getInstance({
+			subscribeRepository: Container.getBean(layer.REPOSITORY, domain.SUBSCRIBE),
+		});
 	}
 
 	private static initRepository() {
@@ -115,6 +127,7 @@ export default class Container {
 		Container.bean[layer.REPOSITORY][domain.INGREDIENT] = IngredientRepository.getInstance({ ...commonDependency });
 		//Container.bean[layer.REPOSITORY][domain.DATEINFO] =
 		//Container.bean[layer.REPOSITORY][domain.BOOKMAKR] =
+		Container.bean[layer.REPOSITORY][domain.SUBSCRIBE] = subscribeRepository.getInstance({ ...commonDependency });
 	}
 }
 
@@ -135,4 +148,5 @@ export enum domain {
 	INGREDIENT = 'Ingredient',
 	DATEINFO = 'DateInfo',
 	BOOKMAKR = 'Bookmark',
+	SUBSCRIBE = 'Subscribe',
 }
