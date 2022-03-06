@@ -1,24 +1,31 @@
-import { AbstractRecipeRepository } from './recipeRepository';
-import { AbstractUserRepository } from '../../user/type/userRepository';
-
-import RecipeIngredient from '../../recipe-ingredient/recipe-ingredient.entity';
+import RecipeIngredient from '../../recipeIngredient/recipeIngredient.entity';
 import Recipe from '../recipe.entity';
 
+import { AbstractUserRepository } from '../../user/type/userRepository';
+import { AbstractTagRepository } from '../../tag/type/tagRepository';
+import { AbstractRecipeRepository } from './recipeRepository';
+import { CreateRecipeDto } from './data';
+
 export abstract class AbstractRecipeService {
-	private static instance: AbstractRecipeService;
 	private static recipeRepository: AbstractRecipeRepository;
+	private static recipeTagRepository: AbstractTagRepository;
 	private static userRepository: AbstractUserRepository;
+	private static tagRepository: AbstractTagRepository;
+	private static instance: AbstractRecipeService;
 
 	public static getInstance(dependency): AbstractRecipeService;
 	private constructor(dependency);
 
-	createRecipe(userId: number, body: Partial<Recipe>): Promise<void>;
-	updateRecipe(userId: number, body: Partial<Recipe>): Promise<void>;
-	findById(id: number): Promise<Partial<Recipe>>;
-	findByTitle(title: string): Promise<Partial<Recipe>[]>;
-	findByTodaysMostLiked(): Promise<Partial<Recipe>[]>;
-	findByLatestCreated(): Promise<Partial<Recipe>[]>;
-	findBySubscribingChefsLatest(id: number): Promise<Partial<Recipe>[]>;
-	findByIngredient(ingredients: string[]): Promise<Partial<Recipe>[]>;
+	createRecipe(userId: number, body: CreateRecipeDto): Promise<void>;
+
+	findBySubscribingChefsLatest(id: number): Promise<Recipe[]>;
+	findByIngredient(ingredients: string[]): Promise<Recipe[]>;
+	findByTitle(title: string): Promise<Recipe[]>;
+	findByTodaysMostLiked(): Promise<Recipe[]>;
+	findByLatestCreated(): Promise<Recipe[]>;
+	findById(id: number): Promise<Recipe>;
+
+	updateRecipe(userId: number, body: Recipe): Promise<void>;
+
 	private static getIncludeRate(ingredients: RecipeIngredient[], keywords: string[]): boolean;
 }

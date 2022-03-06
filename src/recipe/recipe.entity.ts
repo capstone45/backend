@@ -1,10 +1,12 @@
-import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn, Column, OneToMany, BaseEntity } from 'typeorm';
+import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn, Column, OneToMany } from 'typeorm';
 
+import RecipeDescription from '../recipeDescription/recipeDescription.entity';
+import RecipeIngredient from '../recipeIngredient/recipeIngredient.entity';
+import RecipeTag from '../recipeTag/recipeTag.entity';
 import DateInfo from '../entity/dateInfo.entity';
-import RecipeDescription from '../recipe-description/recipe-description.entity';
-import RecipeIngredient from '../recipe-ingredient/recipe-ingredient.entity';
-import RecipeTag from '../recipe-tag/recipe-tag.entity';
 import User from '../user/user.entity';
+
+import { CreateRecipeDto } from './type/data';
 
 export enum serving {
 	DONTKNOW = 0,
@@ -16,7 +18,7 @@ export enum serving {
 }
 
 @Entity({ name: 'RECIPE' })
-export default class Recipe extends BaseEntity {
+export default class Recipe {
 	@PrimaryColumn({ name: 'RECIPE_ID', type: 'bigint', unsigned: true })
 	@Generated('increment')
 	id: number;
@@ -25,14 +27,14 @@ export default class Recipe extends BaseEntity {
 	@JoinColumn({ name: 'USER_ID' })
 	user: User;
 
-	@OneToMany(() => RecipeDescription, (description) => description.recipe, { lazy: true })
+	@OneToMany(() => RecipeDescription, (description) => description.recipe, { lazy: true, cascade: true })
 	recipeDescriptions: RecipeDescription[];
 
-	@OneToMany(() => RecipeIngredient, (recipeIngredient) => recipeIngredient.recipe, { lazy: true })
-	ingredients: RecipeIngredient[];
+	@OneToMany(() => RecipeIngredient, (recipeIngredient) => recipeIngredient.recipe, { lazy: true, cascade: true })
+	recipeIngredients: RecipeIngredient[];
 
-	@OneToMany(() => RecipeTag, (recipeTag) => recipeTag.recipe, { lazy: true, cascade: ['insert', 'update'] })
-	tags: RecipeTag[];
+	@OneToMany(() => RecipeTag, (recipeTag) => recipeTag.recipe, { lazy: true, cascade: true })
+	recipeTags: RecipeTag[];
 
 	@Column(() => DateInfo, { prefix: false })
 	date: DateInfo;
@@ -51,4 +53,15 @@ export default class Recipe extends BaseEntity {
 
 	@Column({ name: 'SERVING', type: 'enum', enum: serving, nullable: false })
 	serving: serving;
+
+	static create(rawRecipe: CreateRecipeDto, user: User): Recipe {
+		const recipe = new Recipe();
+		recipe.user = user;
+		recipe.description = rawRecipe.description;
+		recipe.thumbnailUrl = rawRecipe.thumbnailUrl;
+		recipe.title = rawRecipe.title;
+		recipe.referenceUrl = rawRecipe.referenceUrl;
+		recipe.serving = rawRecipe.serving;
+		return recipe;
+	}
 }

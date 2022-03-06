@@ -40,7 +40,6 @@ export default class RecipeController implements AbstractRecipeController {
 	async createRecipe(req: Request, res: Response): Promise<void> {
 		try {
 			const { userId, recipe } = req.body;
-			console.log(userId, recipe);
 			RecipeController.recipeService.createRecipe(userId, recipe);
 			res.status(200).send();
 		} catch (error) {

@@ -1,9 +1,10 @@
 import { EntityManager } from 'typeorm';
 
+import Recipe from './recipe.entity';
+
+import { CreateRecipeDto } from './type/data';
 import { AbstractRecipeRepository } from './type/recipeRepository';
 
-import Recipe from './recipe.entity';
-import User from '../user/user.entity';
 import { getFormattedDate } from '../helper/helper';
 
 export default class RecipeRepository implements AbstractRecipeRepository {
@@ -22,23 +23,15 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 		RecipeRepository.em = dependency.em;
 	}
 
-	async create(user: User, body: Partial<Recipe>): Promise<void> {
-		const recipe = await RecipeRepository.em.create(Recipe, { ...body, user });
-
-		await RecipeRepository.em.getRepository(Recipe).insert(recipe);
-		// const insertResult = await RecipeRepository.em
-		// 	.createQueryBuilder()
-		// 	.insert()
-		// 	.into(Recipe)
-		// 	.values({
-		// 		...body,
-		// 		user,
-		// 	})
-		// 	.execute();
-		console.log(recipe);
+	create(rawRecipe: CreateRecipeDto): Recipe {
+		return RecipeRepository.em.create(Recipe, { title: rawRecipe.title });
 	}
 
-	async findById(id: number): Promise<Partial<Recipe>> {
+	async save(recipe: Recipe): Promise<void> {
+		await RecipeRepository.em.save(recipe);
+	}
+
+	async findById(id: number): Promise<Recipe> {
 		const findResult = await RecipeRepository.em
 			.getRepository(Recipe)
 			.createQueryBuilder('recipe')
@@ -48,12 +41,12 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 		return findResult;
 	}
 
-	async findByTitle(title: string): Promise<Partial<Recipe>[]> {
+	async findByTitle(title: string): Promise<Recipe[]> {
 		const findRecipes = await RecipeRepository.em.getRepository(Recipe).find({ where: { title: title } });
 		return findRecipes;
 	}
 
-	async findByTodaysMostLiked(): Promise<Partial<Recipe>[]> {
+	async findByTodaysMostLiked(): Promise<Recipe[]> {
 		const findRecipes = await RecipeRepository.em
 			.getRepository(Recipe)
 			.createQueryBuilder('recipe')
@@ -67,7 +60,7 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 		return findRecipes;
 	}
 
-	async findByLatestCreated(): Promise<Partial<Recipe>[]> {
+	async findByLatestCreated(): Promise<Recipe[]> {
 		const findRecipes = await RecipeRepository.em
 			.getRepository(Recipe)
 			.createQueryBuilder('recipe')
@@ -78,13 +71,13 @@ export default class RecipeRepository implements AbstractRecipeRepository {
 		return findRecipes;
 	}
 
-	async findBySubscribingChefsLatest(id: number): Promise<Partial<Recipe>[]> {
+	async findBySubscribingChefsLatest(id: number): Promise<Recipe[]> {
 		const findRecipes = await RecipeRepository.em.query(`
 			select * from recipe as r where (r.user_id, r.create_date) in (SELECT r.user_id, max(r.create_date) FROM (select PUBLISHER_ID from SUBSCRIBE where SUBSCRIBER_ID = ${id}) as p JOIN RECIPE as r ON p.PUBLISHER_ID = r.USER_ID group by r.user_id);`);
 		return findRecipes;
 	}
 
-	async findAll(): Promise<Partial<Recipe>[]> {
+	async findAll(): Promise<Recipe[]> {
 		return await RecipeRepository.em.getRepository(Recipe).createQueryBuilder('recipe').select().getMany();
 	}
 }
