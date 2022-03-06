@@ -1,4 +1,5 @@
 import { Entity, ManyToOne, JoinColumn } from 'typeorm';
+
 import User from '../user/user.entity';
 import Recipe from '../recipe/recipe.entity';
 
