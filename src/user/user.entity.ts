@@ -76,4 +76,10 @@ export default class User {
 
 	@Column({ name: 'GRADE', type: 'enum', enum: grade, default: grade.LEVEL1 })
 	grade: grade;
+
+	@Column({ name: 'NUMBER_OF_LIKE', type: 'int', default: 0, nullable: false, unsigned: true })
+	numberOfLike: number;
+
+	@Column({ name: 'NUMBER_OF_FAN', type: 'int', default: 0, nullable: false, unsigned: true })
+	numberOfFan: number;
 }

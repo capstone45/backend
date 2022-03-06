@@ -16,7 +16,7 @@ export abstract class AbstractUserController {
 	getById(req: Request, res: Response): Promise<void>;
 	getByNickname(req: Request, res: Response): Promise<void>;
 
-	updateById(req: Request, res: Response): Promise<void>;
+	updateUserInfomation(req: Request, res: Response): Promise<void>;
 	updateThumbnail(req: Request, res: Response): Promise<void>;
 
 	deleteThumbnail(req: Request, res: Response): Promise<void>;
