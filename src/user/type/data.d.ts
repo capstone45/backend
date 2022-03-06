@@ -1,5 +1,5 @@
-import User from '../user.entity';
 import Recipe from '../../recipe/recipe.entity';
+import User from '../user.entity';
 
 export interface BasicInfomation {
 	user: User;
