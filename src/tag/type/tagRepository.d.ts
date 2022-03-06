@@ -1,6 +1,6 @@
 import { EntityManager } from 'typeorm';
 
-import { Tag } from './data';
+import Tag from '../tag.entity';
 
 export abstract class AbstractTagRepository {
 	private static instance: AbstractTagRepository;

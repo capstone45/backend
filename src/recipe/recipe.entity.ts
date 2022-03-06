@@ -3,7 +3,7 @@ import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn, Column, OneToM
 import RecipeDescription from '../recipeDescription/recipeDescription.entity';
 import RecipeIngredient from '../recipeIngredient/recipeIngredient.entity';
 import RecipeTag from '../recipeTag/recipeTag.entity';
-import DateInfo from '../entity/dateInfo.entity';
+import DateInfo from '../dateInfo/dateInfo.entity';
 import User from '../user/user.entity';
 
 import { CreateRecipe } from './type/data';

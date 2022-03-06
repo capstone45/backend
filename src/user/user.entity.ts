@@ -1,6 +1,6 @@
 import { Column, Entity, Generated, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from 'typeorm';
 
-import DateInfo from '../entity/dateInfo.entity';
+import DateInfo from '../dateInfo/dateInfo.entity';
 import Recipe from '../recipe/recipe.entity';
 import Bookmark from '../bookmark/bookmark.entity';
 
