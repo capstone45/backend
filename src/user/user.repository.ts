@@ -20,6 +20,10 @@ export default class UserRepository implements AbstractUserRepository {
 		UserRepository.em = dependency.em;
 	}
 
+	async save(user: User): Promise<void> {
+		await UserRepository.em.save(user);
+	}
+
 	async updateThumbnail(id: number, thumbnailUrl: string): Promise<void> {
 		await UserRepository.em.createQueryBuilder().update(User).set({ thumbnailUrl }).where('id = :id', { id }).execute();
 	}

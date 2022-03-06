@@ -11,6 +11,8 @@ export abstract class AbstractUserRepository {
 	public static getInstance(dependency): AbstractUserRepository;
 	private constructor(dependency);
 
+	save(user: User): Promise<void>;
+
 	updateUserInfomation(id: number, updateUserInfomation: UpdateUserInfomation): Promise<void>;
 	updateThumbnail(id: number, thumbnailUrl: string): Promise<void>;
 
