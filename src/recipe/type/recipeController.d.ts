@@ -15,8 +15,8 @@ export abstract class AbstractRecipeController {
 	createRecipe(req: Request, res: Response): Promise<void>;
 	getById(req: Request, res: Response): Promise<void>;
 	getByTitle(req: Request, res: Response): Promise<void>;
-	getByTodaysMostLiked(req: Request, res: Response): Promise<void>;
-	getByLatestCreated(req: Request, res: Response): Promise<void>;
-	getBySubscribingChefsLatest(req: Request, res: Response): Promise<void>;
+	getTodaysMostLiked(req: Request, res: Response): Promise<void>;
+	getLatestCreated(req: Request, res: Response): Promise<void>;
+	getSubscribingChefsLatest(req: Request, res: Response): Promise<void>;
 	getByIngredient(req: Request, res: Response): Promise<void>;
 }

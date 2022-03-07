@@ -24,18 +24,18 @@ export default class RecipeController implements AbstractRecipeController {
 	initRouter(app: express.Application): void {
 		if (RecipeController.instance) return;
 
-		RecipeController.router.get('/create', this.createRecipe);
-		RecipeController.router.get('/today-most-liked', this.getByTodaysMostLiked);
-		RecipeController.router.get('/latest', this.getByLatestCreated);
+		RecipeController.router.get('/today-most-liked', this.getTodaysMostLiked);
+		RecipeController.router.get('/latest', this.getLatestCreated);
 		RecipeController.router.get('/search', this.getByTitle);
-		RecipeController.router.get('/subscribe-chef-latest', this.getBySubscribingChefsLatest);
-		RecipeController.router.post('/search', this.getByIngredient);
+		RecipeController.router.get('/subscribe-chef-latest', this.getSubscribingChefsLatest);
 		RecipeController.router.get('/:id', this.getById);
+		RecipeController.router.post('/search', this.getByIngredient);
 		RecipeController.router.post('/', this.createRecipe);
-		RecipeController.router.put('/', this.updateRecipe);
+		RecipeController.router.put('/:id', this.updateRecipe);
 
 		app.use(RecipeController.PATH, RecipeController.router);
 	}
+
 	// authenticate, authorize middleware 필요
 	async createRecipe(req: Request, res: Response): Promise<void> {
 		try {
@@ -49,9 +49,9 @@ export default class RecipeController implements AbstractRecipeController {
 
 	async updateRecipe(req: Request, res: Response): Promise<void> {
 		try {
-			// const { userId } = req.body;
-			const userId = 1;
-			RecipeController.recipeService.updateRecipe(userId, req.body);
+			const { userId, recipe } = req.body;
+			const recipeId = Number(req.params.id);
+			RecipeController.recipeService.updateRecipe(userId, recipeId, recipe);
 			res.status(200).send();
 		} catch (error) {
 			res.status(400).send();
@@ -70,25 +70,24 @@ export default class RecipeController implements AbstractRecipeController {
 		res.send(findRecipes);
 	}
 
-	async getByTodaysMostLiked(req: Request, res: Response): Promise<void> {
+	async getTodaysMostLiked(req: Request, res: Response): Promise<void> {
 		const findRecipes = await RecipeController.recipeService.findByTodaysMostLiked();
 		res.send(findRecipes);
 	}
 
-	async getByLatestCreated(req: Request, res: Response): Promise<void> {
+	async getLatestCreated(req: Request, res: Response): Promise<void> {
 		const findRecipes = await RecipeController.recipeService.findByLatestCreated();
 		res.send(findRecipes);
 	}
 
-	async getBySubscribingChefsLatest(req: Request, res: Response): Promise<void> {
+	async getSubscribingChefsLatest(req: Request, res: Response): Promise<void> {
 		const findRecipes = await RecipeController.recipeService.findBySubscribingChefsLatest(3);
 		res.send(findRecipes);
 	}
 
 	async getByIngredient(req: Request, res: Response): Promise<void> {
-		const body = { args1: 'ingr1', args2: 'ingr2', args3: 'ingr3' };
-		const keywords = Object.values(body);
-		const findRecipes = await RecipeController.recipeService.findByIngredient(keywords);
+		const { ingredients } = req.body;
+		const findRecipes = await RecipeController.recipeService.findByIngredient(ingredients);
 		res.send(findRecipes);
 	}
 }
