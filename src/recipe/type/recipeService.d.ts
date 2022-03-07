@@ -4,7 +4,7 @@ import Recipe from '../recipe.entity';
 import { AbstractUserRepository } from '../../user/type/userRepository';
 import { AbstractTagRepository } from '../../tag/type/tagRepository';
 import { AbstractRecipeRepository } from './recipeRepository';
-import { CreateRecipe } from './data';
+import { RecipeDTO } from './data';
 
 export abstract class AbstractRecipeService {
 	private static recipeRepository: AbstractRecipeRepository;
@@ -25,7 +25,7 @@ export abstract class AbstractRecipeService {
 	findByLatestCreated(): Promise<Recipe[]>;
 	findById(id: number): Promise<Recipe>;
 
-	updateRecipe(userId: number, body: Recipe): Promise<void>;
+	updateRecipe(userId: number, recipeId: number, body: Recipe): Promise<void>;
 
 	private static getIncludeRate(ingredients: RecipeIngredient[], keywords: string[]): boolean;
 }

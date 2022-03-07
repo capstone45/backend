@@ -11,7 +11,7 @@ import RecipeTag from '../recipeTag/recipeTag.entity';
 import Recipe from './recipe.entity';
 import Tag from '../tag/tag.entity';
 
-import { CreateRecipe } from './type/data';
+import { RecipeDTO } from './type/data';
 
 export default class RecipeService implements AbstractRecipeService {
 	private static instance: AbstractRecipeService;
@@ -47,7 +47,7 @@ export default class RecipeService implements AbstractRecipeService {
 		return count / ingredients.length >= RecipeService.INCLUDE_THRESHOLD ? true : false;
 	}
 
-	async createRecipe(userId: number, body: CreateRecipe): Promise<void> {
+	async createRecipe(userId: number, body: RecipeDTO): Promise<void> {
 		// user 찾기
 		const user = await RecipeService.userRepository.findById(userId);
 
@@ -95,7 +95,7 @@ export default class RecipeService implements AbstractRecipeService {
 		await RecipeService.recipeRepository.save(recipe);
 	}
 
-	async updateRecipe(userId: number, body: Recipe): Promise<void> {
+	async updateRecipe(userId: number, recipeId: number, body: Recipe): Promise<void> {
 		console.log();
 	}
 
