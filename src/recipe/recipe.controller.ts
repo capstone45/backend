@@ -59,9 +59,15 @@ export default class RecipeController implements AbstractRecipeController {
 	}
 
 	async getById(req: Request, res: Response): Promise<void> {
-		const id = Number(req.params.id);
-		const findRecipes = await RecipeController.recipeService.findById(id);
-		res.send(findRecipes);
+		try {
+			const recipeId = Number(req.params.id);
+			const userId = req.body.userId ? req.body.userId : -1;
+			const findRecipes = await RecipeController.recipeService.findById(recipeId, userId);
+			res.status(200).send(findRecipes);
+		} catch (error) {
+			console.log(error);
+			res.status(400).send();
+		}
 	}
 
 	async getByTitle(req: Request, res: Response): Promise<void> {
