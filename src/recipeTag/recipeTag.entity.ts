@@ -8,7 +8,7 @@ export default class RecipeTag {
 	@JoinColumn({ name: 'RECIPE_ID' })
 	recipe: Recipe;
 
-	@ManyToOne(() => Tag, (tag) => tag.id, { lazy: true, nullable: false, primary: true, cascade: ['insert', 'update'] })
+	@ManyToOne(() => Tag, (tag) => tag.id, { eager: true, nullable: false, primary: true, cascade: ['insert', 'update'] })
 	@JoinColumn({ name: 'TAG_ID' })
 	tag: Tag;
 

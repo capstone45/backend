@@ -1,12 +1,17 @@
-import { Entity, ManyToOne, Column } from 'typeorm';
+import { Entity, ManyToOne, Column, PrimaryColumn, Generated, JoinColumn } from 'typeorm';
 
 import Recipe from '../recipe/recipe.entity';
 
-import { CreateRecipeDescription } from '../recipe/type/data';
+import { ModifyRecipeDescriptionDTO } from './type/type';
 
 @Entity({ name: 'RECIPE_DESCRIPTION' })
 export default class RecipeDescription {
-	@ManyToOne(() => Recipe, (recipe) => recipe.recipeDescriptions, { lazy: true, primary: true })
+	@PrimaryColumn({ name: 'RECIPE_DESCRIPTION_ID', type: 'bigint', unsigned: true })
+	@Generated('increment')
+	id: number;
+
+	@ManyToOne(() => Recipe, (recipe) => recipe.recipeDescriptions, { lazy: true })
+	@JoinColumn({ name: 'RECIPE_ID' })
 	recipe: Recipe;
 
 	@Column({ name: 'IMAGE_DESCRIPTION', type: 'varchar', length: 900, nullable: false })
@@ -18,7 +23,7 @@ export default class RecipeDescription {
 	@Column({ name: 'DESCRIPTION_ORDER', type: 'smallint', nullable: false })
 	descriptionOrder: number;
 
-	static create(recipe: Recipe, rawRecipeDescription: CreateRecipeDescription): RecipeDescription {
+	static create(recipe: Recipe, rawRecipeDescription: ModifyRecipeDescriptionDTO): RecipeDescription {
 		const recipeDescription = new RecipeDescription();
 		recipeDescription.recipe = recipe;
 		recipeDescription.imageDescription = rawRecipeDescription.imageDescription;

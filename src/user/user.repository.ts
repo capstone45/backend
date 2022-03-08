@@ -3,7 +3,7 @@ import { EntityManager } from 'typeorm';
 import User from './user.entity';
 
 import { AbstractUserRepository } from './type/userRepository';
-import { UpdateUserInfomation } from './type/type';
+import { UpdateUserDTO } from './type/type';
 
 export default class UserRepository implements AbstractUserRepository {
 	private static instance: AbstractUserRepository;
@@ -32,7 +32,7 @@ export default class UserRepository implements AbstractUserRepository {
 		await UserRepository.em.createQueryBuilder().update(User).set({ thumbnailUrl: 'empty' }).where('id = :id', { id }).execute();
 	}
 
-	async updateUserInfomation(id: number, updateUserInfomation: UpdateUserInfomation): Promise<void> {
+	async updateUserInfomation(id: number, updateUserInfomation: UpdateUserDTO): Promise<void> {
 		const { nickname, loginPassword, description } = updateUserInfomation;
 		await UserRepository.em
 			.createQueryBuilder()
