@@ -26,9 +26,10 @@ import subscribeRepository from './subscribe/subscribe.repository';
 import SubscribeService from './subscribe/subscribe.service';
 import SubscribeController from './subscribe/subscribe.controller';
 
-import IngredientRepository from './ingredient/type/ingredient.repository';
+import IngredientRepository from './ingredient/ingredient.repository';
 import RecipeTagRepository from './recipeTag/recipeTag.repository';
 import RecipeIngredientRepository from './recipeIngredient/recipeIngredient.repository';
+import BookmarkRepository from './bookmark/bookmark.repository';
 
 export default class Container {
 	private static isInitialzied = false;
@@ -104,6 +105,7 @@ export default class Container {
 			ingredientRepository: Container.getBean(layer.REPOSITORY, domain.INGREDIENT),
 			recipeTagRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE_TAG),
 			recipeIngredientRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE_INGREDIENT),
+			bookmarkRepository: Container.getBean(layer.REPOSITORY, domain.BOOKMAKR),
 		});
 		//Container.bean[layer.SERVICE][domain.RECIPE_TAG] =
 		//Container.bean[layer.SERVICE][domain.RECIPE_INGREDIENT] =
@@ -127,7 +129,7 @@ export default class Container {
 		//Container.bean[layer.REPOSITORY][domain.RECIPE_DESCRIPTION] =
 		Container.bean[layer.REPOSITORY][domain.INGREDIENT] = IngredientRepository.getInstance({ ...commonDependency });
 		//Container.bean[layer.REPOSITORY][domain.DATEINFO] =
-		//Container.bean[layer.REPOSITORY][domain.BOOKMAKR] =
+		Container.bean[layer.REPOSITORY][domain.BOOKMAKR] = BookmarkRepository.getInstance({ ...commonDependency });
 		Container.bean[layer.REPOSITORY][domain.SUBSCRIBE] = subscribeRepository.getInstance({ ...commonDependency });
 	}
 }
