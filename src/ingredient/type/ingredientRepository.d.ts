@@ -9,5 +9,5 @@ export class AbstractIngredientRepository {
 	public static getInstance(dependency): AbstractIngredientRepository;
 	private constructor(dependency);
 
-	findByName(ingredientName: string): Promise<Ingredient>;
+	findByName(ingredientName: string): Promise<Ingredient[]>;
 }
