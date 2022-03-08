@@ -1,4 +1,4 @@
-import { PublicUserInfomation, PublicUserInfomationWithList, UpdateUserInfomation } from './type/type';
+import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO } from './type/type';
 import { AbstractUserRepository } from './type/userRepository';
 import { AbstractUserService } from './type/userService';
 
@@ -25,7 +25,7 @@ export default class UserService implements AbstractUserService {
 		await UserService.userRepository.deleteThumbnail(id);
 	}
 
-	async updateUserInfomation(id: number, updateUserInfomation: UpdateUserInfomation): Promise<void> {
+	async updateUserInfomation(id: number, updateUserInfomation: UpdateUserDTO): Promise<void> {
 		const { loginPassword, confirmPassword } = updateUserInfomation;
 		if (loginPassword !== confirmPassword) {
 			throw new Error('비밀번호가 다릅니다');
@@ -34,16 +34,16 @@ export default class UserService implements AbstractUserService {
 		await UserService.userRepository.updateUserInfomation(id, updateUserInfomation);
 	}
 
-	async findById(id: number): Promise<PublicUserInfomationWithList> {
+	async findById(id: number): Promise<ReadUserDetailDTO> {
 		const user = await UserService.userRepository.findById(id);
 		const likeRecipe = (await user.bookmarks).map((bookmark) => bookmark.recipe);
 		const subscribingUser = await user.stars;
 
-		return new PublicUserInfomationWithList(user, likeRecipe, subscribingUser);
+		return new ReadUserDetailDTO(user, likeRecipe, subscribingUser);
 	}
 
-	async findByNickname(nickname: string): Promise<PublicUserInfomation[]> {
+	async findByNickname(nickname: string): Promise<ReadUserDTO[]> {
 		const users = await UserService.userRepository.findByNickname(nickname);
-		return await Promise.all(users.map(async (user) => new PublicUserInfomation(user)));
+		return await Promise.all(users.map(async (user) => new ReadUserDTO(user)));
 	}
 }

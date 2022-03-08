@@ -26,9 +26,9 @@ export default class UserController implements AbstractUserController {
 
 		UserController.router.get('/search', this.getByNickname);
 		UserController.router.get('/:id', this.getById);
-		UserController.router.patch('/:id', this.updateUserInfomation);
+		UserController.router.patch('/', this.updateUserInfomation);
 		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
-		UserController.router.patch('/:id/thumbnail', this.updateThumbnail);
+		UserController.router.put('/thumbnail', this.updateThumbnail);
 		app.use(UserController.PATH, UserController.router);
 	}
 
@@ -58,6 +58,7 @@ export default class UserController implements AbstractUserController {
 			await UserController.userService.updateUserInfomation(userId, req.body);
 			res.status(201).send();
 		} catch (error) {
+			console.log(error instanceof Error);
 			res.status(400).send();
 		}
 	}

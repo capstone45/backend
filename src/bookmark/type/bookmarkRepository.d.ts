@@ -13,4 +13,5 @@ export abstract class AbstractBookmarkRepository {
 
 	findByUser(user: User): Promise<Bookmark[]>;
 	findByRecipe(recipe: Recipe): Promise<Bookmark[]>;
+	checkBookmark(recipeId: number, userId: number): Promise<boolean>;
 }

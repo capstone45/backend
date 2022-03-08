@@ -1,8 +1,8 @@
 import { EntityManager } from 'typeorm';
 
-import Ingredient from '../ingredient.entity';
+import Ingredient from './ingredient.entity';
 
-import { AbstractIngredientRepository } from './ingredientRepository';
+import { AbstractIngredientRepository } from './type/ingredientRepository';
 
 export default class IngredientRepository implements AbstractIngredientRepository {
 	private static instance: AbstractIngredientRepository;
@@ -19,7 +19,7 @@ export default class IngredientRepository implements AbstractIngredientRepositor
 		IngredientRepository.em = dependency.em;
 	}
 
-	async findByName(ingredeintName: string): Promise<Ingredient> {
-		return await IngredientRepository.em.getRepository(Ingredient).find({ where: { name: ingredeintName } })[0];
+	async findByName(ingredientName: string): Promise<Ingredient[]> {
+		return await IngredientRepository.em.getRepository(Ingredient).find({ where: { name: ingredientName } });
 	}
 }
