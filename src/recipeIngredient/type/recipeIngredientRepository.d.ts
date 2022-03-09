@@ -11,4 +11,6 @@ export class AbstractRecipeIngredientRepository {
 	private constructor(dependency);
 
 	findAll(): Promise<RecipeIngredient[]>;
+
+	delete(recipeIngredient: RecipeIngredient): Promise<void>;
 }
