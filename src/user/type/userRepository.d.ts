@@ -2,7 +2,7 @@ import { EntityManager } from 'typeorm';
 
 import User from '../user.entity';
 
-import { UpdateUserInfomation } from './type';
+import { UpdateUserDTO } from './type';
 
 export abstract class AbstractUserRepository {
 	private static instance: AbstractUserRepository;
@@ -13,7 +13,7 @@ export abstract class AbstractUserRepository {
 
 	save(user: User): Promise<void>;
 
-	updateUserInfomation(id: number, updateUserInfomation: UpdateUserInfomation): Promise<void>;
+	updateUserInfomation(id: number, updateUserInfomation: UpdateUserDTO): Promise<void>;
 	updateThumbnail(id: number, thumbnailUrl: string): Promise<void>;
 
 	deleteThumbnail(id: number): Promise<void>;
