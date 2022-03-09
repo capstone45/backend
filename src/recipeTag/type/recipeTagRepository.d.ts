@@ -10,4 +10,6 @@ export class AbstractRecipeTagRepository {
 	private constructor(dependency);
 
 	findAll(): Promise<RecipeTag[]>;
+
+	delete(recipeTag: RecipeTag): Promise<void>;
 }

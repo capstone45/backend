@@ -22,4 +22,8 @@ export default class RecipeTagRepository implements AbstractRecipeTagRepository 
 	async findAll(): Promise<RecipeTag[]> {
 		return await RecipeTagRepository.em.getRepository(RecipeTag).find();
 	}
+
+	async delete(recipeTag: RecipeTag): Promise<void> {
+		await RecipeTagRepository.em.delete(RecipeTag, recipeTag);
+	}
 }
