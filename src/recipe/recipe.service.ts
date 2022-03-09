@@ -13,6 +13,9 @@ import Tag from '../tag/tag.entity';
 
 import { ModifyRecipeDTO, ReadRecipeDetailDTO } from './type/data';
 import { AbstractBookmarkRepository } from '../bookmark/type/bookmarkRepository';
+import { AbstractRecipeDescriptionRepository } from '../recipeDescription/type/recipeDescriptionRepository';
+import { AbstractRecipeIngredientRepository } from '../recipeIngredient/type/recipeIngredientRepository';
+import { AbstractRecipeTagRepository } from '../recipeTag/type/recipeTagRepository';
 
 export default class RecipeService implements AbstractRecipeService {
 	private static instance: AbstractRecipeService;
@@ -22,6 +25,9 @@ export default class RecipeService implements AbstractRecipeService {
 	private static userRepository: AbstractUserRepository;
 	private static tagRepository: AbstractTagRepository;
 	private static bookmarkRepository: AbstractBookmarkRepository;
+	private static recipeDescriptionRepository: AbstractRecipeDescriptionRepository;
+	private static recipeIngredientRepository: AbstractRecipeIngredientRepository;
+	private static recipeTagRepository: AbstractRecipeTagRepository;
 
 	private static INCLUDE_THRESHOLD = 0.5;
 
@@ -38,6 +44,9 @@ export default class RecipeService implements AbstractRecipeService {
 		RecipeService.userRepository = dependency.userRepository;
 		RecipeService.tagRepository = dependency.tagRepository;
 		RecipeService.bookmarkRepository = dependency.bookmarkRepository;
+		RecipeService.recipeDescriptionRepository = dependency.recipeDescriptionRepository;
+		RecipeService.recipeIngredientRepository = dependency.recipeIngredientRepository;
+		RecipeService.recipeTagRepository = dependency.recipeTagRepository;
 	}
 
 	private static getIncludeRate(ingredients: RecipeIngredient[], keywords: string[]): boolean {
@@ -98,16 +107,16 @@ export default class RecipeService implements AbstractRecipeService {
 	async updateRecipe(userId: number, recipeId: number, body: ModifyRecipeDTO): Promise<void> {
 		const recipe = await RecipeService.recipeRepository.findById(recipeId);
 		const user = await recipe.user;
+		if (Number(user.id) !== userId) throw new Error('request user and recipe user is different');
 
-		if (user.id !== userId) throw new Error('request user and recipe user is different');
+		// 이전 recipe Description 삭제
+		const oldRecipeDescriptions = await recipe.recipeDescriptions;
+		await Promise.all(
+			oldRecipeDescriptions.map(async (recipeDescription) => {
+				return await RecipeService.recipeDescriptionRepository.delete(recipeDescription);
+			})
+		);
 
-		recipe.title = body.title;
-		recipe.description = body.description;
-		recipe.thumbnailUrl = body.thumbnailUrl;
-		recipe.referenceUrl = body.referenceUrl;
-		recipe.serving = body.serving;
-
-		// 기존 설명 제거
 		// recipeDescription 만들기
 		const recipeDescriptions = body.recipeDescriptions.map((rawRecipeDescription) =>
 			RecipeDescription.create(recipe, rawRecipeDescription)
@@ -121,8 +130,15 @@ export default class RecipeService implements AbstractRecipeService {
 			})
 		);
 
-		// 기존 데이터 제거
-		// RecipeIngredient 만들기
+		// 이전 recipe Ingredient 제거
+		const oldRecipeIngredient = await recipe.recipeIngredients;
+		await Promise.all(
+			oldRecipeIngredient.map(async (recipeIngredient) => {
+				return await RecipeService.recipeIngredientRepository.delete(recipeIngredient);
+			})
+		);
+
+		// Recipe Ingredient 만들기
 		const recipeIngredients = ingredients.map((ingredient, index) =>
 			RecipeIngredient.create(recipe, ingredient, body.ingredients[index].amount)
 		);
@@ -134,12 +150,23 @@ export default class RecipeService implements AbstractRecipeService {
 				return tag ? tag : Tag.create(tagName);
 			})
 		);
+		// 이전 recipe tag 제거
+		const oldRecipeTags = await recipe.recipeTags;
+		await Promise.all(
+			oldRecipeTags.map(async (recipeTag) => {
+				return await RecipeService.recipeTagRepository.delete(recipeTag);
+			})
+		);
 
-		// 기존 데이터 제거
 		// RecipeTag 만들기
 		const recipeTags = tags.map((tag) => RecipeTag.create(recipe, tag));
 
 		// 연관관계 설정
+		recipe.title = body.title;
+		recipe.description = body.description;
+		recipe.thumbnailUrl = body.thumbnailUrl;
+		recipe.referenceUrl = body.referenceUrl;
+		recipe.serving = body.serving;
 		recipe.recipeDescriptions = recipeDescriptions;
 		recipe.recipeIngredients = recipeIngredients;
 		recipe.recipeTags = recipeTags;
