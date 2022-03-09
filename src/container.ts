@@ -30,6 +30,7 @@ import IngredientRepository from './ingredient/ingredient.repository';
 import RecipeTagRepository from './recipeTag/recipeTag.repository';
 import RecipeIngredientRepository from './recipeIngredient/recipeIngredient.repository';
 import BookmarkRepository from './bookmark/bookmark.repository';
+import RecipeDescriptionRepository from './recipeDescription/recipeDescription.repository';
 
 export default class Container {
 	private static isInitialzied = false;
@@ -106,6 +107,7 @@ export default class Container {
 			recipeTagRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE_TAG),
 			recipeIngredientRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE_INGREDIENT),
 			bookmarkRepository: Container.getBean(layer.REPOSITORY, domain.BOOKMAKR),
+			recipeDescriptionRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE_DESCRIPTION),
 		});
 		//Container.bean[layer.SERVICE][domain.RECIPE_TAG] =
 		//Container.bean[layer.SERVICE][domain.RECIPE_INGREDIENT] =
@@ -126,7 +128,7 @@ export default class Container {
 		Container.bean[layer.REPOSITORY][domain.RECIPE] = RecipeRepository.getInstance({ ...commonDependency });
 		Container.bean[layer.REPOSITORY][domain.RECIPE_TAG] = RecipeTagRepository.getInstance({ ...commonDependency });
 		Container.bean[layer.REPOSITORY][domain.RECIPE_INGREDIENT] = RecipeIngredientRepository.getInstance({ ...commonDependency });
-		//Container.bean[layer.REPOSITORY][domain.RECIPE_DESCRIPTION] =
+		Container.bean[layer.REPOSITORY][domain.RECIPE_DESCRIPTION] = RecipeDescriptionRepository.getInstance({ ...commonDependency });
 		Container.bean[layer.REPOSITORY][domain.INGREDIENT] = IngredientRepository.getInstance({ ...commonDependency });
 		//Container.bean[layer.REPOSITORY][domain.DATEINFO] =
 		Container.bean[layer.REPOSITORY][domain.BOOKMAKR] = BookmarkRepository.getInstance({ ...commonDependency });

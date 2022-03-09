@@ -23,4 +23,8 @@ export default class RecipeIngredientRepository implements AbstractRecipeIngredi
 	async findAll(): Promise<recipeIngredientEntity[]> {
 		return await RecipeIngredientRepository.em.getRepository(RecipeIngredient).find();
 	}
+
+	async delete(recipeIngredient: RecipeIngredient): Promise<void> {
+		await RecipeIngredientRepository.em.delete(RecipeIngredient, recipeIngredient);
+	}
 }
