@@ -181,7 +181,7 @@ export default class RecipeService implements AbstractRecipeService {
 		const tags = (await recipe.recipeTags).map((recipeTag) => recipeTag.tag);
 		const recipeIngredient = await recipe.recipeIngredients;
 		const recipeDescription = await recipe.recipeDescriptions;
-		const bookmark = userId === -1 ? false : await RecipeService.bookmarkRepository.checkBookmark(recipeId, userId);
+		const bookmark = userId === -1 ? false : (await RecipeService.bookmarkRepository.findOne(recipeId, userId)) ? true : false;
 		return new ReadRecipeDetailDTO(recipe, tags, user, recipeIngredient, recipeDescription, bookmark);
 	}
 
