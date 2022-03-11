@@ -12,10 +12,10 @@ import Recipe from './recipe.entity';
 import Tag from '../tag/tag.entity';
 
 import { ModifyRecipeDTO, ReadRecipeDetailDTO } from './type/data';
-import { AbstractBookmarkRepository } from '../bookmark/type/bookmarkRepository';
 import { AbstractRecipeDescriptionRepository } from '../recipeDescription/type/recipeDescriptionRepository';
 import { AbstractRecipeIngredientRepository } from '../recipeIngredient/type/recipeIngredientRepository';
 import { AbstractRecipeTagRepository } from '../recipeTag/type/recipeTagRepository';
+import User from '../user/user.entity';
 
 export default class RecipeService implements AbstractRecipeService {
 	private static instance: AbstractRecipeService;
@@ -24,7 +24,6 @@ export default class RecipeService implements AbstractRecipeService {
 	private static recipeRepository: AbstractRecipeRepository;
 	private static userRepository: AbstractUserRepository;
 	private static tagRepository: AbstractTagRepository;
-	private static bookmarkRepository: AbstractBookmarkRepository;
 	private static recipeDescriptionRepository: AbstractRecipeDescriptionRepository;
 	private static recipeIngredientRepository: AbstractRecipeIngredientRepository;
 	private static recipeTagRepository: AbstractRecipeTagRepository;
@@ -43,7 +42,6 @@ export default class RecipeService implements AbstractRecipeService {
 		RecipeService.recipeRepository = dependency.recipeRepository;
 		RecipeService.userRepository = dependency.userRepository;
 		RecipeService.tagRepository = dependency.tagRepository;
-		RecipeService.bookmarkRepository = dependency.bookmarkRepository;
 		RecipeService.recipeDescriptionRepository = dependency.recipeDescriptionRepository;
 		RecipeService.recipeIngredientRepository = dependency.recipeIngredientRepository;
 		RecipeService.recipeTagRepository = dependency.recipeTagRepository;
@@ -181,8 +179,12 @@ export default class RecipeService implements AbstractRecipeService {
 		const tags = (await recipe.recipeTags).map((recipeTag) => recipeTag.tag);
 		const recipeIngredient = await recipe.recipeIngredients;
 		const recipeDescription = await recipe.recipeDescriptions;
-		const bookmark = userId === -1 ? false : (await RecipeService.bookmarkRepository.findOne(recipeId, userId)) ? true : false;
+		const bookmark = userId === -1 ? false : RecipeService.include(await recipe.likeUsers, user) ? true : false;
 		return new ReadRecipeDetailDTO(recipe, tags, user, recipeIngredient, recipeDescription, bookmark);
+	}
+
+	private static include(likeUsers: User[], user: User): boolean {
+		return likeUsers.filter((likeUser) => likeUser.id === user.id).length !== 0 ? true : false;
 	}
 
 	async findByTitle(title: string): Promise<Recipe[]> {

@@ -36,7 +36,7 @@ export default class UserService implements AbstractUserService {
 
 	async findById(id: number): Promise<ReadUserDetailDTO> {
 		const user = await UserService.userRepository.findById(id);
-		const likeRecipe = (await user.bookmarks).map((bookmark) => bookmark.recipe);
+		const likeRecipe = await user.bookmarks;
 		const subscribingUser = await user.stars;
 
 		return new ReadUserDetailDTO(user, likeRecipe, subscribingUser);

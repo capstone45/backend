@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryColumn, Generated, ManyToOne, JoinColumn, Column, OneToMany, ManyToMany } from 'typeorm';
 
 import RecipeDescription from '../recipeDescription/recipeDescription.entity';
 import RecipeIngredient from '../recipeIngredient/recipeIngredient.entity';
@@ -35,6 +35,9 @@ export default class Recipe {
 
 	@OneToMany(() => RecipeTag, (recipeTag) => recipeTag.recipe, { lazy: true, cascade: true })
 	recipeTags: RecipeTag[];
+
+	@ManyToMany(() => User, (user) => user.bookmarks, { lazy: true, nullable: false })
+	likeUsers: User[];
 
 	@Column(() => DateInfo, { prefix: false })
 	date: DateInfo;

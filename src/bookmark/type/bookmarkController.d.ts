@@ -12,8 +12,5 @@ export abstract class AbstractBookmarkController {
 	private constructor(dependency);
 	initRouter(app: express.Application): void;
 
-	findByUser(req: Request, res: Response): Promise<void>;
-	findByRecipe(req: Request, res: Response): Promise<void>;
-	checkBookmark(req: Request, res: Response): Promise<void>;
 	changeBookmark(req: Request, res: Response): Promise<void>;
 }
