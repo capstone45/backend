@@ -8,7 +8,6 @@ import RecipeIngredient from './recipeIngredient/recipeIngredient.entity';
 import RecipeDescription from './recipeDescription/recipeDescription.entity';
 import Ingredient from './ingredient/ingredient.entity';
 import DateInfo from './dateInfo/dateInfo.entity';
-import Bookmark from './bookmark/bookmark.entity';
 
 import UserController from './user/user.controller';
 import UserService from './user/user.service';
@@ -66,7 +65,7 @@ export default class Container {
 		Container.bean[layer.ENTITY][domain.RECIPE_DESCRIPTION] = RecipeDescription;
 		Container.bean[layer.ENTITY][domain.INGREDIENT] = Ingredient;
 		Container.bean[layer.ENTITY][domain.DATEINFO] = DateInfo;
-		Container.bean[layer.ENTITY][domain.BOOKMARK] = Bookmark;
+		// Container.bean[layer.ENTITY][domain.BOOKMARK] = Bookmark;
 	}
 
 	private static initController(app) {
