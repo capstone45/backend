@@ -12,4 +12,11 @@ export default class Bookmark {
 	@ManyToOne(() => User, (user) => user.id, { lazy: true, nullable: false, primary: true })
 	@JoinColumn({ name: 'USER_ID' })
 	user: User;
+
+	static create(recipe: Recipe, user: User): Bookmark {
+		const bookmark = new Bookmark();
+		bookmark.recipe = recipe;
+		bookmark.user = user;
+		return bookmark;
+	}
 }
