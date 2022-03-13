@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Column, JoinColumn } from 'typeorm';
+import { Entity, ManyToOne, Generated, Column, JoinColumn, PrimaryColumn } from 'typeorm';
 
 import Recipe from '../recipe/entity';
 
@@ -6,7 +6,11 @@ import { ModifyRecipeDescriptionDTO } from './type/type';
 
 @Entity({ name: 'RECIPE_DESCRIPTION' })
 export default class RecipeDescription {
-	@ManyToOne(() => Recipe, (recipe) => recipe.recipeDescriptions, { lazy: true, primary: true })
+	@PrimaryColumn({ name: 'RECIPE_DESCRIPTION_ID', type: 'bigint', unsigned: true })
+	@Generated('increment')
+	id: number;
+
+	@ManyToOne(() => Recipe, (recipe) => recipe.recipeDescriptions, { lazy: true })
 	@JoinColumn({ name: 'RECIPE_ID' })
 	recipe: Recipe;
 

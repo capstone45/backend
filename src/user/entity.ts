@@ -2,7 +2,6 @@ import { Column, Entity, Generated, JoinTable, ManyToMany, OneToMany, PrimaryCol
 
 import DateInfo from '../dateInfo/entity';
 import Recipe from '../recipe/entity';
-import Bookmark from '../bookmark/entity';
 
 export enum loginMethod {
 	LOCAL = 'local',
@@ -29,8 +28,9 @@ export default class User {
 	@OneToMany(() => Recipe, (recipe) => recipe.user, { lazy: true })
 	recipes: Promise<Recipe[]>;
 
-	@OneToMany(() => Bookmark, (bookmark) => bookmark.user, { lazy: true })
-	bookmarks: Promise<Bookmark[]>;
+	@ManyToMany(() => Recipe, (recipe) => recipe.likeUsers, { lazy: true, nullable: false })
+	@JoinTable({ name: 'BOOKMARK', joinColumn: { name: 'RECIPE_ID' }, inverseJoinColumn: { name: 'USER_ID' } })
+	bookmarks: Recipe[];
 
 	// 나를 구독하는 사람들
 	@ManyToMany(() => User, (user) => user.stars, { lazy: true, nullable: false })
