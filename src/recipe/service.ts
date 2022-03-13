@@ -12,7 +12,7 @@ import Recipe from './entity';
 import Tag from '../tag/entity';
 import User from '../user/entity';
 
-import { ModifyRecipeDTO, ReadRecipeDetailDTO } from './type/data';
+import { BaseRecipeDTO, ModifyRecipeDTO, ReadRecipeDetailDTO } from './type/data';
 import { AbsBookmarkRepository } from '../bookmark/type/repository';
 import { AbsRecipeDescriptionRepository } from '../recipeDescription/type/repository';
 import { AbsRecipeIngredientRepository } from '../recipeIngredient/type/repository';
@@ -193,14 +193,16 @@ export default class RecipeService implements AbsRecipeService {
 		return findRecipes;
 	}
 
-	async findByTodaysMostLiked(): Promise<Recipe[]> {
-		const findRecipes = await RecipeService.recipeRepository.findByTodaysMostLiked();
-		return findRecipes;
+	async findByTodaysMostLiked(): Promise<BaseRecipeDTO[]> {
+		return (await RecipeService.recipeRepository.findByTodaysMostLiked()).map(
+			(recipe) => new BaseRecipeDTO(recipe.id, recipe.title, recipe.thumbnailUrl)
+		);
 	}
 
-	async findByLatestCreated(): Promise<Recipe[]> {
-		const findRecipes = await RecipeService.recipeRepository.findByLatestCreated();
-		return findRecipes;
+	async findByLatestCreated(): Promise<BaseRecipeDTO[]> {
+		return (await RecipeService.recipeRepository.findByLatestCreated()).map(
+			(recipe) => new BaseRecipeDTO(recipe.id, recipe.title, recipe.thumbnailUrl)
+		);
 	}
 
 	async findBySubscribingChefsLatest(id: number): Promise<Recipe[]> {
