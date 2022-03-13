@@ -2,11 +2,11 @@ import { EntityManager } from 'typeorm';
 
 import RecipeDescription from '../entity';
 
-export class AbstractRecipeDescriptionRepository {
-	private static instance: AbstractRecipeDescriptionRepository;
+export class AbsRecipeDescriptionRepository {
+	private static instance: AbsRecipeDescriptionRepository;
 	private static em: EntityManager;
 
-	public static getInstance(dependency): AbstractRecipeDescriptionRepository;
+	public static getInstance(dependency): AbsRecipeDescriptionRepository;
 	private constructor(dependency);
 
 	delete(recipeDescription: RecipeDescription): Promise<void>;

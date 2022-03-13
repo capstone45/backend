@@ -1,12 +1,12 @@
-import { AbstractUserRepository } from '../../user/type/repository';
-import { AbstractSubscribeRepository } from './repository';
+import { AbsUserRepository } from '../../user/type/repository';
+import { AbsSubscribeRepository } from './repository';
 
-export abstract class AbstractSubscribeService {
-	private static instance: AbstractSubscribeService;
-	private static subscribeRepository: AbstractSubscribeRepository;
-	private static userRepository: AbstractUserRepository;
+export abstract class AbsSubscribeService {
+	private static instance: AbsSubscribeService;
+	private static subscribeRepository: AbsSubscribeRepository;
+	private static userRepository: AbsUserRepository;
 
-	public static getInstance(dependency): AbstractSubscribeService;
+	public static getInstance(dependency): AbsSubscribeService;
 	private constructor(dependency);
 
 	changeSubscribe(userId: number, starId: number): Promise<void>;

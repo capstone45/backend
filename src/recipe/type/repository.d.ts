@@ -4,11 +4,11 @@ import Recipe from '../entity';
 
 import { ModifyRecipeDTO } from './data';
 
-export abstract class AbstractRecipeRepository {
-	private static instance: AbstractRecipeRepository;
+export abstract class AbsRecipeRepository {
+	private static instance: AbsRecipeRepository;
 	private static em: EntityManager;
 
-	public static getInstance(dependency): AbstractRecipeRepository;
+	public static getInstance(dependency): AbsRecipeRepository;
 	private constructor(dependency);
 
 	create(rawRecipe: ModifyRecipeDTO): Recipe;

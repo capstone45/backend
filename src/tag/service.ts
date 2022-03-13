@@ -1,13 +1,13 @@
 import Tag from './entity';
 
-import { AbstractTagRepository } from './type/repository';
-import { AbstractTagService } from './type/service';
+import { AbsTagRepository } from './type/repository';
+import { AbsTagService } from './type/service';
 
-export default class TagService implements AbstractTagService {
-	private static tagRepository: AbstractTagRepository;
-	private static instance: AbstractTagService;
+export default class TagService implements AbsTagService {
+	private static tagRepository: AbsTagRepository;
+	private static instance: AbsTagService;
 
-	public static getInstance(dependency): AbstractTagService {
+	public static getInstance(dependency): AbsTagService {
 		if (!TagService.instance) {
 			TagService.instance = new TagService(dependency);
 		}

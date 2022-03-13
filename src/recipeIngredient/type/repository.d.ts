@@ -2,11 +2,11 @@ import { EntityManager } from 'typeorm';
 
 import RecipeIngredient from '../entity';
 
-export class AbstractRecipeIngredientRepository {
-	private static instance: AbstractRecipeIngredientRepository;
+export class AbsRecipeIngredientRepository {
+	private static instance: AbsRecipeIngredientRepository;
 	private static em: EntityManager;
 
-	static getInstance(dependency): AbstractRecipeIngredientRepository;
+	static getInstance(dependency): AbsRecipeIngredientRepository;
 
 	private constructor(dependency);
 

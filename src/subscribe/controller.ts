@@ -1,15 +1,15 @@
 import express, { Request, Response } from 'express';
 
-import { AbstractSubscribeController } from './type/controller';
-import { AbstractSubscribeService } from './type/service';
+import { AbsSubscribeController } from './type/controller';
+import { AbsSubscribeService } from './type/service';
 
 export default class SubscribeController {
-	private static instance: AbstractSubscribeController;
-	private static subscribeService: AbstractSubscribeService;
+	private static instance: AbsSubscribeController;
+	private static subscribeService: AbsSubscribeService;
 	private static readonly router = express.Router();
 	private static readonly PATH = '/api/subscribe';
 
-	public static getInstance(dependency): AbstractSubscribeController {
+	public static getInstance(dependency): AbsSubscribeController {
 		if (!SubscribeController.instance) {
 			SubscribeController.instance = new SubscribeController(dependency);
 		}

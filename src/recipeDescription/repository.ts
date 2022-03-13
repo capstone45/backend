@@ -1,13 +1,13 @@
 import { EntityManager } from 'typeorm';
 import RecipeDescription from './entity';
 
-import { AbstractRecipeDescriptionRepository } from './type/repository';
+import { AbsRecipeDescriptionRepository } from './type/repository';
 
-export default class RecipeDescriptionRepository implements AbstractRecipeDescriptionRepository {
-	private static instance: AbstractRecipeDescriptionRepository;
+export default class RecipeDescriptionRepository implements AbsRecipeDescriptionRepository {
+	private static instance: AbsRecipeDescriptionRepository;
 	private static em: EntityManager;
 
-	public static getInstance(dependency): AbstractRecipeDescriptionRepository {
+	public static getInstance(dependency): AbsRecipeDescriptionRepository {
 		if (!RecipeDescriptionRepository.instance) {
 			RecipeDescriptionRepository.instance = new RecipeDescriptionRepository(dependency);
 		}

@@ -1,14 +1,14 @@
 import express, { Router, Request, Response } from 'express';
 
-import { AbstractTagService } from './service';
+import { AbsTagService } from './service';
 
-export abstract class AbstractTagController {
-	private static instance: AbstractTagController;
-	private static tagService: AbstractTagService;
+export abstract class AbsTagController {
+	private static instance: AbsTagController;
+	private static tagService: AbsTagService;
 	private static readonly router: Router;
 	private static readonly PATH: string;
 
-	public static getInstance(dependency): AbstractTagController;
+	public static getInstance(dependency): AbsTagController;
 	private constructor(dependency);
 	initRouter(app: express.Application): void;
 

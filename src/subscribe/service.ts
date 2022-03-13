@@ -1,13 +1,13 @@
-import { AbstractSubscribeService } from './type/service';
-import { AbstractUserRepository } from '../user/type/repository';
-import { AbstractSubscribeRepository } from './type/repository';
+import { AbsSubscribeService } from './type/service';
+import { AbsUserRepository } from '../user/type/repository';
+import { AbsSubscribeRepository } from './type/repository';
 
-export default class SubscribeService implements AbstractSubscribeService {
-	private static instance: AbstractSubscribeService;
-	private static subscribeRepository: AbstractSubscribeRepository;
-	private static userRepository: AbstractUserRepository;
+export default class SubscribeService implements AbsSubscribeService {
+	private static instance: AbsSubscribeService;
+	private static subscribeRepository: AbsSubscribeRepository;
+	private static userRepository: AbsUserRepository;
 
-	public static getInstance(dependency): AbstractSubscribeService {
+	public static getInstance(dependency): AbsSubscribeService {
 		if (!SubscribeService.instance) {
 			SubscribeService.instance = new SubscribeService(dependency);
 		}

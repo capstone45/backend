@@ -1,12 +1,12 @@
 import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO } from './type/type';
-import { AbstractUserRepository } from './type/repository';
-import { AbstractUserService } from './type/service';
+import { AbsUserRepository } from './type/repository';
+import { AbsUserService } from './type/service';
 
-export default class UserService implements AbstractUserService {
-	private static instance: AbstractUserService;
-	private static userRepository: AbstractUserRepository;
+export default class UserService implements AbsUserService {
+	private static instance: AbsUserService;
+	private static userRepository: AbsUserRepository;
 
-	public static getInstance(dependency): AbstractUserService {
+	public static getInstance(dependency): AbsUserService {
 		if (!UserService.instance) {
 			UserService.instance = new UserService(dependency);
 		}

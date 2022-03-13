@@ -1,15 +1,15 @@
 import express, { Request, Response } from 'express';
 
-import { AbstractRecipeController } from './type/controller';
-import { AbstractRecipeService } from './type/service';
+import { AbsRecipeController } from './type/controller';
+import { AbsRecipeService } from './type/service';
 
-export default class RecipeController implements AbstractRecipeController {
-	private static instance: AbstractRecipeController;
-	private static recipeService: AbstractRecipeService;
+export default class RecipeController implements AbsRecipeController {
+	private static instance: AbsRecipeController;
+	private static recipeService: AbsRecipeService;
 	private static readonly router = express.Router();
 	private static readonly PATH = '/api/recipes';
 
-	public static getInstance(dependency): AbstractRecipeController {
+	public static getInstance(dependency): AbsRecipeController {
 		if (!RecipeController.instance) {
 			RecipeController.instance = new RecipeController(dependency);
 		}

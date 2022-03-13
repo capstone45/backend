@@ -1,21 +1,21 @@
 import RecipeIngredient from '../../recipeIngredient/entity';
 import Recipe from '../entity';
 
-import { AbstractUserRepository } from '../../user/type/repository';
-import { AbstractTagRepository } from '../../tag/type/repository';
-import { AbstractRecipeRepository } from './repository';
+import { AbsUserRepository } from '../../user/type/repository';
+import { AbsTagRepository } from '../../tag/type/repository';
+import { AbsRecipeRepository } from './repository';
 import { ModifyRecipeDTO, ReadRecipeDetailDTO } from './data';
-import { AbstractBookmarkRepository } from '../../bookmark/type/repository';
+import { AbsBookmarkRepository } from '../../bookmark/type/repository';
 
-export abstract class AbstractRecipeService {
-	private static recipeRepository: AbstractRecipeRepository;
-	private static recipeTagRepository: AbstractTagRepository;
-	private static userRepository: AbstractUserRepository;
-	private static tagRepository: AbstractTagRepository;
-	private static bookmarkRepository: AbstractBookmarkRepository;
-	private static instance: AbstractRecipeService;
+export abstract class AbsRecipeService {
+	private static recipeRepository: AbsRecipeRepository;
+	private static recipeTagRepository: AbsTagRepository;
+	private static userRepository: AbsUserRepository;
+	private static tagRepository: AbsTagRepository;
+	private static bookmarkRepository: AbsBookmarkRepository;
+	private static instance: AbsRecipeService;
 
-	public static getInstance(dependency): AbstractRecipeService;
+	public static getInstance(dependency): AbsRecipeService;
 	private constructor(dependency);
 
 	createRecipe(userId: number, body: ModifyRecipeDTO): Promise<void>;

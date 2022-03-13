@@ -2,11 +2,11 @@ import { EntityManager } from 'typeorm';
 
 import Ingredient from '../entity';
 
-export class AbstractIngredientRepository {
-	private static instance: AbstractIngredientRepository;
+export class AbsIngredientRepository {
+	private static instance: AbsIngredientRepository;
 	private static em: EntityManager;
 
-	public static getInstance(dependency): AbstractIngredientRepository;
+	public static getInstance(dependency): AbsIngredientRepository;
 	private constructor(dependency);
 
 	findByName(ingredientName: string): Promise<Ingredient[]>;

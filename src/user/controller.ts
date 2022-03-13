@@ -1,15 +1,15 @@
 import express, { Request, Response } from 'express';
 
-import { AbstractUserController } from './type/controller';
-import { AbstractUserService } from './type/service';
+import { AbsUserController } from './type/controller';
+import { AbsUserService } from './type/service';
 
-export default class UserController implements AbstractUserController {
-	private static instance: AbstractUserController;
-	private static userService: AbstractUserService;
+export default class UserController implements AbsUserController {
+	private static instance: AbsUserController;
+	private static userService: AbsUserService;
 	private static readonly router = express.Router();
 	private static readonly PATH = '/api/users';
 
-	public static getInstance(dependency): AbstractUserController {
+	public static getInstance(dependency): AbsUserController {
 		if (!UserController.instance) {
 			UserController.instance = new UserController(dependency);
 		}

@@ -1,8 +1,8 @@
-import { AbstractIngredientRepository } from '../ingredient/type/repository';
-import { AbstractUserRepository } from '../user/type/repository';
-import { AbstractRecipeRepository } from './type/repository';
-import { AbstractTagRepository } from '../tag/type/repository';
-import { AbstractRecipeService } from './type/service';
+import { AbsIngredientRepository } from '../ingredient/type/repository';
+import { AbsUserRepository } from '../user/type/repository';
+import { AbsRecipeRepository } from './type/repository';
+import { AbsTagRepository } from '../tag/type/repository';
+import { AbsRecipeService } from './type/service';
 
 import RecipeDescription from '../recipeDescription/entity';
 import RecipeIngredient from '../recipeIngredient/entity';
@@ -12,26 +12,26 @@ import Recipe from './entity';
 import Tag from '../tag/entity';
 
 import { ModifyRecipeDTO, ReadRecipeDetailDTO } from './type/data';
-import { AbstractBookmarkRepository } from '../bookmark/type/repository';
-import { AbstractRecipeDescriptionRepository } from '../recipeDescription/type/repository';
-import { AbstractRecipeIngredientRepository } from '../recipeIngredient/type/repository';
-import { AbstractRecipeTagRepository } from '../recipeTag/type/repository';
+import { AbsBookmarkRepository } from '../bookmark/type/repository';
+import { AbsRecipeDescriptionRepository } from '../recipeDescription/type/repository';
+import { AbsRecipeIngredientRepository } from '../recipeIngredient/type/repository';
+import { AbsRecipeTagRepository } from '../recipeTag/type/repository';
 
-export default class RecipeService implements AbstractRecipeService {
-	private static instance: AbstractRecipeService;
+export default class RecipeService implements AbsRecipeService {
+	private static instance: AbsRecipeService;
 
-	private static ingredientRepository: AbstractIngredientRepository;
-	private static recipeRepository: AbstractRecipeRepository;
-	private static userRepository: AbstractUserRepository;
-	private static tagRepository: AbstractTagRepository;
-	private static bookmarkRepository: AbstractBookmarkRepository;
-	private static recipeDescriptionRepository: AbstractRecipeDescriptionRepository;
-	private static recipeIngredientRepository: AbstractRecipeIngredientRepository;
-	private static recipeTagRepository: AbstractRecipeTagRepository;
+	private static ingredientRepository: AbsIngredientRepository;
+	private static recipeRepository: AbsRecipeRepository;
+	private static userRepository: AbsUserRepository;
+	private static tagRepository: AbsTagRepository;
+	private static bookmarkRepository: AbsBookmarkRepository;
+	private static recipeDescriptionRepository: AbsRecipeDescriptionRepository;
+	private static recipeIngredientRepository: AbsRecipeIngredientRepository;
+	private static recipeTagRepository: AbsRecipeTagRepository;
 
 	private static INCLUDE_THRESHOLD = 0.5;
 
-	public static getInstance(dependency): AbstractRecipeService {
+	public static getInstance(dependency): AbsRecipeService {
 		if (!RecipeService.instance) {
 			RecipeService.instance = new RecipeService(dependency);
 		}

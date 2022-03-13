@@ -1,13 +1,13 @@
 import { EntityManager } from 'typeorm';
 import User from '../user/entity';
 
-import { AbstractSubscribeRepository } from './type/repository';
+import { AbsSubscribeRepository } from './type/repository';
 
-export default class SubscribeRepository implements AbstractSubscribeRepository {
-	private static instance: AbstractSubscribeRepository;
+export default class SubscribeRepository implements AbsSubscribeRepository {
+	private static instance: AbsSubscribeRepository;
 	private static em: EntityManager;
 
-	public static getInstance(dependency): AbstractSubscribeRepository {
+	public static getInstance(dependency): AbsSubscribeRepository {
 		if (!SubscribeRepository.instance) {
 			SubscribeRepository.instance = new SubscribeRepository(dependency);
 		}

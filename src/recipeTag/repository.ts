@@ -2,13 +2,13 @@ import { EntityManager } from 'typeorm';
 
 import RecipeTag from './entity';
 
-import { AbstractRecipeTagRepository } from './type/repository';
+import { AbsRecipeTagRepository } from './type/repository';
 
-export default class RecipeTagRepository implements AbstractRecipeTagRepository {
-	private static instance: AbstractRecipeTagRepository;
+export default class RecipeTagRepository implements AbsRecipeTagRepository {
+	private static instance: AbsRecipeTagRepository;
 	private static em: EntityManager;
 
-	public static getInstance(dependency): AbstractRecipeTagRepository {
+	public static getInstance(dependency): AbsRecipeTagRepository {
 		if (!RecipeTagRepository.instance) {
 			RecipeTagRepository.instance = new RecipeTagRepository(dependency);
 		}

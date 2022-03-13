@@ -1,15 +1,15 @@
 import express, { Router, Request, Response } from 'express';
 
-import { AbstractUserService } from './service';
+import { AbsUserService } from './service';
 
-export abstract class AbstractUserController {
-	private static instance: AbstractUserController;
+export abstract class AbsUserController {
+	private static instance: AbsUserController;
 	private static readonly router: Router;
 	private static readonly PATH: string;
 
-	private static userService: AbstractUserService;
+	private static userService: AbsUserService;
 
-	public static getInstance(dependency): AbstractUserController;
+	public static getInstance(dependency): AbsUserController;
 	private constructor(dependency);
 	initRouter(app: express.Application): void;
 

@@ -2,13 +2,13 @@ import { EntityManager } from 'typeorm';
 
 import Tag from './entity';
 
-import { AbstractTagRepository } from './type/repository';
+import { AbsTagRepository } from './type/repository';
 
-export default class TagRepository implements AbstractTagRepository {
-	private static instance: AbstractTagRepository;
+export default class TagRepository implements AbsTagRepository {
+	private static instance: AbsTagRepository;
 	private static em: EntityManager;
 
-	public static getInstance(dependency): AbstractTagRepository {
+	public static getInstance(dependency): AbsTagRepository {
 		if (!TagRepository.instance) {
 			TagRepository.instance = new TagRepository(dependency);
 		}

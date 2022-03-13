@@ -1,15 +1,15 @@
 import express, { Request, Response } from 'express';
 
-import { AbstractTagController } from './type/controller';
-import { AbstractTagService } from './type/service';
+import { AbsTagController } from './type/controller';
+import { AbsTagService } from './type/service';
 
-export default class TagController implements AbstractTagController {
-	private static instance: AbstractTagController;
-	private static tagService: AbstractTagService;
+export default class TagController implements AbsTagController {
+	private static instance: AbsTagController;
+	private static tagService: AbsTagService;
 	private static readonly router = express.Router();
 	private static readonly PATH = '/api/tags';
 
-	public static getInstance(dependency): AbstractTagController {
+	public static getInstance(dependency): AbsTagController {
 		if (!TagController.instance) {
 			TagController.instance = new TagController(dependency);
 		}

@@ -4,11 +4,11 @@ import User from '../../user/entity';
 
 import Bookmark from '../entity';
 
-export abstract class AbstractBookmarkRepository {
-	private static instance: AbstractBookmarkRepository;
+export abstract class AbsBookmarkRepository {
+	private static instance: AbsBookmarkRepository;
 	private static em: EntityManager;
 
-	public static getInstance(dependency): AbstractBookmarkRepository;
+	public static getInstance(dependency): AbsBookmarkRepository;
 	private constructor(dependency);
 
 	findByUser(user: User): Promise<Bookmark[]>;

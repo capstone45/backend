@@ -3,16 +3,16 @@ import { EntityManager } from 'typeorm';
 import Recipe from './entity';
 
 import { ModifyRecipeDTO } from './type/data';
-import { AbstractRecipeRepository } from './type/repository';
+import { AbsRecipeRepository } from './type/repository';
 
 import { getFormattedDate } from '../helper/helper';
 
-export default class RecipeRepository implements AbstractRecipeRepository {
-	private static instance: AbstractRecipeRepository;
+export default class RecipeRepository implements AbsRecipeRepository {
+	private static instance: AbsRecipeRepository;
 	private static em: EntityManager;
 	private static SEARCH_LIMIT = 6;
 
-	public static getInstance(dependency): AbstractRecipeRepository {
+	public static getInstance(dependency): AbsRecipeRepository {
 		if (!RecipeRepository.instance) {
 			RecipeRepository.instance = new RecipeRepository(dependency);
 		}

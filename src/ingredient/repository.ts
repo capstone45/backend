@@ -2,10 +2,10 @@ import { EntityManager } from 'typeorm';
 
 import Ingredient from './entity';
 
-import { AbstractIngredientRepository } from './type/repository';
+import { AbsIngredientRepository } from './type/repository';
 
-export default class IngredientRepository implements AbstractIngredientRepository {
-	private static instance: AbstractIngredientRepository;
+export default class IngredientRepository implements AbsIngredientRepository {
+	private static instance: AbsIngredientRepository;
 	private static em: EntityManager;
 
 	public static getInstance(dependency) {

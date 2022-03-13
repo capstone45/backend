@@ -4,11 +4,11 @@ import User from '../entity';
 
 import { UpdateUserDTO } from './type';
 
-export abstract class AbstractUserRepository {
-	private static instance: AbstractUserRepository;
+export abstract class AbsUserRepository {
+	private static instance: AbsUserRepository;
 	private static em: EntityManager;
 
-	public static getInstance(dependency): AbstractUserRepository;
+	public static getInstance(dependency): AbsUserRepository;
 	private constructor(dependency);
 
 	save(user: User): Promise<void>;

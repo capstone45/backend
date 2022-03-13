@@ -1,14 +1,14 @@
 import express, { Router, Request, Response } from 'express';
 
-import { AbstractSubscribeService } from './service';
+import { AbsSubscribeService } from './service';
 
-export abstract class AbstractSubscribeController {
-	private static instance: AbstractSubscribeController;
-	private static subscribeService: AbstractSubscribeService;
+export abstract class AbsSubscribeController {
+	private static instance: AbsSubscribeController;
+	private static subscribeService: AbsSubscribeService;
 	private static readonly router: Router;
 	private static readonly PATH: string;
 
-	public static getInstance(dependency): AbstractSubscribeController;
+	public static getInstance(dependency): AbsSubscribeController;
 	private constructor(dependency);
 	initRouter(app: express.Application): void;
 

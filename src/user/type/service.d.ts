@@ -1,14 +1,14 @@
 import User from '../entity';
 
-import { AbstractUserRepository } from './repository';
+import { AbsUserRepository } from './repository';
 
 import { ReadUserDTO, ReadUserDetailDTO } from './type';
 
-export abstract class AbstractUserService {
-	private static instance: AbstractUserService;
-	private static userRepository: AbstractUserRepository;
+export abstract class AbsUserService {
+	private static instance: AbsUserService;
+	private static userRepository: AbsUserRepository;
 
-	public static getInstance(dependency): AbstractUserService;
+	public static getInstance(dependency): AbsUserService;
 	private constructor(dependency);
 
 	findById(id: number): Promise<ReadUserDetailDTO>;

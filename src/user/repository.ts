@@ -2,14 +2,14 @@ import { EntityManager } from 'typeorm';
 
 import User from './entity';
 
-import { AbstractUserRepository } from './type/repository';
+import { AbsUserRepository } from './type/repository';
 import { UpdateUserDTO } from './type/type';
 
-export default class UserRepository implements AbstractUserRepository {
-	private static instance: AbstractUserRepository;
+export default class UserRepository implements AbsUserRepository {
+	private static instance: AbsUserRepository;
 	private static em: EntityManager;
 
-	public static getInstance(dependency): AbstractUserRepository {
+	public static getInstance(dependency): AbsUserRepository {
 		if (!UserRepository.instance) {
 			UserRepository.instance = new UserRepository(dependency);
 		}
