@@ -1,36 +1,36 @@
 import { getManager } from 'typeorm';
 
-import User from './user/user.entity';
-import Tag from './tag/tag.entity';
-import Recipe from './recipe/recipe.entity';
-import RecipeTag from './recipeTag/recipeTag.entity';
-import RecipeIngredient from './recipeIngredient/recipeIngredient.entity';
-import RecipeDescription from './recipeDescription/recipeDescription.entity';
-import Ingredient from './ingredient/ingredient.entity';
-import DateInfo from './dateInfo/dateInfo.entity';
-import Bookmark from './bookmark/bookmark.entity';
+import User from './user/entity';
+import Tag from './tag/entity';
+import Recipe from './recipe/entity';
+import RecipeTag from './recipeTag/entity';
+import RecipeIngredient from './recipeIngredient/entity';
+import RecipeDescription from './recipeDescription/entity';
+import Ingredient from './ingredient/entity';
+import DateInfo from './dateInfo/entity';
+import Bookmark from './bookmark/entity';
 
-import UserController from './user/user.controller';
-import UserService from './user/user.service';
-import UserRepository from './user/user.repository';
+import UserController from './user/controller';
+import UserService from './user/service';
+import UserRepository from './user/repository';
 
-import TagController from './tag/tag.controller';
-import TagService from './tag/tag.service';
-import TagRepository from './tag/tag.repository';
+import TagController from './tag/controller';
+import TagService from './tag/service';
+import TagRepository from './tag/repository';
 
-import RecipeController from './recipe/recipe.controller';
-import RecipeService from './recipe/recipe.service';
-import RecipeRepository from './recipe/recipe.repository';
+import RecipeController from './recipe/controller';
+import RecipeService from './recipe/service';
+import RecipeRepository from './recipe/repository';
 
-import subscribeRepository from './subscribe/subscribe.repository';
-import SubscribeService from './subscribe/subscribe.service';
-import SubscribeController from './subscribe/subscribe.controller';
+import subscribeRepository from './subscribe/repository';
+import SubscribeService from './subscribe/service';
+import SubscribeController from './subscribe/controller';
 
-import IngredientRepository from './ingredient/ingredient.repository';
-import RecipeTagRepository from './recipeTag/recipeTag.repository';
-import RecipeIngredientRepository from './recipeIngredient/recipeIngredient.repository';
-import BookmarkRepository from './bookmark/bookmark.repository';
-import RecipeDescriptionRepository from './recipeDescription/recipeDescription.repository';
+import IngredientRepository from './ingredient/repository';
+import RecipeTagRepository from './recipeTag/repository';
+import RecipeIngredientRepository from './recipeIngredient/repository';
+import BookmarkRepository from './bookmark/repository';
+import RecipeDescriptionRepository from './recipeDescription/repository';
 
 export default class Container {
 	private static isInitialzied = false;
@@ -80,12 +80,6 @@ export default class Container {
 			...commonDependency,
 			recipeService: Container.getBean(layer.SERVICE, domain.RECIPE),
 		});
-		//Container.bean[layer.CONTROLLER][domain.RECIPE_TAG] =
-		//Container.bean[layer.CONTROLLER][domain.RECIPE_INGREDIENT] =
-		//Container.bean[layer.CONTROLLER][domain.RECIPE_DESCRIPTION] =
-		//Container.bean[layer.CONTROLLER][domain.INGREDIENT] =
-		//Container.bean[layer.CONTROLLER][domain.DATEINFO] =
-		//Container.bean[layer.CONTROLLER][domain.BOOKMAKR] =
 		Container.bean[layer.CONTROLLER][domain.SUBSCRIBE] = SubscribeController.getInstance({
 			...commonDependency,
 			subscribeService: Container.getBean(layer.SERVICE, domain.SUBSCRIBE),
@@ -109,12 +103,6 @@ export default class Container {
 			bookmarkRepository: Container.getBean(layer.REPOSITORY, domain.BOOKMAKR),
 			recipeDescriptionRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE_DESCRIPTION),
 		});
-		//Container.bean[layer.SERVICE][domain.RECIPE_TAG] =
-		//Container.bean[layer.SERVICE][domain.RECIPE_INGREDIENT] =
-		//Container.bean[layer.SERVICE][domain.RECIPE_DESCRIPTION] =
-		//Container.bean[layer.SERVICE][domain.INGREDIENT] =
-		//Container.bean[layer.SERVICE][domain.DATEINFO] =
-		//Container.bean[layer.SERVICE][domain.BOOKMAKR] =
 		Container.bean[layer.SERVICE][domain.SUBSCRIBE] = SubscribeService.getInstance({
 			subscribeRepository: Container.getBean(layer.REPOSITORY, domain.SUBSCRIBE),
 			userRepository: Container.getBean(layer.REPOSITORY, domain.USER),
@@ -130,7 +118,6 @@ export default class Container {
 		Container.bean[layer.REPOSITORY][domain.RECIPE_INGREDIENT] = RecipeIngredientRepository.getInstance({ ...commonDependency });
 		Container.bean[layer.REPOSITORY][domain.RECIPE_DESCRIPTION] = RecipeDescriptionRepository.getInstance({ ...commonDependency });
 		Container.bean[layer.REPOSITORY][domain.INGREDIENT] = IngredientRepository.getInstance({ ...commonDependency });
-		//Container.bean[layer.REPOSITORY][domain.DATEINFO] =
 		Container.bean[layer.REPOSITORY][domain.BOOKMAKR] = BookmarkRepository.getInstance({ ...commonDependency });
 		Container.bean[layer.REPOSITORY][domain.SUBSCRIBE] = subscribeRepository.getInstance({ ...commonDependency });
 	}

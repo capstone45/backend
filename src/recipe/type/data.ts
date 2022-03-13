@@ -1,8 +1,8 @@
-import Recipe from '../recipe.entity';
-import Tag from '../../tag/tag.entity';
-import RecipeIngredient from '../../recipeIngredient/recipeIngredient.entity';
-import RecipeDescription from '../../recipeDescription/recipeDescription.entity';
-import User from '../../user/user.entity';
+import Recipe from '../entity';
+import Tag from '../../tag/entity';
+import RecipeIngredient from '../../recipeIngredient/entity';
+import RecipeDescription from '../../recipeDescription/entity';
+import User from '../../user/entity';
 
 import { BaseUserDTO } from '../../user/type/type';
 import { ModifyRecipeDescriptionDTO } from '../../recipeDescription/type/type';

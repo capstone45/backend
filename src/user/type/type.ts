@@ -1,5 +1,5 @@
-import Recipe from '../../recipe/recipe.entity';
-import User from '../user.entity';
+import Recipe from '../../recipe/entity';
+import User from '../entity';
 
 export class BaseUserDTO {
 	readonly id: number;
