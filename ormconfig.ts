@@ -10,7 +10,7 @@ const ormconfig: ConnectionOptions = {
 	database: process.env.DB_DATABASENAME,
 	synchronize: true,
 	logging: true,
-	entities: ['src/**/*.entity.ts'],
+	entities: ['src/**/entity.ts'],
 };
 
 export default ormconfig;
