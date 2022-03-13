@@ -1,4 +1,5 @@
 import { EntityManager } from 'typeorm';
+import Recipe from '../recipe/entity';
 
 import User from '../user/entity';
 
@@ -19,10 +20,11 @@ export default class BookmarkRepository implements AbsBookmarkRepository {
 		BookmarkRepository.em = dependency.em;
 	}
 
-	async changeBookmark(recipeUser: User, user: User): Promise<void> {
+	async changeBookmark(recipeUser: User, user: User, recipe: Recipe): Promise<void> {
 		await BookmarkRepository.em.transaction(async (txem) => {
 			await txem.getRepository(User).save(recipeUser);
 			await txem.getRepository(User).save(user);
+			await txem.getRepository(Recipe).save(recipe);
 		});
 	}
 }

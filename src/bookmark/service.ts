@@ -36,12 +36,14 @@ export default class BookmarkService implements AbsBookmarkService {
 		if (doesInclude) {
 			bookmarks.splice(index, 1);
 			recipeUser.numberOfLike--;
+			recipe.numberOfLike--;
 		} else {
 			bookmarks.push(recipe);
 			recipeUser.numberOfLike++;
+			recipe.numberOfLike++;
 		}
 
-		await BookmarkService.bookmarkRepository.changeBookmark(recipeUser, user);
+		await BookmarkService.bookmarkRepository.changeBookmark(recipeUser, user, recipe);
 	}
 
 	private static include(bookmark: Recipe[], recipe: Recipe): [boolean, number] {
