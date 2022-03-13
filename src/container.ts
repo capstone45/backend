@@ -30,6 +30,8 @@ import RecipeTagRepository from './recipeTag/repository';
 import RecipeIngredientRepository from './recipeIngredient/repository';
 import BookmarkRepository from './bookmark/repository';
 import RecipeDescriptionRepository from './recipeDescription/repository';
+import BookmarkController from './bookmark/controller';
+import BookmarkService from './bookmark/service';
 
 export default class Container {
 	private static isInitialzied = false;
@@ -62,7 +64,6 @@ export default class Container {
 		Container.bean[layer.ENTITY][domain.RECIPE_DESCRIPTION] = RecipeDescription;
 		Container.bean[layer.ENTITY][domain.INGREDIENT] = Ingredient;
 		Container.bean[layer.ENTITY][domain.DATEINFO] = DateInfo;
-		// Container.bean[layer.ENTITY][domain.BOOKMARK] = Bookmark;
 	}
 
 	private static initController(app) {
@@ -82,6 +83,10 @@ export default class Container {
 		Container.bean[layer.CONTROLLER][domain.SUBSCRIBE] = SubscribeController.getInstance({
 			...commonDependency,
 			subscribeService: Container.getBean(layer.SERVICE, domain.SUBSCRIBE),
+		});
+		Container.bean[layer.CONTROLLER][domain.BOOKMARK] = BookmarkController.getInstance({
+			...commonDependency,
+			bookmarkService: Container.getBean(layer.SERVICE, domain.BOOKMARK),
 		});
 	}
 
@@ -103,6 +108,11 @@ export default class Container {
 		});
 		Container.bean[layer.SERVICE][domain.SUBSCRIBE] = SubscribeService.getInstance({
 			subscribeRepository: Container.getBean(layer.REPOSITORY, domain.SUBSCRIBE),
+			userRepository: Container.getBean(layer.REPOSITORY, domain.USER),
+		});
+		Container.bean[layer.SERVICE][domain.BOOKMARK] = BookmarkService.getInstance({
+			bookmarkRepository: Container.getBean(layer.REPOSITORY, domain.BOOKMARK),
+			recipeRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE),
 			userRepository: Container.getBean(layer.REPOSITORY, domain.USER),
 		});
 	}

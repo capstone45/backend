@@ -57,6 +57,9 @@ export default class Recipe {
 	@Column({ name: 'SERVING', type: 'enum', enum: serving, nullable: false })
 	serving: serving;
 
+	@Column({ name: 'NUMBER_OF_LIKE', type: 'int', nullable: false, default: 0 })
+	numberOfLike: number;
+
 	static create(rawRecipe: ModifyRecipeDTO, user: User): Recipe {
 		const recipe = new Recipe();
 		recipe.user = user;
