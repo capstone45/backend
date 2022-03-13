@@ -56,7 +56,7 @@ export default class RecipeRepository implements AbsRecipeRepository {
 			.getRepository(Recipe)
 			.createQueryBuilder('recipe')
 			.select()
-			.orderBy('recipe.createDate', 'DESC')
+			.orderBy('recipe.date.createdDate', 'DESC')
 			.limit(RecipeRepository.SEARCH_LIMIT)
 			.getMany();
 	}
