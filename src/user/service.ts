@@ -18,14 +18,16 @@ export default class UserService implements AbsUserService {
 		UserService.userRepository = dependency.userRepository;
 	}
 
-	async updateThumbnail(targetUserId: number, signInUserId: number, thumbnailUrl: string): Promise<void> {
-		if (targetUserId !== signInUserId) throw new Error(UserError.NOT_AUTHORIZED);
+	async updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void> {
+		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED);
 
-		await UserService.userRepository.updateThumbnail(signInUserId, thumbnailUrl);
+		await UserService.userRepository.updateThumbnail(userId, thumbnailUrl);
 	}
 
-	async deleteThumbnail(id: number): Promise<void> {
-		await UserService.userRepository.deleteThumbnail(id);
+	async deleteThumbnail(targetUserId: number, userId: number): Promise<void> {
+		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED);
+
+		await UserService.userRepository.deleteThumbnail(userId);
 	}
 
 	async updateUserInfomation(id: number, updateUserInfomation: UpdateUserDTO): Promise<void> {

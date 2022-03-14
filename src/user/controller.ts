@@ -36,9 +36,9 @@ export default class UserController implements AbsUserController {
 	async updateThumbnail(req: Request, res: Response): Promise<void> {
 		try {
 			const targetUserId = Number(req.params.id);
-			const { signInUserId, thumbnailUrl } = req.body;
+			const { userId, thumbnailUrl } = req.body;
 
-			await UserController.userService.updateThumbnail(targetUserId, signInUserId, thumbnailUrl);
+			await UserController.userService.updateThumbnail(targetUserId, userId, thumbnailUrl);
 
 			res.status(204).send();
 		} catch (error) {
@@ -55,11 +55,21 @@ export default class UserController implements AbsUserController {
 
 	async deleteThumbnail(req: Request, res: Response): Promise<void> {
 		try {
+			const targetUserId = Number(req.params.id);
 			const { userId } = req.body;
-			await UserController.userService.deleteThumbnail(userId);
-			res.status(200).send();
+
+			await UserController.userService.deleteThumbnail(targetUserId, userId);
+
+			res.status(204).send();
 		} catch (error) {
-			res.status(400).send();
+			switch (error.message) {
+				case UserError.NOT_AUTHORIZED:
+					res.status(401).send();
+					return;
+				default:
+					res.status(400).send();
+					return;
+			}
 		}
 	}
 
