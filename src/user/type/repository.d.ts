@@ -2,7 +2,7 @@ import { EntityManager } from 'typeorm';
 
 import User from '../entity';
 
-import { UpdateUserDTO } from './type';
+import { UpdateUserDTO } from './dto';
 
 export abstract class AbsUserRepository {
 	private static instance: AbsUserRepository;

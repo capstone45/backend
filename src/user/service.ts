@@ -1,4 +1,4 @@
-import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO } from './type/type';
+import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO } from './type/dto';
 import { AbsUserRepository } from './type/repository';
 import { AbsUserService } from './type/service';
 
