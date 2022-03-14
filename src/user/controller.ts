@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 
 import { AbsUserController } from './type/controller';
+import UserError from './type/error';
 import { AbsUserService } from './type/service';
 
 export default class UserController implements AbsUserController {
@@ -28,17 +29,27 @@ export default class UserController implements AbsUserController {
 		UserController.router.get('/:id', this.getById);
 		UserController.router.patch('/', this.updateUserInfomation);
 		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
-		UserController.router.put('/thumbnail', this.updateThumbnail);
+		UserController.router.put('/:id/thumbnail', this.updateThumbnail);
 		app.use(UserController.PATH, UserController.router);
 	}
 
 	async updateThumbnail(req: Request, res: Response): Promise<void> {
 		try {
-			const { userId, thumbnailUrl } = req.body;
-			await UserController.userService.updateThumbnail(userId, thumbnailUrl);
-			res.status(200).send();
+			const targetUserId = Number(req.params.id);
+			const { signInUserId, thumbnailUrl } = req.body;
+
+			await UserController.userService.updateThumbnail(targetUserId, signInUserId, thumbnailUrl);
+
+			res.status(204).send();
 		} catch (error) {
-			res.status(400).send();
+			switch (error.message) {
+				case UserError.NOT_AUTHORIZED:
+					res.status(401).send();
+					return;
+				default:
+					res.status(400).send();
+					return;
+			}
 		}
 	}
 

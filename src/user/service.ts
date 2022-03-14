@@ -1,4 +1,5 @@
 import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO } from './type/dto';
+import UserError from './type/error';
 import { AbsUserRepository } from './type/repository';
 import { AbsUserService } from './type/service';
 
@@ -17,8 +18,10 @@ export default class UserService implements AbsUserService {
 		UserService.userRepository = dependency.userRepository;
 	}
 
-	async updateThumbnail(id: number, thumbnailUrl: string): Promise<void> {
-		await UserService.userRepository.updateThumbnail(id, thumbnailUrl);
+	async updateThumbnail(targetUserId: number, signInUserId: number, thumbnailUrl: string): Promise<void> {
+		if (targetUserId !== signInUserId) throw new Error(UserError.NOT_AUTHORIZED);
+
+		await UserService.userRepository.updateThumbnail(signInUserId, thumbnailUrl);
 	}
 
 	async deleteThumbnail(id: number): Promise<void> {

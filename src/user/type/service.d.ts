@@ -14,7 +14,7 @@ export abstract class AbsUserService {
 	findById(id: number): Promise<ReadUserDetailDTO>;
 	findByNickname(nickname: string): Promise<ReadUserDTO[]>;
 
-	updateThumbnail(id: number, thumbnailUrl: string): Promise<void>;
+	updateThumbnail(targetUserId: number, signInUserId: number, thumbnailUrl: string): Promise<void>;
 	updateUserInfomation(id: number, body: Partial<User>): Promise<void>;
 
 	deleteThumbnail(id: number): Promise<void>;

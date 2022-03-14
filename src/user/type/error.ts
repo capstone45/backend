@@ -1,6 +1,7 @@
 const UserError = {
 	NOT_FOUND: 'USER_NOT_FOUND',
 	NOT_AUTHORIZED: 'NOT_AUTHORIZED',
+	PASSWORD_NOT_MATCH: 'PASSWORD_NOT_MATCH',
 };
 
 export default UserError;
