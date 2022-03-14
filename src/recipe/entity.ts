@@ -6,7 +6,7 @@ import RecipeTag from '../recipeTag/entity';
 import DateInfo from '../dateInfo/entity';
 import User from '../user/entity';
 
-import { ModifyRecipeDTO } from './type/data';
+import { ModifyRecipeDTO } from './type/dto';
 
 export enum serving {
 	DONTKNOW = 0,

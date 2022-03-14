@@ -4,7 +4,7 @@ import RecipeIngredient from '../../recipeIngredient/entity';
 import RecipeDescription from '../../recipeDescription/entity';
 import User from '../../user/entity';
 
-import { BaseUserDTO } from '../../user/type/type';
+import { BaseUserDTO } from '../../user/type/dto';
 import { ModifyRecipeDescriptionDTO } from '../../recipeDescription/type/type';
 import { ModifyRecipeIngredientDTO } from '../../recipeIngredient/type/type';
 
