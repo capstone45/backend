@@ -98,17 +98,37 @@ export default class UserController implements AbsUserController {
 
 	async getById(req: Request, res: Response): Promise<void> {
 		try {
-			const { userId } = req.body;
-			const findUser = await UserController.userService.findById(userId);
+			const targetUserId = Number(req.params.id);
+			const findUser = await UserController.userService.findById(targetUserId);
+
 			res.status(200).send(findUser);
 		} catch (error) {
-			res.status(400).send();
+			switch (error.message) {
+				case UserError.NOT_FOUND:
+					res.status(404).send();
+					return;
+				default:
+					res.status(400).send();
+					return;
+			}
 		}
 	}
 
 	async getByNickname(req: Request, res: Response): Promise<void> {
-		const nickname = String(req.query.nickname);
-		const findUsers = await UserController.userService.findByNickname(nickname);
-		res.send(findUsers);
+		try {
+			const nickname = String(req.query.nickname);
+			const findUsers = await UserController.userService.findByNickname(nickname);
+
+			res.status(200).send(findUsers);
+		} catch (error) {
+			switch (error.message) {
+				case UserError.NOT_FOUND:
+					res.status(404).send();
+					return;
+				default:
+					res.status(400).send();
+					return;
+			}
+		}
 	}
 }

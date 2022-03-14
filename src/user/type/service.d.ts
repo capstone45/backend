@@ -9,11 +9,11 @@ export abstract class AbsUserService {
 	public static getInstance(dependency): AbsUserService;
 	private constructor(dependency);
 
-	findById(id: number): Promise<ReadUserDetailDTO>;
-	findByNickname(nickname: string): Promise<ReadUserDTO[]>;
+	findById(id: number): Promise<ReadUserDetailDTO | Error>;
+	findByNickname(nickname: string): Promise<ReadUserDTO[] | Error>;
 
-	updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void>;
-	updateUserInfomation(targetUserId: number, userId: number, updateUserInfomation: UpdateUserDTO): Promise<void>;
+	updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void | Error>;
+	updateUserInfomation(targetUserId: number, userId: number, updateUserInfomation: UpdateUserDTO): Promise<void | Error>;
 
-	deleteThumbnail(targetUserId: number, userId: number): Promise<void>;
+	deleteThumbnail(targetUserId: number, userId: number): Promise<void | Error>;
 }

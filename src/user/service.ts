@@ -38,16 +38,20 @@ export default class UserService implements AbsUserService {
 		await UserService.userRepository.updateUserInfomation(userId, updateUserInfomation);
 	}
 
-	async findById(id: number): Promise<ReadUserDetailDTO> {
+	async findById(id: number): Promise<ReadUserDetailDTO | Error> {
 		const user = await UserService.userRepository.findById(id);
+		if (!user) throw new Error(UserError.NOT_FOUND);
+
 		const likeRecipe = await user.bookmarks;
 		const subscribingUser = await user.stars;
 
 		return new ReadUserDetailDTO(user, likeRecipe, subscribingUser);
 	}
 
-	async findByNickname(nickname: string): Promise<ReadUserDTO[]> {
+	async findByNickname(nickname: string): Promise<ReadUserDTO[] | Error> {
 		const users = await UserService.userRepository.findByNickname(nickname);
+		if (users.length === 0) throw new Error(UserError.NOT_FOUND);
+
 		return await Promise.all(users.map(async (user) => new ReadUserDTO(user)));
 	}
 }
