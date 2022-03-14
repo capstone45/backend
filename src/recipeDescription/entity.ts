@@ -10,7 +10,7 @@ export default class RecipeDescription {
 	@Generated('increment')
 	id: number;
 
-	@ManyToOne(() => Recipe, (recipe) => recipe.recipeDescriptions, { lazy: true })
+	@ManyToOne(() => Recipe, (recipe) => recipe.recipeDescriptions, { lazy: true, onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'RECIPE_ID' })
 	recipe: Recipe;
 

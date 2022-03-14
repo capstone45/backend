@@ -5,7 +5,7 @@ import Ingredient from '../ingredient/entity';
 
 @Entity({ name: 'RECIPE_INGREDIENT' })
 export default class RecipeIngredient {
-	@ManyToOne(() => Recipe, (recipe) => recipe.recipeIngredients, { primary: true, cascade: ['insert', 'update'] })
+	@ManyToOne(() => Recipe, (recipe) => recipe.recipeIngredients, { primary: true, cascade: ['insert', 'update'], onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'RECIPE_ID' })
 	recipe: Recipe;
 

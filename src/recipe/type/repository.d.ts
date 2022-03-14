@@ -2,7 +2,7 @@ import { EntityManager } from 'typeorm';
 
 import Recipe from '../entity';
 
-import { ModifyRecipeDTO } from './data';
+import { ModifyRecipeDTO } from './dto';
 
 export abstract class AbsRecipeRepository {
 	private static instance: AbsRecipeRepository;
@@ -11,6 +11,7 @@ export abstract class AbsRecipeRepository {
 	public static getInstance(dependency): AbsRecipeRepository;
 	private constructor(dependency);
 
+	remove(recipe: Recipe): Promise<void>;
 	create(rawRecipe: ModifyRecipeDTO): Recipe;
 	save(recipe: Recipe): Promise<void>;
 	findBySubscribingChefsLatest(id: number): Promise<Recipe[]>;

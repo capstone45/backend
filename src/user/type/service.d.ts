@@ -2,7 +2,7 @@ import User from '../entity';
 
 import { AbsUserRepository } from './repository';
 
-import { ReadUserDTO, ReadUserDetailDTO } from './type';
+import { ReadUserDTO, ReadUserDetailDTO } from './dto';
 
 export abstract class AbsUserService {
 	private static instance: AbsUserService;

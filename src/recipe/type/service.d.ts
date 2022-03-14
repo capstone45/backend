@@ -1,13 +1,12 @@
 import RecipeIngredient from '../../recipeIngredient/entity';
 import Recipe from '../entity';
 
+import { AbsBookmarkRepository } from '../../bookmark/type/repository';
 import { AbsUserRepository } from '../../user/type/repository';
 import { AbsTagRepository } from '../../tag/type/repository';
 import { AbsRecipeRepository } from './repository';
-import { ModifyRecipeDTO, ReadRecipeDetailDTO } from './data';
-import { AbsBookmarkRepository } from '../../bookmark/type/repository';
 
-import { BaseRecipeDTO } from './data';
+import { BaseRecipeDTO, ModifyRecipeDTO, ReadRecipeDetailDTO } from './dto';
 
 export abstract class AbsRecipeService {
 	private static recipeRepository: AbsRecipeRepository;
@@ -20,13 +19,13 @@ export abstract class AbsRecipeService {
 	public static getInstance(dependency): AbsRecipeService;
 	private constructor(dependency);
 
+	deleteRecipe(userId: number, recipeId: number): Promise<void | Error>;
 	createRecipe(userId: number, body: ModifyRecipeDTO): Promise<void>;
-
-	findBySubscribingChefsLatest(id: number): Promise<Recipe[]>;
+	findSubscribingChefsLatest(id: number): Promise<Recipe[]>;
 	findByIngredient(ingredients: string[]): Promise<Recipe[]>;
 	findByTitle(title: string): Promise<Recipe[]>;
-	findByTodaysMostLiked(): Promise<BaseRecipeDTO[]>;
-	findByLatestCreated(): Promise<BaseRecipeDTO[]>;
+	findTodaysMostLiked(): Promise<BaseRecipeDTO[]>;
+	findLatestCreated(): Promise<BaseRecipeDTO[]>;
 	findById(recipeId: number, userId: number): Promise<ReadRecipeDetailDTO>;
 
 	updateRecipe(userId: number, recipeId: number, body: ModifyRecipeDTO): Promise<void>;

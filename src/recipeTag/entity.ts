@@ -4,7 +4,7 @@ import Tag from '../tag/entity';
 
 @Entity({ name: 'RECIPE_TAG' })
 export default class RecipeTag {
-	@ManyToOne(() => Recipe, (recipe) => recipe.id, { lazy: true, nullable: false, primary: true })
+	@ManyToOne(() => Recipe, (recipe) => recipe.id, { lazy: true, nullable: false, primary: true, onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'RECIPE_ID' })
 	recipe: Recipe;
 

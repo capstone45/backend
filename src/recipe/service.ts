@@ -1,9 +1,3 @@
-import { AbsIngredientRepository } from '../ingredient/type/repository';
-import { AbsUserRepository } from '../user/type/repository';
-import { AbsRecipeRepository } from './type/repository';
-import { AbsTagRepository } from '../tag/type/repository';
-import { AbsRecipeService } from './type/service';
-
 import RecipeDescription from '../recipeDescription/entity';
 import RecipeIngredient from '../recipeIngredient/entity';
 import Ingredient from '../ingredient/entity';
@@ -12,23 +6,29 @@ import Recipe from './entity';
 import Tag from '../tag/entity';
 import User from '../user/entity';
 
-import { BaseRecipeDTO, ModifyRecipeDTO, ReadRecipeDetailDTO } from './type/data';
-import { AbsBookmarkRepository } from '../bookmark/type/repository';
 import { AbsRecipeDescriptionRepository } from '../recipeDescription/type/repository';
 import { AbsRecipeIngredientRepository } from '../recipeIngredient/type/repository';
+import { AbsIngredientRepository } from '../ingredient/type/repository';
 import { AbsRecipeTagRepository } from '../recipeTag/type/repository';
+import { AbsUserRepository } from '../user/type/repository';
+import { AbsTagRepository } from '../tag/type/repository';
+import { AbsRecipeRepository } from './type/repository';
+import { AbsRecipeService } from './type/service';
+
+import { BaseRecipeDTO, ModifyRecipeDTO, ReadRecipeDetailDTO } from './type/dto';
+import UserError from '../user/type/error';
+import RecipeError from './type/error';
 
 export default class RecipeService implements AbsRecipeService {
 	private static instance: AbsRecipeService;
 
+	private static recipeDescriptionRepository: AbsRecipeDescriptionRepository;
+	private static recipeIngredientRepository: AbsRecipeIngredientRepository;
 	private static ingredientRepository: AbsIngredientRepository;
+	private static recipeTagRepository: AbsRecipeTagRepository;
 	private static recipeRepository: AbsRecipeRepository;
 	private static userRepository: AbsUserRepository;
 	private static tagRepository: AbsTagRepository;
-	private static bookmarkRepository: AbsBookmarkRepository;
-	private static recipeDescriptionRepository: AbsRecipeDescriptionRepository;
-	private static recipeIngredientRepository: AbsRecipeIngredientRepository;
-	private static recipeTagRepository: AbsRecipeTagRepository;
 
 	private static INCLUDE_THRESHOLD = 0.5;
 
@@ -57,6 +57,16 @@ export default class RecipeService implements AbsRecipeService {
 			}
 		});
 		return count / ingredients.length >= RecipeService.INCLUDE_THRESHOLD ? true : false;
+	}
+
+	async deleteRecipe(userId: number, recipeId: number): Promise<void | Error> {
+		const recipe = await RecipeService.recipeRepository.findById(recipeId);
+		if (!recipe) throw new Error(RecipeError.RECIPE_NOT_FOUND);
+
+		const recipeUser = await recipe.user;
+		if (Number(recipeUser.id) !== userId) throw new Error(UserError.NOT_AUTHORIZED);
+
+		await RecipeService.recipeRepository.remove(recipe);
 	}
 
 	async createRecipe(userId: number, body: ModifyRecipeDTO): Promise<void> {
@@ -193,19 +203,19 @@ export default class RecipeService implements AbsRecipeService {
 		return findRecipes;
 	}
 
-	async findByTodaysMostLiked(): Promise<BaseRecipeDTO[]> {
+	async findTodaysMostLiked(): Promise<BaseRecipeDTO[]> {
 		return (await RecipeService.recipeRepository.findByTodaysMostLiked()).map(
 			(recipe) => new BaseRecipeDTO(recipe.id, recipe.title, recipe.thumbnailUrl)
 		);
 	}
 
-	async findByLatestCreated(): Promise<BaseRecipeDTO[]> {
+	async findLatestCreated(): Promise<BaseRecipeDTO[]> {
 		return (await RecipeService.recipeRepository.findByLatestCreated()).map(
 			(recipe) => new BaseRecipeDTO(recipe.id, recipe.title, recipe.thumbnailUrl)
 		);
 	}
 
-	async findBySubscribingChefsLatest(id: number): Promise<Recipe[]> {
+	async findSubscribingChefsLatest(id: number): Promise<Recipe[]> {
 		const findRecipes = await RecipeService.recipeRepository.findBySubscribingChefsLatest(id);
 		return findRecipes;
 	}
