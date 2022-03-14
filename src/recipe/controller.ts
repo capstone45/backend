@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
+import UserError from '../user/type/error';
 
 import { AbsRecipeController } from './type/controller';
+import RecipeError from './type/error';
 import { AbsRecipeService } from './type/service';
 
 export default class RecipeController implements AbsRecipeController {
@@ -24,6 +26,7 @@ export default class RecipeController implements AbsRecipeController {
 	initRouter(app: express.Application): void {
 		if (RecipeController.instance) return;
 
+		RecipeController.router.delete('/:id', this.deleteRecipe);
 		RecipeController.router.get('/today-most-liked', this.getTodaysMostLiked);
 		RecipeController.router.get('/latest', this.getLatestCreated);
 		RecipeController.router.get('/search', this.getByTitle);
@@ -36,11 +39,34 @@ export default class RecipeController implements AbsRecipeController {
 		app.use(RecipeController.PATH, RecipeController.router);
 	}
 
-	// authenticate, authorize middleware 필요
+	async deleteRecipe(req: Request, res: Response): Promise<void> {
+		try {
+			const recipeId = Number(req.params.id);
+			const { userId } = req.body;
+
+			await RecipeController.recipeService.deleteRecipe(userId, recipeId);
+
+			res.status(200).send();
+		} catch (error) {
+			switch (error.message) {
+				case RecipeError.RECIPE_NOT_FOUND:
+					res.status(404).send();
+					return;
+				case UserError.NOT_AUTHORIZED:
+					res.status(401).send();
+					return;
+				default:
+					res.status(400).send();
+					return;
+			}
+		}
+	}
 	async createRecipe(req: Request, res: Response): Promise<void> {
 		try {
 			const { userId, recipe } = req.body;
-			RecipeController.recipeService.createRecipe(userId, recipe);
+
+			await RecipeController.recipeService.createRecipe(userId, recipe);
+
 			res.status(200).send();
 		} catch (error) {
 			res.status(400).send(error);
@@ -51,7 +77,7 @@ export default class RecipeController implements AbsRecipeController {
 		try {
 			const { userId, recipe } = req.body;
 			const recipeId = Number(req.params.id);
-			RecipeController.recipeService.updateRecipe(userId, recipeId, recipe);
+			await RecipeController.recipeService.updateRecipe(userId, recipeId, recipe);
 			res.status(200).send();
 		} catch (error) {
 			res.status(400).send();
@@ -65,7 +91,6 @@ export default class RecipeController implements AbsRecipeController {
 			const findRecipes = await RecipeController.recipeService.findById(recipeId, userId);
 			res.status(200).send(findRecipes);
 		} catch (error) {
-			console.log(error);
 			res.status(400).send();
 		}
 	}
@@ -77,17 +102,17 @@ export default class RecipeController implements AbsRecipeController {
 	}
 
 	async getTodaysMostLiked(req: Request, res: Response): Promise<void> {
-		const findRecipes = await RecipeController.recipeService.findByTodaysMostLiked();
+		const findRecipes = await RecipeController.recipeService.findTodaysMostLiked();
 		res.send(findRecipes);
 	}
 
 	async getLatestCreated(req: Request, res: Response): Promise<void> {
-		const findRecipes = await RecipeController.recipeService.findByLatestCreated();
+		const findRecipes = await RecipeController.recipeService.findLatestCreated();
 		res.send(findRecipes);
 	}
 
 	async getSubscribingChefsLatest(req: Request, res: Response): Promise<void> {
-		const findRecipes = await RecipeController.recipeService.findBySubscribingChefsLatest(3);
+		const findRecipes = await RecipeController.recipeService.findSubscribingChefsLatest(3);
 		res.send(findRecipes);
 	}
 

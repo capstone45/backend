@@ -2,8 +2,9 @@ import { EntityManager } from 'typeorm';
 
 import Recipe from './entity';
 
-import { ModifyRecipeDTO } from './type/data';
 import { AbsRecipeRepository } from './type/repository';
+
+import { ModifyRecipeDTO } from './type/dto';
 
 import { getFormattedDate } from '../helper/helper';
 
@@ -23,6 +24,10 @@ export default class RecipeRepository implements AbsRecipeRepository {
 		RecipeRepository.em = dependency.em;
 	}
 
+	async remove(recipe: Recipe): Promise<void> {
+		await RecipeRepository.em.remove(recipe);
+	}
+
 	create(rawRecipe: ModifyRecipeDTO): Recipe {
 		return RecipeRepository.em.create(Recipe, { title: rawRecipe.title });
 	}
@@ -36,8 +41,7 @@ export default class RecipeRepository implements AbsRecipeRepository {
 	}
 
 	async findByTitle(title: string): Promise<Recipe[]> {
-		const findRecipes = await RecipeRepository.em.getRepository(Recipe).find({ where: { title: title } });
-		return findRecipes;
+		return await RecipeRepository.em.getRepository(Recipe).find({ where: { title: title } });
 	}
 
 	async findByTodaysMostLiked(): Promise<Recipe[]> {

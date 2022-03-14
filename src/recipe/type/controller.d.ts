@@ -12,6 +12,7 @@ export abstract class AbsRecipeController {
 	private constructor(dependency);
 	initRouter(app: express.Application): void;
 
+	deleteRecipe(req: Request, res: Response): Promise<void>;
 	createRecipe(req: Request, res: Response): Promise<void>;
 	getById(req: Request, res: Response): Promise<void>;
 	getByTitle(req: Request, res: Response): Promise<void>;
