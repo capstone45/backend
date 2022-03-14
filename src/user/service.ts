@@ -30,13 +30,12 @@ export default class UserService implements AbsUserService {
 		await UserService.userRepository.deleteThumbnail(userId);
 	}
 
-	async updateUserInfomation(id: number, updateUserInfomation: UpdateUserDTO): Promise<void> {
+	async updateUserInfomation(targetUserId: number, userId: number, updateUserInfomation: UpdateUserDTO): Promise<void> {
 		const { loginPassword, confirmPassword } = updateUserInfomation;
-		if (loginPassword !== confirmPassword) {
-			throw new Error('비밀번호가 다릅니다');
-		}
-		// password 암호화 필요
-		await UserService.userRepository.updateUserInfomation(id, updateUserInfomation);
+		if (loginPassword !== confirmPassword) throw new Error(UserError.PASSWORD_NOT_MATCH);
+		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED);
+
+		await UserService.userRepository.updateUserInfomation(userId, updateUserInfomation);
 	}
 
 	async findById(id: number): Promise<ReadUserDetailDTO> {

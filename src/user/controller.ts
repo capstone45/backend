@@ -27,7 +27,7 @@ export default class UserController implements AbsUserController {
 
 		UserController.router.get('/search', this.getByNickname);
 		UserController.router.get('/:id', this.getById);
-		UserController.router.patch('/', this.updateUserInfomation);
+		UserController.router.patch('/:id', this.updateUserInfomation);
 		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
 		UserController.router.put('/:id/thumbnail', this.updateThumbnail);
 		app.use(UserController.PATH, UserController.router);
@@ -75,12 +75,24 @@ export default class UserController implements AbsUserController {
 
 	async updateUserInfomation(req: Request, res: Response): Promise<void> {
 		try {
-			const { userId } = req.body;
-			await UserController.userService.updateUserInfomation(userId, req.body);
-			res.status(201).send();
+			const targetUserId = Number(req.params.id);
+			const { userId, updateUserInfomation } = req.body;
+
+			await UserController.userService.updateUserInfomation(targetUserId, userId, updateUserInfomation);
+
+			res.status(204).send();
 		} catch (error) {
-			console.log(error instanceof Error);
-			res.status(400).send();
+			switch (error.message) {
+				case UserError.NOT_AUTHORIZED:
+					res.status(401).send();
+					return;
+				case UserError.PASSWORD_NOT_MATCH:
+					res.status(403).send();
+					return;
+				default:
+					res.status(400).send();
+					return;
+			}
 		}
 	}
 

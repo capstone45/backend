@@ -1,8 +1,6 @@
-import User from '../entity';
-
 import { AbsUserRepository } from './repository';
 
-import { ReadUserDTO, ReadUserDetailDTO } from './dto';
+import { ReadUserDTO, ReadUserDetailDTO, UpdateUserDTO } from './dto';
 
 export abstract class AbsUserService {
 	private static instance: AbsUserService;
@@ -15,7 +13,7 @@ export abstract class AbsUserService {
 	findByNickname(nickname: string): Promise<ReadUserDTO[]>;
 
 	updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void>;
-	updateUserInfomation(id: number, body: Partial<User>): Promise<void>;
+	updateUserInfomation(targetUserId: number, userId: number, updateUserInfomation: UpdateUserDTO): Promise<void>;
 
 	deleteThumbnail(targetUserId: number, userId: number): Promise<void>;
 }
