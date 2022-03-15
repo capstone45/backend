@@ -123,29 +123,76 @@ export default class RecipeController implements AbsRecipeController {
 	}
 
 	async getByTitle(req: Request, res: Response): Promise<void> {
-		const title = String(req.query.title);
-		const findRecipes = await RecipeController.recipeService.findByTitle(title);
-		res.send(findRecipes);
+		try {
+			const title = String(req.query.title);
+
+			const findRecipes = await RecipeController.recipeService.findByTitle(title);
+
+			res.status(200).send(findRecipes);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 
 	async getTodaysMostLiked(req: Request, res: Response): Promise<void> {
-		const findRecipes = await RecipeController.recipeService.findTodaysMostLiked();
-		res.send(findRecipes);
+		try {
+			const findRecipes = await RecipeController.recipeService.findTodaysMostLiked();
+
+			res.status(200).send(findRecipes);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 
 	async getLatestCreated(req: Request, res: Response): Promise<void> {
-		const findRecipes = await RecipeController.recipeService.findLatestCreated();
-		res.send(findRecipes);
+		try {
+			const findRecipes = await RecipeController.recipeService.findLatestCreated();
+
+			res.status(200).send(findRecipes);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 
 	async getSubscribingChefsLatest(req: Request, res: Response): Promise<void> {
-		const findRecipes = await RecipeController.recipeService.findSubscribingChefsLatest(3);
-		res.send(findRecipes);
+		try {
+			const findRecipes = await RecipeController.recipeService.findSubscribingChefsLatest(3);
+
+			res.status(200).send(findRecipes);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 
 	async getByIngredient(req: Request, res: Response): Promise<void> {
-		const { ingredients } = req.body;
-		const findRecipes = await RecipeController.recipeService.findByIngredient(ingredients);
-		res.send(findRecipes);
+		try {
+			const { ingredients } = req.body;
+
+			const findRecipes = await RecipeController.recipeService.findByIngredient(ingredients);
+
+			res.status(200).send(findRecipes);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 }
