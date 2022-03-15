@@ -9,5 +9,5 @@ export abstract class AbsTagService {
 	public static getInstance(dependency): AbsTagService;
 	private constructor(dependency);
 
-	findTagByName(name: string): Promise<Tag>;
+	findTagByName(name: string): Promise<Tag | Error>;
 }

@@ -1,8 +1,6 @@
-import User from '../entity';
-
 import { AbsUserRepository } from './repository';
 
-import { ReadUserDTO, ReadUserDetailDTO } from './dto';
+import { ReadUserDTO, ReadUserDetailDTO, UpdateUserDTO } from './dto';
 
 export abstract class AbsUserService {
 	private static instance: AbsUserService;
@@ -11,11 +9,11 @@ export abstract class AbsUserService {
 	public static getInstance(dependency): AbsUserService;
 	private constructor(dependency);
 
-	findById(id: number): Promise<ReadUserDetailDTO>;
-	findByNickname(nickname: string): Promise<ReadUserDTO[]>;
+	findById(id: number): Promise<ReadUserDetailDTO | Error>;
+	findByNickname(nickname: string): Promise<ReadUserDTO[] | Error>;
 
-	updateThumbnail(id: number, thumbnailUrl: string): Promise<void>;
-	updateUserInfomation(id: number, body: Partial<User>): Promise<void>;
+	updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void | Error>;
+	updateUserInfomation(targetUserId: number, userId: number, updateUserInfomation: UpdateUserDTO): Promise<void | Error>;
 
-	deleteThumbnail(id: number): Promise<void>;
+	deleteThumbnail(targetUserId: number, userId: number): Promise<void | Error>;
 }

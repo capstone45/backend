@@ -1,4 +1,5 @@
 import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO } from './type/dto';
+import UserError from './type/error';
 import { AbsUserRepository } from './type/repository';
 import { AbsUserService } from './type/service';
 
@@ -17,33 +18,39 @@ export default class UserService implements AbsUserService {
 		UserService.userRepository = dependency.userRepository;
 	}
 
-	async updateThumbnail(id: number, thumbnailUrl: string): Promise<void> {
-		await UserService.userRepository.updateThumbnail(id, thumbnailUrl);
+	async updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void> {
+		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
+
+		await UserService.userRepository.updateThumbnail(userId, thumbnailUrl);
 	}
 
-	async deleteThumbnail(id: number): Promise<void> {
-		await UserService.userRepository.deleteThumbnail(id);
+	async deleteThumbnail(targetUserId: number, userId: number): Promise<void> {
+		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
+
+		await UserService.userRepository.deleteThumbnail(userId);
 	}
 
-	async updateUserInfomation(id: number, updateUserInfomation: UpdateUserDTO): Promise<void> {
+	async updateUserInfomation(targetUserId: number, userId: number, updateUserInfomation: UpdateUserDTO): Promise<void> {
 		const { loginPassword, confirmPassword } = updateUserInfomation;
-		if (loginPassword !== confirmPassword) {
-			throw new Error('비밀번호가 다릅니다');
-		}
-		// password 암호화 필요
-		await UserService.userRepository.updateUserInfomation(id, updateUserInfomation);
+		if (loginPassword !== confirmPassword) throw new Error(UserError.PASSWORD_NOT_MATCH.message);
+		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
+
+		await UserService.userRepository.updateUserInfomation(userId, updateUserInfomation);
 	}
 
-	async findById(id: number): Promise<ReadUserDetailDTO> {
+	async findById(id: number): Promise<ReadUserDetailDTO | Error> {
 		const user = await UserService.userRepository.findById(id);
+		if (!user) throw new Error(UserError.NOT_FOUND.message);
+
 		const likeRecipe = await user.bookmarks;
 		const subscribingUser = await user.stars;
 
 		return new ReadUserDetailDTO(user, likeRecipe, subscribingUser);
 	}
 
-	async findByNickname(nickname: string): Promise<ReadUserDTO[]> {
+	async findByNickname(nickname: string): Promise<ReadUserDTO[] | Error> {
 		const users = await UserService.userRepository.findByNickname(nickname);
-		return await Promise.all(users.map(async (user) => new ReadUserDTO(user)));
+
+		return users.length === 0 ? [] : await Promise.all(users.map(async (user) => new ReadUserDTO(user)));
 	}
 }

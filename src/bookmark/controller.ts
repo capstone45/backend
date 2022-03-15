@@ -1,4 +1,7 @@
 import express, { Request, Response } from 'express';
+import { ServerError } from '../helper/helper';
+import RecipeError from '../recipe/type/error';
+import UserError from '../user/type/error';
 
 import { AbsBookmarkController } from './type/controller';
 import { AbsBookmarkService } from './type/service';
@@ -33,10 +36,20 @@ export default class BookmarkController {
 	async changeBookmark(req: Request, res: Response): Promise<void> {
 		try {
 			const { recipeId, userId } = req.body;
-			BookmarkController.bookmarkService.changeBookmark(recipeId, userId);
+			await BookmarkController.bookmarkService.changeBookmark(recipeId, userId);
 			res.status(200).send();
 		} catch (error) {
-			res.status(400).send();
+			switch (error.message) {
+				case UserError.NOT_FOUND.message:
+					res.status(UserError.NOT_FOUND.code).send(UserError.NOT_FOUND.message);
+					return;
+				case RecipeError.NOT_FOUND.message:
+					res.status(RecipeError.NOT_FOUND.code).send(RecipeError.NOT_FOUND.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
 		}
 	}
 }

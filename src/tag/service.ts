@@ -18,8 +18,7 @@ export default class TagService implements AbsTagService {
 		TagService.tagRepository = dependency.tagRepository;
 	}
 
-	async findTagByName(name: string): Promise<Tag> {
-		const findTagList = await TagService.tagRepository.findTagByName(name);
-		return findTagList;
+	async findTagByName(name: string): Promise<Tag | Error> {
+		return await TagService.tagRepository.findTagByName(name);
 	}
 }

@@ -20,15 +20,15 @@ export abstract class AbsRecipeService {
 	private constructor(dependency);
 
 	deleteRecipe(userId: number, recipeId: number): Promise<void | Error>;
-	createRecipe(userId: number, body: ModifyRecipeDTO): Promise<void>;
-	findSubscribingChefsLatest(id: number): Promise<Recipe[]>;
-	findByIngredient(ingredients: string[]): Promise<Recipe[]>;
-	findByTitle(title: string): Promise<Recipe[]>;
-	findTodaysMostLiked(): Promise<BaseRecipeDTO[]>;
-	findLatestCreated(): Promise<BaseRecipeDTO[]>;
-	findById(recipeId: number, userId: number): Promise<ReadRecipeDetailDTO>;
+	createRecipe(userId: number, body: ModifyRecipeDTO): Promise<void | Error>;
+	findSubscribingChefsLatest(id: number): Promise<Recipe[] | Error>;
+	findByIngredient(ingredients: string[]): Promise<Recipe[] | Error>;
+	findByTitle(title: string): Promise<Recipe[] | Error>;
+	findTodaysMostLiked(): Promise<BaseRecipeDTO[] | Error>;
+	findLatestCreated(): Promise<BaseRecipeDTO[] | Error>;
+	findById(recipeId: number, userId: number): Promise<ReadRecipeDetailDTO | Error>;
 
-	updateRecipe(userId: number, recipeId: number, body: ModifyRecipeDTO): Promise<void>;
+	updateRecipe(userId: number, recipeId: number, body: ModifyRecipeDTO): Promise<void | Error>;
 
 	private static getIncludeRate(ingredients: RecipeIngredient[], keywords: string[]): boolean;
 }

@@ -20,8 +20,7 @@ export default class TagRepository implements AbsTagRepository {
 	}
 
 	async findTagByName(name: string): Promise<Tag> {
-		const findResultList = await TagRepository.em.getRepository(Tag).find({ where: { name: name } })[0];
-		return findResultList;
+		return await TagRepository.em.getRepository(Tag).findOne({ where: { name: name } });
 	}
 
 	async findById(id: number): Promise<Tag> {

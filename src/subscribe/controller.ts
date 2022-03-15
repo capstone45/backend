@@ -1,4 +1,6 @@
 import express, { Request, Response } from 'express';
+import { ServerError } from '../helper/helper';
+import UserError from '../user/type/error';
 
 import { AbsSubscribeController } from './type/controller';
 import { AbsSubscribeService } from './type/service';
@@ -33,10 +35,19 @@ export default class SubscribeController {
 	async changeSubscribe(req: Request, res: Response): Promise<void> {
 		try {
 			const { userId, starId } = req.body;
-			SubscribeController.subscribeService.changeSubscribe(userId, starId);
+
+			await SubscribeController.subscribeService.changeSubscribe(userId, starId);
+
 			res.status(200).send();
 		} catch (error) {
-			res.status(400).send();
+			switch (error.message) {
+				case UserError.NOT_FOUND.message:
+					res.status(UserError.NOT_FOUND.code).send(UserError.NOT_FOUND.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
 		}
 	}
 }

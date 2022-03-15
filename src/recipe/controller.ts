@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { ServerError } from '../helper/helper';
 import UserError from '../user/type/error';
 
 import { AbsRecipeController } from './type/controller';
@@ -26,15 +27,15 @@ export default class RecipeController implements AbsRecipeController {
 	initRouter(app: express.Application): void {
 		if (RecipeController.instance) return;
 
-		RecipeController.router.delete('/:id', this.deleteRecipe);
+		RecipeController.router.get('/subscribe-chef-latest', this.getSubscribingChefsLatest);
 		RecipeController.router.get('/today-most-liked', this.getTodaysMostLiked);
 		RecipeController.router.get('/latest', this.getLatestCreated);
 		RecipeController.router.get('/search', this.getByTitle);
-		RecipeController.router.get('/subscribe-chef-latest', this.getSubscribingChefsLatest);
 		RecipeController.router.get('/:id', this.getById);
 		RecipeController.router.post('/search', this.getByIngredient);
 		RecipeController.router.post('/', this.createRecipe);
 		RecipeController.router.put('/:id', this.updateRecipe);
+		RecipeController.router.delete('/:id', this.deleteRecipe);
 
 		app.use(RecipeController.PATH, RecipeController.router);
 	}
@@ -49,14 +50,14 @@ export default class RecipeController implements AbsRecipeController {
 			res.status(200).send();
 		} catch (error) {
 			switch (error.message) {
-				case RecipeError.RECIPE_NOT_FOUND:
-					res.status(404).send();
+				case RecipeError.NOT_FOUND.message:
+					res.status(RecipeError.NOT_FOUND.code).send(RecipeError.NOT_FOUND.message);
 					return;
-				case UserError.NOT_AUTHORIZED:
-					res.status(401).send();
+				case UserError.NOT_AUTHORIZED.message:
+					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
 					return;
 				default:
-					res.status(400).send();
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
 					return;
 			}
 		}
@@ -69,7 +70,13 @@ export default class RecipeController implements AbsRecipeController {
 
 			res.status(200).send();
 		} catch (error) {
-			res.status(400).send(error);
+			switch (error.message) {
+				case UserError.NOT_FOUND.message:
+					res.status(UserError.NOT_FOUND.code).send(UserError.NOT_FOUND.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+			}
 		}
 	}
 
@@ -77,48 +84,115 @@ export default class RecipeController implements AbsRecipeController {
 		try {
 			const { userId, recipe } = req.body;
 			const recipeId = Number(req.params.id);
+
 			await RecipeController.recipeService.updateRecipe(userId, recipeId, recipe);
+
 			res.status(200).send();
 		} catch (error) {
-			res.status(400).send();
+			switch (error.message) {
+				case RecipeError.NOT_FOUND.message:
+					res.status(RecipeError.NOT_FOUND.code).send(RecipeError.NOT_FOUND.message);
+					return;
+				case UserError.NOT_AUTHORIZED.message:
+					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+			}
 		}
 	}
 
 	async getById(req: Request, res: Response): Promise<void> {
 		try {
 			const recipeId = Number(req.params.id);
-			const userId = req.body.userId ? req.body.userId : -1;
+			const { userId } = req.body;
+
 			const findRecipes = await RecipeController.recipeService.findById(recipeId, userId);
+
 			res.status(200).send(findRecipes);
 		} catch (error) {
-			res.status(400).send();
+			switch (error.message) {
+				case RecipeError.NOT_FOUND.message:
+					res.status(RecipeError.NOT_FOUND.code).send(RecipeError.NOT_FOUND.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
 		}
 	}
 
 	async getByTitle(req: Request, res: Response): Promise<void> {
-		const title = String(req.query.title);
-		const findRecipes = await RecipeController.recipeService.findByTitle(title);
-		res.send(findRecipes);
+		try {
+			const title = String(req.query.title);
+
+			const findRecipes = await RecipeController.recipeService.findByTitle(title);
+
+			res.status(200).send(findRecipes);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 
 	async getTodaysMostLiked(req: Request, res: Response): Promise<void> {
-		const findRecipes = await RecipeController.recipeService.findTodaysMostLiked();
-		res.send(findRecipes);
+		try {
+			const findRecipes = await RecipeController.recipeService.findTodaysMostLiked();
+
+			res.status(200).send(findRecipes);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 
 	async getLatestCreated(req: Request, res: Response): Promise<void> {
-		const findRecipes = await RecipeController.recipeService.findLatestCreated();
-		res.send(findRecipes);
+		try {
+			const findRecipes = await RecipeController.recipeService.findLatestCreated();
+
+			res.status(200).send(findRecipes);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 
 	async getSubscribingChefsLatest(req: Request, res: Response): Promise<void> {
-		const findRecipes = await RecipeController.recipeService.findSubscribingChefsLatest(3);
-		res.send(findRecipes);
+		try {
+			const findRecipes = await RecipeController.recipeService.findSubscribingChefsLatest(3);
+
+			res.status(200).send(findRecipes);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 
 	async getByIngredient(req: Request, res: Response): Promise<void> {
-		const { ingredients } = req.body;
-		const findRecipes = await RecipeController.recipeService.findByIngredient(ingredients);
-		res.send(findRecipes);
+		try {
+			const { ingredients } = req.body;
+
+			const findRecipes = await RecipeController.recipeService.findByIngredient(ingredients);
+
+			res.status(200).send(findRecipes);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 }

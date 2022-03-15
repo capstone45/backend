@@ -3,6 +3,9 @@ import express, { Request, Response } from 'express';
 import { AbsUserController } from './type/controller';
 import { AbsUserService } from './type/service';
 
+import { ServerError } from '../helper/helper';
+import UserError from './type/error';
+
 export default class UserController implements AbsUserController {
 	private static instance: AbsUserController;
 	private static userService: AbsUserService;
@@ -26,56 +29,105 @@ export default class UserController implements AbsUserController {
 
 		UserController.router.get('/search', this.getByNickname);
 		UserController.router.get('/:id', this.getById);
-		UserController.router.patch('/', this.updateUserInfomation);
+		UserController.router.patch('/:id', this.updateUserInfomation);
 		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
-		UserController.router.put('/thumbnail', this.updateThumbnail);
+		UserController.router.put('/:id/thumbnail', this.updateThumbnail);
 		app.use(UserController.PATH, UserController.router);
 	}
 
 	async updateThumbnail(req: Request, res: Response): Promise<void> {
 		try {
+			const targetUserId = Number(req.params.id);
 			const { userId, thumbnailUrl } = req.body;
-			await UserController.userService.updateThumbnail(userId, thumbnailUrl);
-			res.status(200).send();
+
+			await UserController.userService.updateThumbnail(targetUserId, userId, thumbnailUrl);
+
+			res.status(204).send();
 		} catch (error) {
-			res.status(400).send();
+			switch (error.message) {
+				case UserError.NOT_AUTHORIZED.message:
+					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
 		}
 	}
 
 	async deleteThumbnail(req: Request, res: Response): Promise<void> {
 		try {
+			const targetUserId = Number(req.params.id);
 			const { userId } = req.body;
-			await UserController.userService.deleteThumbnail(userId);
-			res.status(200).send();
+
+			await UserController.userService.deleteThumbnail(targetUserId, userId);
+
+			res.status(204).send();
 		} catch (error) {
-			res.status(400).send();
+			switch (error.message) {
+				case UserError.NOT_AUTHORIZED.message:
+					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
 		}
 	}
 
 	async updateUserInfomation(req: Request, res: Response): Promise<void> {
 		try {
-			const { userId } = req.body;
-			await UserController.userService.updateUserInfomation(userId, req.body);
-			res.status(201).send();
+			const targetUserId = Number(req.params.id);
+			const { userId, updateUserInfomation } = req.body;
+
+			await UserController.userService.updateUserInfomation(targetUserId, userId, updateUserInfomation);
+
+			res.status(204).send();
 		} catch (error) {
-			console.log(error instanceof Error);
-			res.status(400).send();
+			switch (error.message) {
+				case UserError.NOT_AUTHORIZED.message:
+					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
+					return;
+				case UserError.PASSWORD_NOT_MATCH.message:
+					res.status(UserError.PASSWORD_NOT_MATCH.code).send(UserError.PASSWORD_NOT_MATCH.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
 		}
 	}
 
 	async getById(req: Request, res: Response): Promise<void> {
 		try {
-			const { userId } = req.body;
-			const findUser = await UserController.userService.findById(userId);
+			const targetUserId = Number(req.params.id);
+			const findUser = await UserController.userService.findById(targetUserId);
+
 			res.status(200).send(findUser);
 		} catch (error) {
-			res.status(400).send();
+			switch (error.message) {
+				case UserError.NOT_FOUND.message:
+					res.status(UserError.NOT_FOUND.code).send(UserError.NOT_FOUND.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
 		}
 	}
 
 	async getByNickname(req: Request, res: Response): Promise<void> {
-		const nickname = String(req.query.nickname);
-		const findUsers = await UserController.userService.findByNickname(nickname);
-		res.send(findUsers);
+		try {
+			const nickname = String(req.query.nickname);
+			const findUsers = await UserController.userService.findByNickname(nickname);
+
+			res.status(200).send(findUsers);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 }

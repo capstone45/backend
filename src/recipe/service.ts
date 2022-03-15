@@ -61,17 +61,18 @@ export default class RecipeService implements AbsRecipeService {
 
 	async deleteRecipe(userId: number, recipeId: number): Promise<void | Error> {
 		const recipe = await RecipeService.recipeRepository.findById(recipeId);
-		if (!recipe) throw new Error(RecipeError.RECIPE_NOT_FOUND);
+		if (!recipe) throw new Error(RecipeError.NOT_FOUND.message);
 
 		const recipeUser = await recipe.user;
-		if (Number(recipeUser.id) !== userId) throw new Error(UserError.NOT_AUTHORIZED);
+		if (Number(recipeUser.id) !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
 
 		await RecipeService.recipeRepository.remove(recipe);
 	}
 
-	async createRecipe(userId: number, body: ModifyRecipeDTO): Promise<void> {
+	async createRecipe(userId: number, body: ModifyRecipeDTO): Promise<void | Error> {
 		// user 찾기
 		const user = await RecipeService.userRepository.findById(userId);
+		if (!user) throw new Error(UserError.NOT_FOUND.message);
 
 		// 미완성 recipe Object 만들기
 		const recipe = Recipe.create(body, user);
@@ -114,10 +115,12 @@ export default class RecipeService implements AbsRecipeService {
 		await RecipeService.recipeRepository.save(recipe);
 	}
 
-	async updateRecipe(userId: number, recipeId: number, body: ModifyRecipeDTO): Promise<void> {
+	async updateRecipe(userId: number, recipeId: number, body: ModifyRecipeDTO): Promise<void | Error> {
 		const recipe = await RecipeService.recipeRepository.findById(recipeId);
+		if (!recipe) throw new Error(RecipeError.NOT_FOUND.message);
+
 		const user = await recipe.user;
-		if (Number(user.id) !== userId) throw new Error('request user and recipe user is different');
+		if (Number(user.id) !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
 
 		// 이전 recipe Description 삭제
 		const oldRecipeDescriptions = await recipe.recipeDescriptions;
@@ -184,13 +187,15 @@ export default class RecipeService implements AbsRecipeService {
 		await RecipeService.recipeRepository.save(recipe);
 	}
 
-	async findById(recipeId: number, userId: number): Promise<ReadRecipeDetailDTO> {
+	async findById(recipeId: number, userId: number): Promise<ReadRecipeDetailDTO | Error> {
 		const recipe = await RecipeService.recipeRepository.findById(recipeId);
+		if (!recipe) throw new Error(RecipeError.NOT_FOUND.message);
+
 		const user = await recipe.user;
 		const tags = (await recipe.recipeTags).map((recipeTag) => recipeTag.tag);
 		const recipeIngredient = await recipe.recipeIngredients;
 		const recipeDescription = await recipe.recipeDescriptions;
-		const bookmark = userId === -1 ? false : RecipeService.include(await recipe.likeUsers, user) ? true : false;
+		const bookmark = userId === undefined ? false : RecipeService.include(await recipe.likeUsers, user) ? true : false;
 		return new ReadRecipeDetailDTO(recipe, tags, user, recipeIngredient, recipeDescription, bookmark);
 	}
 
@@ -198,29 +203,29 @@ export default class RecipeService implements AbsRecipeService {
 		return likeUsers.filter((likeUser) => likeUser.id === user.id).length !== 0 ? true : false;
 	}
 
-	async findByTitle(title: string): Promise<Recipe[]> {
+	async findByTitle(title: string): Promise<Recipe[] | Error> {
 		const findRecipes = await RecipeService.recipeRepository.findByTitle(title);
 		return findRecipes;
 	}
 
-	async findTodaysMostLiked(): Promise<BaseRecipeDTO[]> {
+	async findTodaysMostLiked(): Promise<BaseRecipeDTO[] | Error> {
 		return (await RecipeService.recipeRepository.findByTodaysMostLiked()).map(
 			(recipe) => new BaseRecipeDTO(recipe.id, recipe.title, recipe.thumbnailUrl)
 		);
 	}
 
-	async findLatestCreated(): Promise<BaseRecipeDTO[]> {
+	async findLatestCreated(): Promise<BaseRecipeDTO[] | Error> {
 		return (await RecipeService.recipeRepository.findByLatestCreated()).map(
 			(recipe) => new BaseRecipeDTO(recipe.id, recipe.title, recipe.thumbnailUrl)
 		);
 	}
 
-	async findSubscribingChefsLatest(id: number): Promise<Recipe[]> {
+	async findSubscribingChefsLatest(id: number): Promise<Recipe[] | Error> {
 		const findRecipes = await RecipeService.recipeRepository.findBySubscribingChefsLatest(id);
 		return findRecipes;
 	}
 
-	async findByIngredient(keywords: string[]): Promise<Recipe[]> {
+	async findByIngredient(keywords: string[]): Promise<Recipe[] | Error> {
 		const allRecipes = await RecipeService.recipeRepository.findAll();
 
 		return await Promise.all(

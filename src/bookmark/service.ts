@@ -4,6 +4,8 @@ import { AbsBookmarkService } from './type/service';
 import { AbsUserRepository } from '../user/type/repository';
 import { AbsRecipeRepository } from '../recipe/type/repository';
 import { AbsBookmarkRepository } from './type/repository';
+import UserError from '../user/type/error';
+import RecipeError from '../recipe/type/error';
 
 export default class BookmarkService implements AbsBookmarkService {
 	private static instance: AbsBookmarkService;
@@ -26,9 +28,11 @@ export default class BookmarkService implements AbsBookmarkService {
 
 	async changeBookmark(recipeId: number, userId: number): Promise<void> {
 		const user = await BookmarkService.userRepository.findById(userId);
+		if (!user) throw new Error(UserError.NOT_FOUND.message);
 		const bookmarks = await user.bookmarks;
 
 		const recipe = await BookmarkService.recipeRepository.findById(recipeId);
+		if (!recipe) throw new Error(RecipeError.NOT_FOUND.message);
 		const recipeUser = await recipe.user;
 
 		const [doesInclude, index] = BookmarkService.include(bookmarks, recipe);
