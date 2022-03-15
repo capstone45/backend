@@ -5,4 +5,8 @@ function getFormattedDate(rawDate: Date): string {
 	return year.toString() + (month === '12' ? '01' : month.length === 2 ? parseFloat(month) + 1 : '0' + (parseFloat(month) + 1)) + date;
 }
 
-export { getFormattedDate };
+const ServerError = {
+	SERVER_ERROR: { message: 'SERVER_ERROR', code: 500 },
+};
+
+export { getFormattedDate, ServerError };
