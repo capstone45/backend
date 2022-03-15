@@ -30,8 +30,17 @@ export default class TagController implements AbsTagController {
 	}
 
 	async getTagByName(req: Request, res: Response): Promise<void> {
-		const name = String(req.query.name);
-		const findTag = await TagController.tagService.findTagByName(name);
-		res.send(findTag);
+		try {
+			const name = String(req.query.name);
+			const findTag = await TagController.tagService.findTagByName(name);
+
+			res.status(200).send(findTag);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(400).send();
+					return;
+			}
+		}
 	}
 }
