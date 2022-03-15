@@ -19,28 +19,28 @@ export default class UserService implements AbsUserService {
 	}
 
 	async updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void> {
-		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED);
+		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
 
 		await UserService.userRepository.updateThumbnail(userId, thumbnailUrl);
 	}
 
 	async deleteThumbnail(targetUserId: number, userId: number): Promise<void> {
-		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED);
+		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
 
 		await UserService.userRepository.deleteThumbnail(userId);
 	}
 
 	async updateUserInfomation(targetUserId: number, userId: number, updateUserInfomation: UpdateUserDTO): Promise<void> {
 		const { loginPassword, confirmPassword } = updateUserInfomation;
-		if (loginPassword !== confirmPassword) throw new Error(UserError.PASSWORD_NOT_MATCH);
-		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED);
+		if (loginPassword !== confirmPassword) throw new Error(UserError.PASSWORD_NOT_MATCH.message);
+		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
 
 		await UserService.userRepository.updateUserInfomation(userId, updateUserInfomation);
 	}
 
 	async findById(id: number): Promise<ReadUserDetailDTO | Error> {
 		const user = await UserService.userRepository.findById(id);
-		if (!user) throw new Error(UserError.NOT_FOUND);
+		if (!user) throw new Error(UserError.NOT_FOUND.message);
 
 		const likeRecipe = await user.bookmarks;
 		const subscribingUser = await user.stars;
