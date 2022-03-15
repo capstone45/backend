@@ -72,6 +72,7 @@ export default class RecipeService implements AbsRecipeService {
 	async createRecipe(userId: number, body: ModifyRecipeDTO): Promise<void | Error> {
 		// user 찾기
 		const user = await RecipeService.userRepository.findById(userId);
+		if (!user) throw new Error(UserError.NOT_FOUND.type);
 
 		// 미완성 recipe Object 만들기
 		const recipe = Recipe.create(body, user);

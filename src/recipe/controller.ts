@@ -69,7 +69,13 @@ export default class RecipeController implements AbsRecipeController {
 
 			res.status(200).send();
 		} catch (error) {
-			res.status(400).send(error);
+			switch (error.message) {
+				case UserError.NOT_FOUND.type:
+					res.status(UserError.NOT_FOUND.code).send();
+					return;
+				default:
+					res.status(400).send();
+			}
 		}
 	}
 
