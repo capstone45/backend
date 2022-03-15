@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { ServerError } from '../helper/helper';
 import UserError from '../user/type/error';
 
 import { AbsRecipeController } from './type/controller';
@@ -49,14 +50,14 @@ export default class RecipeController implements AbsRecipeController {
 			res.status(200).send();
 		} catch (error) {
 			switch (error.message) {
-				case RecipeError.NOT_FOUND.type:
-					res.status(RecipeError.NOT_FOUND.code).send();
+				case RecipeError.NOT_FOUND.message:
+					res.status(RecipeError.NOT_FOUND.code).send(RecipeError.NOT_FOUND.message);
 					return;
-				case UserError.NOT_AUTHORIZED.type:
-					res.status(UserError.NOT_AUTHORIZED.code).send();
+				case UserError.NOT_AUTHORIZED.message:
+					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
 					return;
 				default:
-					res.status(400).send();
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
 					return;
 			}
 		}
@@ -70,11 +71,11 @@ export default class RecipeController implements AbsRecipeController {
 			res.status(200).send();
 		} catch (error) {
 			switch (error.message) {
-				case UserError.NOT_FOUND.type:
-					res.status(UserError.NOT_FOUND.code).send();
+				case UserError.NOT_FOUND.message:
+					res.status(UserError.NOT_FOUND.code).send(UserError.NOT_FOUND.message);
 					return;
 				default:
-					res.status(400).send();
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
 			}
 		}
 	}
@@ -89,11 +90,14 @@ export default class RecipeController implements AbsRecipeController {
 			res.status(200).send();
 		} catch (error) {
 			switch (error.message) {
-				case RecipeError.NOT_FOUND.type:
-					res.status(RecipeError.NOT_FOUND.code).send();
+				case RecipeError.NOT_FOUND.message:
+					res.status(RecipeError.NOT_FOUND.code).send(RecipeError.NOT_FOUND.message);
 					return;
-				case UserError.NOT_AUTHORIZED.type:
-					res.status(UserError.NOT_AUTHORIZED.code).send();
+				case UserError.NOT_AUTHORIZED.message:
+					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
 			}
 		}
 	}
@@ -101,11 +105,20 @@ export default class RecipeController implements AbsRecipeController {
 	async getById(req: Request, res: Response): Promise<void> {
 		try {
 			const recipeId = Number(req.params.id);
-			const userId = req.body.userId ? req.body.userId : -1;
+			const { userId } = req.body;
+
 			const findRecipes = await RecipeController.recipeService.findById(recipeId, userId);
+
 			res.status(200).send(findRecipes);
 		} catch (error) {
-			res.status(400).send();
+			switch (error.message) {
+				case RecipeError.NOT_FOUND.message:
+					res.status(RecipeError.NOT_FOUND.code).send(RecipeError.NOT_FOUND.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
 		}
 	}
 

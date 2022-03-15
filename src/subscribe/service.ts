@@ -23,7 +23,7 @@ export default class SubscribeService implements AbsSubscribeService {
 		const user = await SubscribeService.userRepository.findById(userId);
 		const star = await SubscribeService.userRepository.findById(starId);
 
-		if (!user || !star) throw new Error(UserError.NOT_FOUND);
+		if (!user || !star) throw new Error(UserError.NOT_FOUND.message);
 
 		const index = (await user.stars).findIndex((subscribedUser) => (subscribedUser.id = starId));
 		if (index === -1) {

@@ -61,10 +61,10 @@ export default class RecipeService implements AbsRecipeService {
 
 	async deleteRecipe(userId: number, recipeId: number): Promise<void | Error> {
 		const recipe = await RecipeService.recipeRepository.findById(recipeId);
-		if (!recipe) throw new Error(RecipeError.NOT_FOUND.type);
+		if (!recipe) throw new Error(RecipeError.NOT_FOUND.message);
 
 		const recipeUser = await recipe.user;
-		if (Number(recipeUser.id) !== userId) throw new Error(UserError.NOT_AUTHORIZED.type);
+		if (Number(recipeUser.id) !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
 
 		await RecipeService.recipeRepository.remove(recipe);
 	}
@@ -72,7 +72,7 @@ export default class RecipeService implements AbsRecipeService {
 	async createRecipe(userId: number, body: ModifyRecipeDTO): Promise<void | Error> {
 		// user 찾기
 		const user = await RecipeService.userRepository.findById(userId);
-		if (!user) throw new Error(UserError.NOT_FOUND.type);
+		if (!user) throw new Error(UserError.NOT_FOUND.message);
 
 		// 미완성 recipe Object 만들기
 		const recipe = Recipe.create(body, user);
@@ -117,10 +117,10 @@ export default class RecipeService implements AbsRecipeService {
 
 	async updateRecipe(userId: number, recipeId: number, body: ModifyRecipeDTO): Promise<void | Error> {
 		const recipe = await RecipeService.recipeRepository.findById(recipeId);
-		if (!recipe) throw new Error(RecipeError.NOT_FOUND.type);
+		if (!recipe) throw new Error(RecipeError.NOT_FOUND.message);
 
 		const user = await recipe.user;
-		if (Number(user.id) !== userId) throw new Error(UserError.NOT_AUTHORIZED.type);
+		if (Number(user.id) !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
 
 		// 이전 recipe Description 삭제
 		const oldRecipeDescriptions = await recipe.recipeDescriptions;
@@ -189,11 +189,13 @@ export default class RecipeService implements AbsRecipeService {
 
 	async findById(recipeId: number, userId: number): Promise<ReadRecipeDetailDTO | Error> {
 		const recipe = await RecipeService.recipeRepository.findById(recipeId);
+		if (!recipe) throw new Error(RecipeError.NOT_FOUND.message);
+
 		const user = await recipe.user;
 		const tags = (await recipe.recipeTags).map((recipeTag) => recipeTag.tag);
 		const recipeIngredient = await recipe.recipeIngredients;
 		const recipeDescription = await recipe.recipeDescriptions;
-		const bookmark = userId === -1 ? false : RecipeService.include(await recipe.likeUsers, user) ? true : false;
+		const bookmark = userId === undefined ? false : RecipeService.include(await recipe.likeUsers, user) ? true : false;
 		return new ReadRecipeDetailDTO(recipe, tags, user, recipeIngredient, recipeDescription, bookmark);
 	}
 

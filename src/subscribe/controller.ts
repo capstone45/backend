@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { ServerError } from '../helper/helper';
 import UserError from '../user/type/error';
 
 import { AbsSubscribeController } from './type/controller';
@@ -40,11 +41,11 @@ export default class SubscribeController {
 			res.status(200).send();
 		} catch (error) {
 			switch (error.message) {
-				case UserError.NOT_FOUND:
-					res.status(404).send();
+				case UserError.NOT_FOUND.message:
+					res.status(UserError.NOT_FOUND.code).send(UserError.NOT_FOUND.message);
 					return;
 				default:
-					res.status(400).send();
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
 					return;
 			}
 		}
