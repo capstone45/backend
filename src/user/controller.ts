@@ -43,8 +43,8 @@ export default class UserController implements AbsUserController {
 			res.status(204).send();
 		} catch (error) {
 			switch (error.message) {
-				case UserError.NOT_AUTHORIZED:
-					res.status(401).send();
+				case UserError.NOT_AUTHORIZED.type:
+					res.status(UserError.NOT_AUTHORIZED.code).send();
 					return;
 				default:
 					res.status(400).send();
@@ -63,8 +63,8 @@ export default class UserController implements AbsUserController {
 			res.status(204).send();
 		} catch (error) {
 			switch (error.message) {
-				case UserError.NOT_AUTHORIZED:
-					res.status(401).send();
+				case UserError.NOT_AUTHORIZED.type:
+					res.status(UserError.NOT_AUTHORIZED.code).send();
 					return;
 				default:
 					res.status(400).send();
@@ -83,11 +83,11 @@ export default class UserController implements AbsUserController {
 			res.status(204).send();
 		} catch (error) {
 			switch (error.message) {
-				case UserError.NOT_AUTHORIZED:
-					res.status(401).send();
+				case UserError.NOT_AUTHORIZED.type:
+					res.status(UserError.NOT_AUTHORIZED.code).send();
 					return;
-				case UserError.PASSWORD_NOT_MATCH:
-					res.status(403).send();
+				case UserError.PASSWORD_NOT_MATCH.type:
+					res.status(UserError.PASSWORD_NOT_MATCH.code).send();
 					return;
 				default:
 					res.status(400).send();
@@ -104,8 +104,8 @@ export default class UserController implements AbsUserController {
 			res.status(200).send(findUser);
 		} catch (error) {
 			switch (error.message) {
-				case UserError.NOT_FOUND:
-					res.status(404).send();
+				case UserError.NOT_FOUND.type:
+					res.status(UserError.NOT_FOUND.code).send();
 					return;
 				default:
 					res.status(400).send();
