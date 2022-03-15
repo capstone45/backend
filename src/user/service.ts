@@ -50,8 +50,7 @@ export default class UserService implements AbsUserService {
 
 	async findByNickname(nickname: string): Promise<ReadUserDTO[] | Error> {
 		const users = await UserService.userRepository.findByNickname(nickname);
-		if (users.length === 0) throw new Error(UserError.NOT_FOUND);
 
-		return await Promise.all(users.map(async (user) => new ReadUserDTO(user)));
+		return users.length === 0 ? [] : await Promise.all(users.map(async (user) => new ReadUserDTO(user)));
 	}
 }

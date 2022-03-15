@@ -122,9 +122,6 @@ export default class UserController implements AbsUserController {
 			res.status(200).send(findUsers);
 		} catch (error) {
 			switch (error.message) {
-				case UserError.NOT_FOUND:
-					res.status(404).send();
-					return;
 				default:
 					res.status(400).send();
 					return;
