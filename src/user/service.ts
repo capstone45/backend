@@ -35,7 +35,14 @@ export default class UserService implements AbsUserService {
 		if (loginPassword !== confirmPassword) throw new Error(UserError.PASSWORD_NOT_MATCH.message);
 		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
 
-		await UserService.userRepository.updateUserInfomation(userId, updateUserInfomation);
+		const user = await UserService.userRepository.findById(targetUserId);
+		if (!user) throw new Error(UserError.NOT_FOUND.message);
+
+		user.nickname = updateUserInfomation.nickname;
+		user.loginPassword = updateUserInfomation.loginPassword;
+		user.description = updateUserInfomation.description;
+
+		await UserService.userRepository.save(user);
 	}
 
 	async findById(id: number): Promise<ReadUserDetailDTO | Error> {
