@@ -3,6 +3,8 @@ import { Column, Entity, Generated, JoinTable, ManyToMany, OneToMany, PrimaryCol
 import DateInfo from '../dateInfo/entity';
 import Recipe from '../recipe/entity';
 
+import { CreateUserDTO } from './type/dto';
+
 export enum loginMethod {
 	LOCAL = 'local',
 	GOOGLE = 'google',
@@ -44,25 +46,28 @@ export default class User {
 	@Column(() => DateInfo, { prefix: false })
 	date: DateInfo;
 
+	//회원가입 기본 정보
 	@Column({
 		name: 'LOGIN_ID',
 		type: 'varchar',
-		length: 20,
+		length: 50,
 		nullable: false,
 		unique: true,
 	})
 	loginId: string;
 
+	//회원가입 기본 정보
 	@Column({ name: 'LOGIN_PASSWORD', type: 'varchar', length: 30, nullable: false })
 	loginPassword: string;
 
-	@Column({ name: 'LOGIN_METHOD', type: 'enum', enum: loginMethod, nullable: false })
+	@Column({ name: 'LOGIN_METHOD', type: 'enum', enum: loginMethod, default: loginMethod.LOCAL, nullable: false })
 	loginMethod: loginMethod;
 
-	@Column({ name: 'NICKNAME', type: 'varchar', length: 30, nullable: false, unique: true })
+	//회원가입 기본 정보
+	@Column({ name: 'NICKNAME', type: 'varchar', length: 50, nullable: false, unique: true })
 	nickname: string;
 
-	@Column({ name: 'THUMBNAIL_URL', type: 'varchar', length: 2048, nullable: false })
+	@Column({ name: 'THUMBNAIL_URL', type: 'varchar', length: 2048, default: 'empty', nullable: false })
 	thumbnailUrl: string;
 
 	@Column({
@@ -82,4 +87,12 @@ export default class User {
 
 	@Column({ name: 'NUMBER_OF_FAN', type: 'int', default: 0, nullable: false, unsigned: true })
 	numberOfFan: number;
+
+	static create(createUserInformation: CreateUserDTO): User {
+		const user = new User();
+		user.loginId = createUserInformation.loginId;
+		user.loginPassword = createUserInformation.loginPassword;
+		user.nickname = createUserInformation.loginId;
+		return user;
+	}
 }

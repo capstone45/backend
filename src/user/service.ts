@@ -1,4 +1,5 @@
-import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO } from './type/dto';
+import User from './entity';
+import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO, CreateUserDTO } from './type/dto';
 import UserError from './type/error';
 import { AbsUserRepository } from './type/repository';
 import { AbsUserService } from './type/service';
@@ -18,7 +19,27 @@ export default class UserService implements AbsUserService {
 		UserService.userRepository = dependency.userRepository;
 	}
 
-	async updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void> {
+	async signIn(createUserInformation: CreateUserDTO): Promise<number | Error> {
+		if (createUserInformation.loginPassword !== createUserInformation.confirmPassword)
+			throw new Error(UserError.PASSWORD_NOT_MATCH.message);
+
+		const findUser = await UserService.userRepository.findByLoginId(createUserInformation.loginId);
+		if (findUser) throw new Error(UserError.USER_ID_EXISTS.message);
+
+		const newUser = User.create(createUserInformation);
+		await UserService.userRepository.save(newUser);
+
+		return await newUser.id;
+	}
+
+	async signOut(userId: number): Promise<void | Error> {
+		const user = await UserService.userRepository.findById(userId);
+		if (!user) throw new Error(UserError.NOT_FOUND.message);
+
+		await UserService.userRepository.remove(user);
+	}
+
+	async updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void | Error> {
 		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
 
 		await UserService.userRepository.updateThumbnail(userId, thumbnailUrl);
@@ -30,7 +51,7 @@ export default class UserService implements AbsUserService {
 		await UserService.userRepository.deleteThumbnail(userId);
 	}
 
-	async updateUserInfomation(targetUserId: number, userId: number, updateUserInfomation: UpdateUserDTO): Promise<void> {
+	async updateUserInfomation(targetUserId: number, userId: number, updateUserInfomation: UpdateUserDTO): Promise<void | Error> {
 		const { loginPassword, confirmPassword } = updateUserInfomation;
 		if (loginPassword !== confirmPassword) throw new Error(UserError.PASSWORD_NOT_MATCH.message);
 		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);

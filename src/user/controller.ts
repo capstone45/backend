@@ -29,10 +29,55 @@ export default class UserController implements AbsUserController {
 
 		UserController.router.get('/search', this.getByNickname);
 		UserController.router.get('/:id', this.getById);
+
+		UserController.router.post('/', this.signIn);
+
 		UserController.router.patch('/:id', this.updateUserInfomation);
-		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
 		UserController.router.put('/:id/thumbnail', this.updateThumbnail);
+
+		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
+		UserController.router.delete('/', this.signOut);
+
 		app.use(UserController.PATH, UserController.router);
+	}
+
+	async signIn(req: Request, res: Response): Promise<void> {
+		try {
+			const { createUserInformation } = req.body;
+			const userId = await UserController.userService.signIn(createUserInformation);
+
+			res.status(201).send(userId);
+		} catch (error) {
+			switch (error.message) {
+				case UserError.USER_ID_EXISTS.message:
+					res.status(UserError.USER_ID_EXISTS.code).send(UserError.USER_ID_EXISTS.message);
+					return;
+				case UserError.PASSWORD_NOT_MATCH.message:
+					res.status(UserError.PASSWORD_NOT_MATCH.code).send(UserError.PASSWORD_NOT_MATCH.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
+	}
+	// middleware
+	async signOut(req: Request, res: Response): Promise<void> {
+		try {
+			const { userId } = req.body;
+			await UserController.userService.signOut(userId);
+
+			res.status(204).send();
+		} catch (error) {
+			switch (error.message) {
+				case UserError.NOT_AUTHORIZED.message:
+					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 
 	async updateThumbnail(req: Request, res: Response): Promise<void> {

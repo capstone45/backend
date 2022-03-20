@@ -12,6 +12,7 @@ export abstract class AbsUserRepository {
 	private constructor(dependency);
 
 	save(user: User): Promise<void>;
+	remove(user: User): Promise<void>;
 
 	updateUserInfomation(id: number, updateUserInfomation: UpdateUserDTO): Promise<void>;
 	updateThumbnail(id: number, thumbnailUrl: string): Promise<void>;
@@ -20,4 +21,5 @@ export abstract class AbsUserRepository {
 
 	findById(id: number): Promise<User>;
 	findByNickname(nickname: string): Promise<User[]>;
+	findByLoginId(loginId: string): Promise<User>;
 }
