@@ -44,3 +44,9 @@ export class UpdateUserDTO {
 	readonly confirmPassword: string;
 	readonly description: string;
 }
+
+export class CreateUserDTO {
+	readonly loginId: string;
+	readonly loginPassword: string;
+	readonly confirmPassword: string;
+}

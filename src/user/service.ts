@@ -1,4 +1,4 @@
-import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO } from './type/dto';
+import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO, CreateUserDTO } from './type/dto';
 import UserError from './type/error';
 import { AbsUserRepository } from './type/repository';
 import { AbsUserService } from './type/service';
@@ -16,6 +16,22 @@ export default class UserService implements AbsUserService {
 
 	private constructor(dependency) {
 		UserService.userRepository = dependency.userRepository;
+	}
+
+	async createUser(createUserInformation: CreateUserDTO): Promise<void> {
+		if (createUserInformation.loginPassword !== createUserInformation.confirmPassword)
+			throw new Error(UserError.PASSWORD_NOT_MATCH.message);
+
+		const isUserIdExist = await UserService.userRepository.isUserIdExist(createUserInformation.loginId);
+		if (isUserIdExist) throw new Error(UserError.USER_ID_EXISTS.message);
+
+		const nickname = createUserInformation.loginId;
+		const { loginId, loginPassword } = createUserInformation;
+		await UserService.userRepository.createUser(loginId, loginPassword, nickname);
+	}
+
+	async deleteUser(id: number): Promise<void> {
+		await UserService.userRepository.deleteThumbnail(id);
 	}
 
 	async updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void> {

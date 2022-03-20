@@ -44,25 +44,28 @@ export default class User {
 	@Column(() => DateInfo, { prefix: false })
 	date: DateInfo;
 
+	//회원가입 기본 정보
 	@Column({
 		name: 'LOGIN_ID',
 		type: 'varchar',
-		length: 20,
+		length: 50,
 		nullable: false,
 		unique: true,
 	})
 	loginId: string;
 
+	//회원가입 기본 정보
 	@Column({ name: 'LOGIN_PASSWORD', type: 'varchar', length: 30, nullable: false })
 	loginPassword: string;
 
-	@Column({ name: 'LOGIN_METHOD', type: 'enum', enum: loginMethod, nullable: false })
+	@Column({ name: 'LOGIN_METHOD', type: 'enum', enum: loginMethod, default: loginMethod.LOCAL, nullable: false })
 	loginMethod: loginMethod;
 
-	@Column({ name: 'NICKNAME', type: 'varchar', length: 30, nullable: false, unique: true })
+	//회원가입 기본 정보
+	@Column({ name: 'NICKNAME', type: 'varchar', length: 50, nullable: false, unique: true })
 	nickname: string;
 
-	@Column({ name: 'THUMBNAIL_URL', type: 'varchar', length: 2048, nullable: false })
+	@Column({ name: 'THUMBNAIL_URL', type: 'varchar', length: 2048, default: '', nullable: false })
 	thumbnailUrl: string;
 
 	@Column({

@@ -12,6 +12,10 @@ export abstract class AbsUserRepository {
 	private constructor(dependency);
 
 	save(user: User): Promise<void>;
+	isUserIdExist(loginId: string): Promise<boolean>;
+
+	createUser(loginId: string, loginPassword: string, nickname: string): Promise<void>;
+	deleteUser(id: number): Promise<void>;
 
 	updateUserInfomation(id: number, updateUserInfomation: UpdateUserDTO): Promise<void>;
 	updateThumbnail(id: number, thumbnailUrl: string): Promise<void>;

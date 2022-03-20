@@ -32,7 +32,48 @@ export default class UserController implements AbsUserController {
 		UserController.router.patch('/:id', this.updateUserInfomation);
 		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
 		UserController.router.put('/:id/thumbnail', this.updateThumbnail);
+		UserController.router.post('/create', this.createUser);
+		UserController.router.delete('/:id/delete', this.deleteUser);
 		app.use(UserController.PATH, UserController.router);
+	}
+
+	async createUser(req: Request, res: Response): Promise<void> {
+		try {
+			const { createUserInformation } = req.body;
+			await UserController.userService.createUser(createUserInformation);
+
+			res.status(204).send();
+		} catch (error) {
+			switch (error.message) {
+				case UserError.USER_ID_EXISTS.message:
+					res.status(UserError.USER_ID_EXISTS.code).send(UserError.USER_ID_EXISTS.message);
+					return;
+				case UserError.PASSWORD_NOT_MATCH.message:
+					res.status(UserError.PASSWORD_NOT_MATCH.code).send(UserError.PASSWORD_NOT_MATCH.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
+	}
+	// middleware
+	async deleteUser(req: Request, res: Response): Promise<void> {
+		try {
+			const id = Number(req.params.id);
+			await UserController.userService.deleteUser(id);
+
+			res.status(204).send();
+		} catch (error) {
+			switch (error.message) {
+				case UserError.NOT_AUTHORIZED.message:
+					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 
 	async updateThumbnail(req: Request, res: Response): Promise<void> {
