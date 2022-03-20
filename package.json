@@ -6,9 +6,9 @@
 	"author": "wonju-dev <wonjulee.dev@gmail.com>",
 	"license": "MIT",
 	"scripts": {
-		"proenv": "cross-env NODE_ENV=production nodemon --exec ts-node src/index.ts",
-		"testenv": "cross-env NODE_ENV=test nodemon --exec ts-node src/index.ts",
-		"test": "jest",
+		"production": "cross-env NODE_ENV=production nodemon --exec ts-node src/index.ts",
+		"local": "cross-env NODE_ENV=local nodemon --exec ts-node src/index.ts",
+		"test": "cross-env NODE_ENV=test jest",
 		"test_watch": "jest --watch",
 		"typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
 	},

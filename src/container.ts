@@ -46,7 +46,7 @@ export default class Container {
 		return Container.bean[layer][domain];
 	}
 
-	static initContainer(app: Express.Application, connection: Connection) {
+	static initContainer(app: Express.Application, connection: Connection): void {
 		if (Container.isInitialzied) return;
 		Container.initEntity();
 		Container.initRepository(connection);

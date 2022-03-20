@@ -8,39 +8,29 @@ export default class Application {
 	private static readonly app: express.Application = express();
 	private static initialized: Application;
 
-	public static init(): void {
-		if (Application.initialized) return;
-		Application.initialized = new Application();
-	}
-
-	private constructor() {
-		this.initMiddleware();
-		this.initDatabase().then((connection) => {
+	public static async initialize(): Promise<void> {
+		if (!Application.initialized) {
+			Application.initMiddleware();
+			const connection = await Application.initDatabase();
 			Container.initContainer(Application.app, connection);
-		});
-		this.initApplication();
+			Application.initApplication();
+		}
+		return;
 	}
 
-	private initMiddleware(): void {
+	private static initMiddleware(): void {
 		Application.app.use(express.json());
 		Application.app.use(express.urlencoded({ extended: true }));
 	}
 
-	private initDatabase(): Promise<Connection> {
-		return new Promise((res) => {
-			getConnectionOptions(process.env.NODE_ENV).then((connecitonOption) => {
-				createConnection({ ...connecitonOption }).then((connection) => {
-					res(connection);
-				});
-			});
-		});
+	private static async initDatabase(): Promise<Connection> {
+		const connectionOption = await getConnectionOptions(process.env.NODE_ENV);
+		return await createConnection({ ...connectionOption });
 	}
 
-	private initApplication(): void {
-		Application.app.listen(3000, () => {
-			console.log('Application started successfully');
-		});
+	private static initApplication(): void {
+		Application.app.listen(4000, () => console.log('Application started successfully'));
 	}
 }
 
-Application.init();
+Application.initialize();
