@@ -13,6 +13,11 @@ const ormconfig: ConnectionOptions[] = [
 		synchronize: false,
 		logging: true,
 		entities: ['src/**/entity.ts'],
+		extra: {
+			connectionLimit: 20,
+			waitForConnections: true,
+		},
+		connectTimeout: 3000,
 	},
 	{
 		name: 'local',
@@ -25,6 +30,11 @@ const ormconfig: ConnectionOptions[] = [
 		synchronize: true,
 		logging: true,
 		entities: ['src/**/entity.ts'],
+		extra: {
+			connectionLimit: 20,
+			waitForConnections: true,
+		},
+		connectTimeout: 3000,
 	},
 	{
 		name: 'test',
@@ -37,6 +47,11 @@ const ormconfig: ConnectionOptions[] = [
 		synchronize: true,
 		dropSchema: true,
 		entities: ['src/**/entity.ts'],
+		extra: {
+			connectionLimit: 20,
+			waitForConnections: true,
+		},
+		connectTimeout: 3000,
 	},
 ];
 
