@@ -13,8 +13,8 @@ export abstract class AbsUserController {
 	private constructor(dependency);
 	initRouter(app: express.Application): void;
 
-	createUser(req: Request, res: Response): Promise<void>;
-	deleteUser(req: Request, res: Response): Promise<void>;
+	signIn(req: Request, res: Response): Promise<void>;
+	signOut(req: Request, res: Response): Promise<void>;
 
 	getById(req: Request, res: Response): Promise<void>;
 	getByNickname(req: Request, res: Response): Promise<void>;

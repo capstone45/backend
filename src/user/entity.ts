@@ -3,6 +3,8 @@ import { Column, Entity, Generated, JoinTable, ManyToMany, OneToMany, PrimaryCol
 import DateInfo from '../dateInfo/entity';
 import Recipe from '../recipe/entity';
 
+import { CreateUserDTO } from './type/dto';
+
 export enum loginMethod {
 	LOCAL = 'local',
 	GOOGLE = 'google',
@@ -65,7 +67,7 @@ export default class User {
 	@Column({ name: 'NICKNAME', type: 'varchar', length: 50, nullable: false, unique: true })
 	nickname: string;
 
-	@Column({ name: 'THUMBNAIL_URL', type: 'varchar', length: 2048, default: '', nullable: false })
+	@Column({ name: 'THUMBNAIL_URL', type: 'varchar', length: 2048, default: 'empty', nullable: false })
 	thumbnailUrl: string;
 
 	@Column({
@@ -85,4 +87,12 @@ export default class User {
 
 	@Column({ name: 'NUMBER_OF_FAN', type: 'int', default: 0, nullable: false, unsigned: true })
 	numberOfFan: number;
+
+	static create(createUserInformation: CreateUserDTO): User {
+		const user = new User();
+		user.loginId = createUserInformation.loginId;
+		user.loginPassword = createUserInformation.loginPassword;
+		user.nickname = createUserInformation.loginId;
+		return user;
+	}
 }

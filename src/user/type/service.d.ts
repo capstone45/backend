@@ -9,8 +9,8 @@ export abstract class AbsUserService {
 	public static getInstance(dependency): AbsUserService;
 	private constructor(dependency);
 
-	createUser(createUserInformation: CreateUserDTO): Promise<void | Error>;
-	deleteUser(id: number): Promise<void | Error>;
+	signIn(createUserInformation: CreateUserDTO): Promise<number | Error>;
+	signOut(userId: number): Promise<void | Error>;
 
 	findById(id: number): Promise<ReadUserDetailDTO | Error>;
 	findByNickname(nickname: string): Promise<ReadUserDTO[] | Error>;
