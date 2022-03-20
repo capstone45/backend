@@ -30,23 +30,23 @@ export default class UserController implements AbsUserController {
 		UserController.router.get('/search', this.getByNickname);
 		UserController.router.get('/:id', this.getById);
 
-		UserController.router.post('/', this.createUser);
+		UserController.router.post('/', this.signIn);
 
 		UserController.router.patch('/:id', this.updateUserInfomation);
 		UserController.router.put('/:id/thumbnail', this.updateThumbnail);
 
 		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
-		UserController.router.delete('/:id', this.deleteUser);
+		UserController.router.delete('/', this.signOut);
 
 		app.use(UserController.PATH, UserController.router);
 	}
 
-	async createUser(req: Request, res: Response): Promise<void> {
+	async signIn(req: Request, res: Response): Promise<void> {
 		try {
 			const { createUserInformation } = req.body;
-			await UserController.userService.createUser(createUserInformation);
+			const userId = await UserController.userService.signIn(createUserInformation);
 
-			res.status(204).send();
+			res.status(201).send(userId);
 		} catch (error) {
 			switch (error.message) {
 				case UserError.USER_ID_EXISTS.message:
@@ -62,10 +62,10 @@ export default class UserController implements AbsUserController {
 		}
 	}
 	// middleware
-	async deleteUser(req: Request, res: Response): Promise<void> {
+	async signOut(req: Request, res: Response): Promise<void> {
 		try {
-			const id = Number(req.params.id);
-			await UserController.userService.deleteUser(id);
+			const { userId } = req.body;
+			await UserController.userService.signOut(userId);
 
 			res.status(204).send();
 		} catch (error) {
