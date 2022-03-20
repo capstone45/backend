@@ -29,11 +29,15 @@ export default class UserController implements AbsUserController {
 
 		UserController.router.get('/search', this.getByNickname);
 		UserController.router.get('/:id', this.getById);
+
+		UserController.router.post('/', this.createUser);
+
 		UserController.router.patch('/:id', this.updateUserInfomation);
-		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
 		UserController.router.put('/:id/thumbnail', this.updateThumbnail);
-		UserController.router.post('/create', this.createUser);
-		UserController.router.delete('/:id/delete', this.deleteUser);
+
+		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
+		UserController.router.delete('/:id', this.deleteUser);
+
 		app.use(UserController.PATH, UserController.router);
 	}
 
