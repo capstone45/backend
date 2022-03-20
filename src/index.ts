@@ -2,6 +2,8 @@ import 'reflect-metadata';
 import { Connection, createConnection, getConnectionOptions } from 'typeorm';
 import express from 'express';
 
+import cors from 'cors';
+
 import Container from './container';
 
 export default class Application {
@@ -20,6 +22,12 @@ export default class Application {
 
 	private static initMiddleware(): void {
 		Application.app.use(express.json());
+		Application.app.use(
+			cors({
+				origin: process.env.NODE_ENV === 'production' ? '*' : 'http://localhost:4000',
+				credentials: true,
+			})
+		);
 		Application.app.use(express.urlencoded({ extended: true }));
 	}
 
