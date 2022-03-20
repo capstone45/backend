@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { createConnection } from 'typeorm';
+import { Connection, createConnection, getConnectionOptions } from 'typeorm';
 import express from 'express';
 
 import Container from './container';
@@ -15,8 +15,8 @@ export default class Application {
 
 	private constructor() {
 		this.initMiddleware();
-		this.initDatabase().then(() => {
-			Container.initContainer(Application.app);
+		this.initDatabase().then((connection) => {
+			Container.initContainer(Application.app, connection);
 		});
 		this.initApplication();
 	}
@@ -26,10 +26,12 @@ export default class Application {
 		Application.app.use(express.urlencoded({ extended: true }));
 	}
 
-	private initDatabase(): Promise<void> {
+	private initDatabase(): Promise<Connection> {
 		return new Promise((res) => {
-			createConnection().then(() => {
-				res();
+			getConnectionOptions(process.env.NODE_ENV).then((connecitonOption) => {
+				createConnection({ ...connecitonOption }).then((connection) => {
+					res(connection);
+				});
 			});
 		});
 	}
