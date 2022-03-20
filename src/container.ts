@@ -1,4 +1,4 @@
-import { getManager } from 'typeorm';
+import { Connection } from 'typeorm';
 
 import User from './user/entity';
 import Tag from './tag/entity';
@@ -46,10 +46,10 @@ export default class Container {
 		return Container.bean[layer][domain];
 	}
 
-	static initContainer(app: Express.Application) {
+	static initContainer(app: Express.Application, connection: Connection) {
 		if (Container.isInitialzied) return;
 		Container.initEntity();
-		Container.initRepository();
+		Container.initRepository(connection);
 		Container.initService();
 		Container.initController(app);
 		Container.isInitialzied = true;
@@ -117,8 +117,8 @@ export default class Container {
 		});
 	}
 
-	private static initRepository() {
-		const commonDependency = { em: getManager() };
+	private static initRepository(connection: Connection) {
+		const commonDependency = { em: connection.manager };
 		Container.bean[layer.REPOSITORY][domain.USER] = UserRepository.getInstance({ ...commonDependency });
 		Container.bean[layer.REPOSITORY][domain.TAG] = TagRepository.getInstance({ ...commonDependency });
 		Container.bean[layer.REPOSITORY][domain.RECIPE] = RecipeRepository.getInstance({ ...commonDependency });
