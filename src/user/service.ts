@@ -1,8 +1,11 @@
 import User from './entity';
-import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO, CreateUserDTO } from './type/dto';
-import UserError from './type/error';
+
 import { AbsUserRepository } from './type/repository';
 import { AbsUserService } from './type/service';
+
+import { BaseRecipeDTO } from '../recipe/type/dto';
+import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO, CreateUserDTO, BaseUserDTO } from './type/dto';
+import UserError from './type/error';
 
 export default class UserService implements AbsUserService {
 	private static instance: AbsUserService;
@@ -70,10 +73,22 @@ export default class UserService implements AbsUserService {
 		const user = await UserService.userRepository.findById(id);
 		if (!user) throw new Error(UserError.NOT_FOUND.message);
 
-		const likeRecipe = await user.bookmarks;
-		const subscribingUser = await user.stars;
+		const rawMyRecipe = await user.recipes;
+		const baseMyRecipe = rawMyRecipe.map((rawRecipe) => {
+			return new BaseRecipeDTO(rawRecipe.id, rawRecipe.title, rawRecipe.thumbnailUrl);
+		});
 
-		return new ReadUserDetailDTO(user, likeRecipe, subscribingUser);
+		const rawLikeRecipe = await user.bookmarks;
+		const baseLikeRecipe = rawLikeRecipe.map((rawRecipe) => {
+			return new BaseRecipeDTO(rawRecipe.id, rawRecipe.title, rawRecipe.thumbnailUrl);
+		});
+
+		const rawSubscribingUser = await user.stars;
+		const baseSbuscribingUser = rawSubscribingUser.map((rawUser) => {
+			return new BaseUserDTO(rawUser.id, rawUser.nickname, rawUser.thumbnailUrl);
+		});
+
+		return new ReadUserDetailDTO(user, baseMyRecipe, baseLikeRecipe, baseSbuscribingUser);
 	}
 
 	async findByNickname(nickname: string): Promise<ReadUserDTO[] | Error> {

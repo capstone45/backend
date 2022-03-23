@@ -1,5 +1,5 @@
-import Recipe from '../../recipe/entity';
 import User from '../entity';
+import { BaseRecipeDTO } from '../../recipe/type/dto';
 
 export class BaseUserDTO {
 	readonly id: number;
@@ -28,11 +28,13 @@ export class ReadUserDTO extends BaseUserDTO {
 }
 
 export class ReadUserDetailDTO extends ReadUserDTO {
-	readonly likeRecipe: Recipe[];
-	readonly subscribingUser: User[];
+	readonly myRecipe: BaseRecipeDTO[];
+	readonly likeRecipe: BaseRecipeDTO[];
+	readonly subscribingUser: BaseUserDTO[];
 
-	constructor(user: User, likeRecipe: Recipe[], subscribingUser: User[]) {
+	constructor(user: User, myRecipe: BaseRecipeDTO[], likeRecipe: BaseRecipeDTO[], subscribingUser: BaseUserDTO[]) {
 		super(user);
+		this.myRecipe = myRecipe;
 		this.likeRecipe = likeRecipe;
 		this.subscribingUser = subscribingUser;
 	}

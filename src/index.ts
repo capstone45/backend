@@ -24,7 +24,7 @@ export default class Application {
 		Application.app.use(express.json());
 		Application.app.use(
 			cors({
-				origin: process.env.NODE_ENV === 'production' ? '*' : 'http://localhost:4000',
+				origin: process.env.NODE_ENV === 'production' ? '*' : 'http://localhost:3000',
 				credentials: true,
 			})
 		);
