@@ -43,7 +43,7 @@ export default class UserController implements AbsUserController {
 
 	async signIn(req: Request, res: Response): Promise<void> {
 		try {
-			const { createUserInformation } = req.body;
+			const createUserInformation = req.body;
 			const user = await UserController.userService.signIn(createUserInformation);
 
 			res.status(201).send(user);
