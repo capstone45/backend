@@ -22,7 +22,7 @@ export default class UserService implements AbsUserService {
 		UserService.userRepository = dependency.userRepository;
 	}
 
-	async signIn(createUserInformation: CreateUserDTO): Promise<number | Error> {
+	async signIn(createUserInformation: CreateUserDTO): Promise<BaseUserDTO | Error> {
 		if (createUserInformation.loginPassword !== createUserInformation.confirmPassword)
 			throw new Error(UserError.PASSWORD_NOT_MATCH.message);
 
@@ -32,7 +32,9 @@ export default class UserService implements AbsUserService {
 		const newUser = User.create(createUserInformation);
 		await UserService.userRepository.save(newUser);
 
-		return await newUser.id;
+		const userDto = new BaseUserDTO(newUser.id, newUser.nickname, newUser.thumbnailUrl);
+
+		return userDto;
 	}
 
 	async signOut(userId: number): Promise<void | Error> {

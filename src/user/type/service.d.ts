@@ -1,6 +1,6 @@
 import { AbsUserRepository } from './repository';
 
-import { ReadUserDTO, ReadUserDetailDTO, UpdateUserDTO, CreateUserDTO } from './dto';
+import { ReadUserDTO, ReadUserDetailDTO, UpdateUserDTO, CreateUserDTO, BaseUserDTO } from './dto';
 
 export abstract class AbsUserService {
 	private static instance: AbsUserService;
@@ -9,7 +9,7 @@ export abstract class AbsUserService {
 	public static getInstance(dependency): AbsUserService;
 	private constructor(dependency);
 
-	signIn(createUserInformation: CreateUserDTO): Promise<number | Error>;
+	signIn(createUserInformation: CreateUserDTO): Promise<BaseUserDTO | Error>;
 	signOut(userId: number): Promise<void | Error>;
 
 	findById(id: number): Promise<ReadUserDetailDTO | Error>;
