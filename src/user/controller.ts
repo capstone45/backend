@@ -31,12 +31,14 @@ export default class UserController implements AbsUserController {
 		UserController.router.get('/:id', this.getById);
 
 		UserController.router.post('/', this.signIn);
+		UserController.router.post('/login', this.logIn);
 
 		UserController.router.patch('/:id', this.updateUserInfomation);
 		UserController.router.put('/:id/thumbnail', this.updateThumbnail);
 
 		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
 		UserController.router.delete('/', this.signOut);
+		//UserController.router.get('/logout', this.logOut);
 
 		app.use(UserController.PATH, UserController.router);
 	}
@@ -61,7 +63,7 @@ export default class UserController implements AbsUserController {
 			}
 		}
 	}
-	// middleware
+
 	async signOut(req: Request, res: Response): Promise<void> {
 		try {
 			const { userId } = req.body;
@@ -80,6 +82,35 @@ export default class UserController implements AbsUserController {
 		}
 	}
 
+	async logIn(req: Request, res: Response): Promise<void>{
+		try {
+			const logInUserInformation = req.body;
+			const userToken = await UserController.userService.logIn(logInUserInformation);
+			res.cookie("x_auth", userToken).status(204).send();
+		} catch (error) {
+			switch (error.message) {
+				case UserError.NOT_FOUND.message:
+					res.status(UserError.NOT_FOUND.code).send(UserError.NOT_FOUND.message);
+					return;
+				case UserError.PASSWORD_NOT_MATCH.message:
+					res.status(UserError.PASSWORD_NOT_MATCH.code).send(UserError.PASSWORD_NOT_MATCH.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+		}
+	}
+}
+
+/*
+	async auth(req: Request, res: Response): Promise<void>{
+
+	}
+
+	async logOut(req: Request, res: Response): Promise<void>{
+
+	}
+*/
 	async updateThumbnail(req: Request, res: Response): Promise<void> {
 		try {
 			const targetUserId = Number(req.params.id);

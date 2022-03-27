@@ -52,3 +52,8 @@ export class CreateUserDTO {
 	public loginPassword: string;
 	readonly confirmPassword: string;
 }
+
+export class LogInUserDTO {
+	readonly loginId: string;
+	public loginPassword: string;
+}
