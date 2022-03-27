@@ -30,9 +30,15 @@ export default class UserService implements AbsUserService {
 		const hash = await bcrypt.hash(loginPassword, SALT_ROUNDS);
 		return hash;
 	}
-
-	// comparePassword(loginPassword:string): Promise<void>
-
+/*
+	async comparePassword(password:string, hashedpassword:string): Promise<boolean> {
+		bcrypt.compare(password, hashedpassword).then(function(result) {
+			if(result) {
+				return true;
+			}
+		});
+	}
+*/
 	async signIn(createUserInformation: CreateUserDTO): Promise<BaseUserDTO | Error> {
 		if (createUserInformation.loginPassword !== createUserInformation.confirmPassword)
 			throw new Error(UserError.PASSWORD_NOT_MATCH.message);
@@ -83,9 +89,14 @@ export default class UserService implements AbsUserService {
 
 		const user = await UserService.userRepository.findById(targetUserId);
 		if (!user) throw new Error(UserError.NOT_FOUND.message);
+		
+		// 비밀번호를 변경하지 않았을 때에도 암호화 할 것인지 고민
+		const encodedPassword  = await this.bcryptPassword(updateUserInfomation.loginPassword);
 
-		user.nickname = updateUserInfomation.nickname;
+		updateUserInfomation.loginPassword = encodedPassword;
+
 		user.loginPassword = updateUserInfomation.loginPassword;
+		user.nickname = updateUserInfomation.nickname;
 		user.description = updateUserInfomation.description;
 
 		await UserService.userRepository.save(user);

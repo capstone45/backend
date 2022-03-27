@@ -41,10 +41,10 @@ export class ReadUserDetailDTO extends ReadUserDTO {
 }
 
 export class UpdateUserDTO {
-	readonly nickname: string;
+	public nickname: string;
 	public loginPassword: string;
 	readonly confirmPassword: string;
-	readonly description: string;
+	public description: string;
 }
 
 export class CreateUserDTO {

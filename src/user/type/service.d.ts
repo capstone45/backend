@@ -10,7 +10,7 @@ export abstract class AbsUserService {
 	private constructor(dependency);
 
 	bcryptPassword(loginPassword: string): Promise<string>;
-	//comparePassword(loginPassword:string, confirmPassword: string): Promise<void | Error>;
+	//comparePassword(loginPassword:string, confirmPassword: string): Promise<boolean>;
 
 	signIn(createUserInformation: CreateUserDTO): Promise<BaseUserDTO | Error>;
 	signOut(userId: number): Promise<void | Error>;

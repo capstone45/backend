@@ -73,7 +73,7 @@ export default class User {
 	@Column({
 		name: 'DESCRIPTION',
 		type: 'varchar',
-		default: '안녕하세요!',
+		default: 'hello!',
 		length: 900,
 		nullable: false,
 	})
