@@ -9,8 +9,15 @@ export abstract class AbsUserService {
 	public static getInstance(dependency): AbsUserService;
 	private constructor(dependency);
 
+	bcryptPassword(loginPassword: string): Promise<string>;
+	//comparePassword(loginPassword:string, confirmPassword: string): Promise<void | Error>;
+
 	signIn(createUserInformation: CreateUserDTO): Promise<BaseUserDTO | Error>;
 	signOut(userId: number): Promise<void | Error>;
+
+	// logIn()
+	// logOut()
+	// middleware
 
 	findById(id: number): Promise<ReadUserDetailDTO | Error>;
 	findByNickname(nickname: string): Promise<ReadUserDTO[] | Error>;

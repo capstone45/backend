@@ -6,6 +6,10 @@ import { AbsUserService } from './type/service';
 import { BaseRecipeDTO } from '../recipe/type/dto';
 import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO, CreateUserDTO, BaseUserDTO } from './type/dto';
 import UserError from './type/error';
+import bcrypt from 'bcrypt';
+//import jwt from 'jsonwebtoken'
+
+const SALT_ROUNDS = 10;
 
 export default class UserService implements AbsUserService {
 	private static instance: AbsUserService;
@@ -22,12 +26,23 @@ export default class UserService implements AbsUserService {
 		UserService.userRepository = dependency.userRepository;
 	}
 
+	async bcryptPassword(loginPassword: string): Promise<string> {
+		const hash = await bcrypt.hash(loginPassword, SALT_ROUNDS);
+		return hash;
+	}
+
+	// comparePassword(loginPassword:string): Promise<void>
+
 	async signIn(createUserInformation: CreateUserDTO): Promise<BaseUserDTO | Error> {
 		if (createUserInformation.loginPassword !== createUserInformation.confirmPassword)
 			throw new Error(UserError.PASSWORD_NOT_MATCH.message);
 
 		const findUser = await UserService.userRepository.findByLoginId(createUserInformation.loginId);
 		if (findUser) throw new Error(UserError.USER_ID_EXISTS.message);
+
+		const encodedPassword  = await this.bcryptPassword(createUserInformation.loginPassword);
+
+		createUserInformation.loginPassword = encodedPassword;
 
 		const newUser = User.create(createUserInformation);
 		await UserService.userRepository.save(newUser);
@@ -43,6 +58,11 @@ export default class UserService implements AbsUserService {
 
 		await UserService.userRepository.remove(user);
 	}
+
+	//logIn
+	//logOut
+	// middleware
+
 
 	async updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void | Error> {
 		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
