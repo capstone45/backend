@@ -2,6 +2,7 @@ import { Column, Entity, Generated, JoinTable, ManyToMany, OneToMany, PrimaryCol
 
 import DateInfo from '../dateInfo/entity';
 import Recipe from '../recipe/entity';
+import UserIngredient from '../userIngredient/entity';
 
 import { CreateUserDTO } from './type/dto';
 
@@ -42,6 +43,9 @@ export default class User {
 	// 내가 구독하는 사람들
 	@ManyToMany(() => User, (user) => user.fans, { lazy: true, nullable: false })
 	stars: User[];
+
+	@OneToMany(() => UserIngredient, (userIngredient) => userIngredient.user)
+	ingredients: UserIngredient[];
 
 	@Column(() => DateInfo, { prefix: false })
 	date: DateInfo;
