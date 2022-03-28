@@ -57,7 +57,7 @@ export default class User {
 	loginId: string;
 
 	//회원가입 기본 정보
-	@Column({ name: 'LOGIN_PASSWORD', type: 'varchar', length: 30, nullable: false })
+	@Column({ name: 'LOGIN_PASSWORD', type: 'varchar', length: 100, nullable: false })
 	loginPassword: string;
 
 	@Column({ name: 'LOGIN_METHOD', type: 'enum', enum: loginMethod, default: loginMethod.LOCAL, nullable: false })

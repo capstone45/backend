@@ -4,11 +4,12 @@ import { AbsUserRepository } from './type/repository';
 import { AbsUserService } from './type/service';
 
 import { BaseRecipeDTO } from '../recipe/type/dto';
-import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO, CreateUserDTO, BaseUserDTO } from './type/dto';
+import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO, CreateUserDTO, BaseUserDTO,LogInUserDTO } from './type/dto';
 import UserError from './type/error';
 import bcrypt from 'bcrypt';
-//import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
 
+interface TokenInfoObj {id: number;}
 const SALT_ROUNDS = 10;
 
 export default class UserService implements AbsUserService {
@@ -30,15 +31,12 @@ export default class UserService implements AbsUserService {
 		const hash = await bcrypt.hash(loginPassword, SALT_ROUNDS);
 		return hash;
 	}
-/*
-	async comparePassword(password:string, hashedpassword:string): Promise<boolean> {
-		bcrypt.compare(password, hashedpassword).then(function(result) {
-			if(result) {
-				return true;
-			}
-		});
+
+	async comparePassword(logInPassword:string, hashedUserPassword:string): Promise<boolean> {
+		const isMatch = await bcrypt.compare(logInPassword, hashedUserPassword);
+		return isMatch;
 	}
-*/
+	
 	async signIn(createUserInformation: CreateUserDTO): Promise<BaseUserDTO | Error> {
 		if (createUserInformation.loginPassword !== createUserInformation.confirmPassword)
 			throw new Error(UserError.PASSWORD_NOT_MATCH.message);
@@ -65,10 +63,30 @@ export default class UserService implements AbsUserService {
 		await UserService.userRepository.remove(user);
 	}
 
-	//logIn
-	//logOut
-	// middleware
+	async logIn(logInUserInformation: LogInUserDTO): Promise<string | Error> {
+		const user = await UserService.userRepository.findByLoginId(logInUserInformation.loginId);
+		if (!user) throw new Error(UserError.NOT_FOUND.message);
 
+		const isMatch = await this.comparePassword(logInUserInformation.loginPassword, user.loginPassword);
+		if(!isMatch) throw new Error(UserError.PASSWORD_NOT_MATCH.message);
+		
+		// loginId만 할 것인지 고민, 토큰 유효기간 고민
+		// bug: id가 number가 아닌 string으로 저장되는 문제
+		const tokenInfo : TokenInfoObj = {id: Number(user.id)};
+		const userToken = jwt.sign(tokenInfo,'capstone10');
+
+		return userToken;
+	}
+	
+	async auth(token: string): Promise< ReadUserDTO | Error>{
+		const decoded = jwt.verify(token,'capstone10') as TokenInfoObj;
+		const user = await UserService.userRepository.findById(decoded.id);
+		if (!user) throw new Error(UserError.NOT_AUTHORIZED.message);
+		
+		const readUser = new ReadUserDTO(user);
+
+		return readUser;
+	}
 
 	async updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void | Error> {
 		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
@@ -93,9 +111,7 @@ export default class UserService implements AbsUserService {
 		// 비밀번호를 변경하지 않았을 때에도 암호화 할 것인지 고민
 		const encodedPassword  = await this.bcryptPassword(updateUserInfomation.loginPassword);
 
-		updateUserInfomation.loginPassword = encodedPassword;
-
-		user.loginPassword = updateUserInfomation.loginPassword;
+		user.loginPassword = encodedPassword;
 		user.nickname = updateUserInfomation.nickname;
 		user.description = updateUserInfomation.description;
 
