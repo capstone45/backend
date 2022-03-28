@@ -29,10 +29,10 @@ export default class UserController implements AbsUserController {
 
 		UserController.router.get('/search', this.getByNickname);
 		UserController.router.get('/:id', this.getById);
-		UserController.router.get('/auth', this.auth);
 
 		UserController.router.post('/signin', this.signIn);
 		UserController.router.post('/login', this.logIn);
+		UserController.router.post('/auth', this.auth);
 		UserController.router.post('/logout', this.logOut);
 
 		UserController.router.patch('/:id', this.updateUserInfomation);
@@ -107,8 +107,8 @@ export default class UserController implements AbsUserController {
 	async auth(req: Request, res: Response): Promise<void>{
 		try {
 			const token = req.cookies.x_auth;
+			// 뭘 넘겨야할지 정하기
 			const user = await UserController.userService.auth(token);
-			// 뭘 넘겨줘야할지 몰라서 우선 user 전체를 넘겨주었습니다!
 			res.status(200).send(user);
 		} catch (error) {
 			switch (error.message) {
