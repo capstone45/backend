@@ -168,7 +168,8 @@ export default class RecipeController implements AbsRecipeController {
 
 	async getSubscribingChefsLatest(req: Request, res: Response): Promise<void> {
 		try {
-			const findRecipes = await RecipeController.recipeService.findSubscribingChefsLatest(3);
+			const { userId } = req.body;
+			const findRecipes = await RecipeController.recipeService.findSubscribingChefsLatest(Number(userId));
 
 			res.status(200).send(findRecipes);
 		} catch (error) {
@@ -183,7 +184,6 @@ export default class RecipeController implements AbsRecipeController {
 	async getByIngredient(req: Request, res: Response): Promise<void> {
 		try {
 			const { ingredients } = req.body;
-
 			const findRecipes = await RecipeController.recipeService.findByIngredient(ingredients);
 
 			res.status(200).send(findRecipes);

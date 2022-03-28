@@ -21,7 +21,7 @@ export abstract class AbsRecipeService {
 
 	deleteRecipe(userId: number, recipeId: number): Promise<void | Error>;
 	createRecipe(userId: number, body: ModifyRecipeDTO): Promise<void | Error>;
-	findSubscribingChefsLatest(id: number): Promise<Recipe[] | Error>;
+	findSubscribingChefsLatest(id: number): Promise<BaseRecipeDTO[] | Error>;
 	findByIngredient(ingredients: string[]): Promise<Recipe[] | Error>;
 	findByTitle(title: string): Promise<Recipe[] | Error>;
 	findTodaysMostLiked(): Promise<BaseRecipeDTO[] | Error>;
