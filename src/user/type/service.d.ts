@@ -16,8 +16,7 @@ export abstract class AbsUserService {
 	signOut(userId: number): Promise<void | Error>;
 
 	logIn(logInUserInformation: LogInUserDTO): Promise<string | Error>;
-	//auth(): Promise< | Error>;
-	//logOut(): Promise< | Error>;
+	auth(token: string): Promise< User | Error>;
 
 	findById(id: number): Promise<ReadUserDetailDTO | Error>;
 	findByNickname(nickname: string): Promise<ReadUserDTO[] | Error>;

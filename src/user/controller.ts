@@ -29,16 +29,17 @@ export default class UserController implements AbsUserController {
 
 		UserController.router.get('/search', this.getByNickname);
 		UserController.router.get('/:id', this.getById);
+		UserController.router.get('/auth', this.auth);
 
-		UserController.router.post('/', this.signIn);
+		UserController.router.post('/signin', this.signIn);
 		UserController.router.post('/login', this.logIn);
+		UserController.router.post('/logout', this.logOut);
 
 		UserController.router.patch('/:id', this.updateUserInfomation);
 		UserController.router.put('/:id/thumbnail', this.updateThumbnail);
 
 		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
-		UserController.router.delete('/', this.signOut);
-		//UserController.router.get('/logout', this.logOut);
+		UserController.router.delete('/signout', this.signOut);
 
 		app.use(UserController.PATH, UserController.router);
 	}
@@ -102,15 +103,40 @@ export default class UserController implements AbsUserController {
 	}
 }
 
-/*
-	async auth(req: Request, res: Response): Promise<void>{
 
+	async auth(req: Request, res: Response): Promise<void>{
+		try {
+			const token = req.cookies.x_auth;
+			const user = await UserController.userService.auth(token);
+			// 뭘 넘겨줘야할지 몰라서 우선 user 전체를 넘겨주었습니다!
+			res.status(200).send(user);
+		} catch (error) {
+			switch (error.message) {
+				case UserError.NOT_AUTHORIZED.message:
+					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+		}
 	}
+}
 
 	async logOut(req: Request, res: Response): Promise<void>{
-
+		try{
+			res.cookie("x_auth", "").status(204).send();
+		}catch(error){
+			switch (error.message) {
+				case UserError.NOT_AUTHORIZED.message:
+					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+		}
+		}
 	}
-*/
+
 	async updateThumbnail(req: Request, res: Response): Promise<void> {
 		try {
 			const targetUserId = Number(req.params.id);

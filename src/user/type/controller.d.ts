@@ -17,8 +17,8 @@ export abstract class AbsUserController {
 	signOut(req: Request, res: Response): Promise<void>;
 
 	logIn(req: Request, res: Response): Promise<void>;	
-	//auth(req: Request, res: Response): Promise<void>;
-	//logOut(req: Request, res: Response): Promise<void>;
+	auth(req: Request, res: Response): Promise<void>;
+	logOut(req: Request, res: Response): Promise<void>;
 	
 	getById(req: Request, res: Response): Promise<void>;
 	getByNickname(req: Request, res: Response): Promise<void>;

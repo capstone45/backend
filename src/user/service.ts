@@ -9,6 +9,7 @@ import UserError from './type/error';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+interface DecodeObj {id: number;}
 const SALT_ROUNDS = 10;
 
 export default class UserService implements AbsUserService {
@@ -67,18 +68,25 @@ export default class UserService implements AbsUserService {
 		if (!user) throw new Error(UserError.NOT_FOUND.message);
 
 		const isMatch = await this.comparePassword(logInUserInformation.loginPassword, user.loginPassword);
-
 		if(!isMatch) throw new Error(UserError.PASSWORD_NOT_MATCH.message);
-
-		const token = jwt.sign({loginId: user.loginId}, "secretToken");
-		const userToken = token;		
+		
+		// loginId만 할 것인지 고민, 토큰 유효기간 고민
+		const tokenInfo = {id: user.id};
+		const userToken = jwt.sign(tokenInfo,'capstone10');
 
 		return userToken;
 	}
+	
+	//User 수정 필요
+	async auth(token: string): Promise< User | Error>{
+		
 
-	// async auth
-
-	// async logOut
+		const decoded = jwt.verify(token,'capstone10') as DecodeObj;	
+		const user = await UserService.userRepository.findById(decoded.id);
+		if (!user) throw new Error(UserError.NOT_AUTHORIZED.message);
+		
+		return user;
+	}
 
 	async updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void | Error> {
 		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
