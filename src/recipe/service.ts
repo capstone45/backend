@@ -222,7 +222,7 @@ export default class RecipeService implements AbsRecipeService {
 
 	async findSubscribingChefsLatest(id: number): Promise<BaseRecipeDTO[] | Error> {
 		const findRecipes = await RecipeService.recipeRepository.findBySubscribingChefsLatest(id);
-		return findRecipes.map((recipe) => new BaseRecipeDTO(recipe.id, recipe.title, recipe.thumbnailUrl));
+		return findRecipes.map((recipe) => new BaseRecipeDTO(recipe.RECIPE_ID, recipe.TITLE, recipe.THUMBNAIL_URL));
 	}
 
 	async findByIngredient(keywords: string[]): Promise<Recipe[] | Error> {

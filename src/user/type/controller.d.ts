@@ -16,12 +16,13 @@ export abstract class AbsUserController {
 	signIn(req: Request, res: Response): Promise<void>;
 	signOut(req: Request, res: Response): Promise<void>;
 
-	logIn(req: Request, res: Response): Promise<void>;	
+	logIn(req: Request, res: Response): Promise<void>;
 	auth(req: Request, res: Response): Promise<void>;
 	logOut(req: Request, res: Response): Promise<void>;
-	
+
 	getById(req: Request, res: Response): Promise<void>;
 	getByNickname(req: Request, res: Response): Promise<void>;
+	getTodayChef(req: Request, res: Response): Promise<void>;
 
 	updateUserInfomation(req: Request, res: Response): Promise<void>;
 	updateThumbnail(req: Request, res: Response): Promise<void>;

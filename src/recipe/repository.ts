@@ -1,12 +1,12 @@
 import { EntityManager } from 'typeorm';
+import { RowDataPacket } from 'mysql2';
 
 import Recipe from './entity';
 
-import { AbsRecipeRepository } from './type/repository';
-
-import { ModifyRecipeDTO } from './type/dto';
-
 import { getFormattedDate } from '../helper/helper';
+
+import { AbsRecipeRepository } from './type/repository';
+import { ModifyRecipeDTO } from './type/dto';
 
 export default class RecipeRepository implements AbsRecipeRepository {
 	private static instance: AbsRecipeRepository;
@@ -65,7 +65,7 @@ export default class RecipeRepository implements AbsRecipeRepository {
 			.getMany();
 	}
 
-	async findBySubscribingChefsLatest(id: number): Promise<Recipe[]> {
+	async findBySubscribingChefsLatest(id: number): Promise<RowDataPacket[]> {
 		return await RecipeRepository.em.query(`
 			select * from recipe as r where (r.user_id, r.create_date) in (SELECT r.user_id, max(r.create_date) FROM (select STAR_ID from SUBSCRIBE where FAN_ID = ${id}) as p JOIN RECIPE as r ON p.STAR_ID = r.USER_ID group by r.user_id);`);
 	}

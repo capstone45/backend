@@ -1,4 +1,5 @@
 import { EntityManager } from 'typeorm';
+import { RowDataPacket } from 'mysql2';
 
 import User from './entity';
 
@@ -56,5 +57,11 @@ export default class UserRepository implements AbsUserRepository {
 
 	async findByLoginId(loginId: string): Promise<User> {
 		return await UserRepository.em.findOne(User, { where: { loginId } });
+	}
+
+	async getTodayChef(): Promise<RowDataPacket[]> {
+		return await UserRepository.em.query(`
+			select * from USER order by rand() limit 6
+		`);
 	}
 }

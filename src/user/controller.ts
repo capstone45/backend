@@ -28,6 +28,7 @@ export default class UserController implements AbsUserController {
 		if (UserController.instance) return;
 
 		UserController.router.get('/search', this.getByNickname);
+		UserController.router.get('/todayChef', this.getTodayChef);
 		UserController.router.get('/:id', this.getById);
 
 		UserController.router.post('/signin', this.signIn);
@@ -36,9 +37,9 @@ export default class UserController implements AbsUserController {
 		UserController.router.post('/logout', this.logOut);
 
 		UserController.router.patch('/:id', this.updateUserInfomation);
-		UserController.router.put('/:id/thumbnail', this.updateThumbnail);
+		UserController.router.put('/thumbnail/:id', this.updateThumbnail);
 
-		UserController.router.delete('/:id/thumbnail', this.deleteThumbnail);
+		UserController.router.delete('/thumbnail/:id', this.deleteThumbnail);
 		UserController.router.delete('/signout', this.signOut);
 
 		app.use(UserController.PATH, UserController.router);
@@ -83,11 +84,11 @@ export default class UserController implements AbsUserController {
 		}
 	}
 
-	async logIn(req: Request, res: Response): Promise<void>{
+	async logIn(req: Request, res: Response): Promise<void> {
 		try {
 			const logInUserInformation = req.body;
 			const userToken = await UserController.userService.logIn(logInUserInformation);
-			res.cookie("x_auth", userToken).status(204).send();
+			res.cookie('x_auth', userToken).status(204).send();
 		} catch (error) {
 			switch (error.message) {
 				case UserError.NOT_FOUND.message:
@@ -99,12 +100,11 @@ export default class UserController implements AbsUserController {
 				default:
 					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
 					return;
+			}
 		}
 	}
-}
 
-
-	async auth(req: Request, res: Response): Promise<void>{
+	async auth(req: Request, res: Response): Promise<void> {
 		try {
 			const token = req.cookies.x_auth;
 			// 뭘 넘겨야할지 정하기
@@ -118,14 +118,14 @@ export default class UserController implements AbsUserController {
 				default:
 					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
 					return;
+			}
 		}
 	}
-}
 
-	async logOut(req: Request, res: Response): Promise<void>{
-		try{
-			res.cookie("x_auth", "").status(204).send();
-		}catch(error){
+	async logOut(req: Request, res: Response): Promise<void> {
+		try {
+			res.cookie('x_auth', '').status(204).send();
+		} catch (error) {
 			switch (error.message) {
 				case UserError.NOT_AUTHORIZED.message:
 					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
@@ -133,7 +133,7 @@ export default class UserController implements AbsUserController {
 				default:
 					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
 					return;
-		}
+			}
 		}
 	}
 
@@ -224,6 +224,19 @@ export default class UserController implements AbsUserController {
 			const findUsers = await UserController.userService.findByNickname(nickname);
 
 			res.status(200).send(findUsers);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
+	}
+
+	async getTodayChef(req: Request, res: Response): Promise<void> {
+		try {
+			const users = await UserController.userService.getTodayChef();
+			res.status(200).send(users);
 		} catch (error) {
 			switch (error.message) {
 				default:

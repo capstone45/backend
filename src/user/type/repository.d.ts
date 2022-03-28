@@ -1,3 +1,4 @@
+import { RowDataPacket } from 'mysql2';
 import { EntityManager } from 'typeorm';
 
 import User from '../entity';
@@ -22,4 +23,5 @@ export abstract class AbsUserRepository {
 	findById(id: number): Promise<User>;
 	findByNickname(nickname: string): Promise<User[]>;
 	findByLoginId(loginId: string): Promise<User>;
+	getTodayChef(): Promise<RowDataPacket[]>;
 }
