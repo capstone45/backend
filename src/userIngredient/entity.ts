@@ -4,7 +4,7 @@ import User from '../user/entity';
 
 @Entity({ name: 'USER_INGREDIENT' })
 export default class UserIngredient {
-	@ManyToOne(() => User, (user) => user.ingredients, { primary: true, eager: true })
+	@ManyToOne(() => User, (user) => user.ingredients, { primary: true })
 	@JoinColumn({ name: 'USER_ID' })
 	user: User;
 
@@ -12,6 +12,6 @@ export default class UserIngredient {
 	@JoinColumn({ name: 'INGREDIENT_ID' })
 	ingredient: Ingredient;
 
-	@Column({ name: 'COUNT', type: 'bigint', nullable: false, default: 0 })
+	@Column({ name: 'COUNT', type: 'bigint', nullable: false, default: 1 })
 	count: number;
 }

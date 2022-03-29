@@ -28,6 +28,7 @@ export default class RecipeController implements AbsRecipeController {
 		if (RecipeController.instance) return;
 
 		RecipeController.router.get('/subscribe-chef-latest', this.getSubscribingChefsLatest);
+		RecipeController.router.get('/recommendation', this.getRecommendation);
 		RecipeController.router.get('/today-most-liked', this.getTodaysMostLiked);
 		RecipeController.router.get('/latest', this.getLatestCreated);
 		RecipeController.router.get('/search', this.getByTitle);
@@ -187,6 +188,20 @@ export default class RecipeController implements AbsRecipeController {
 			const findRecipes = await RecipeController.recipeService.findByIngredient(ingredients);
 
 			res.status(200).send(findRecipes);
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
+	}
+
+	async getRecommendation(req: Request, res: Response): Promise<void> {
+		try {
+			const { userId } = req.body;
+			const recipes = await RecipeController.recipeService.findRecommendation(userId);
+			res.status(200).send(recipes);
 		} catch (error) {
 			switch (error.message) {
 				default:

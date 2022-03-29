@@ -27,6 +27,7 @@ export abstract class AbsRecipeService {
 	findTodaysMostLiked(): Promise<BaseRecipeDTO[] | Error>;
 	findLatestCreated(): Promise<BaseRecipeDTO[] | Error>;
 	findById(recipeId: number, userId: number): Promise<ReadRecipeDetailDTO | Error>;
+	findRecommendation(userId: number): Promise<BaseRecipeDTO[] | Error>;
 
 	updateRecipe(userId: number, recipeId: number, body: ModifyRecipeDTO): Promise<void | Error>;
 

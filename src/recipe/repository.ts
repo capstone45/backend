@@ -73,4 +73,8 @@ export default class RecipeRepository implements AbsRecipeRepository {
 	async findAll(): Promise<Recipe[]> {
 		return await RecipeRepository.em.getRepository(Recipe).find();
 	}
+
+	async findRandomRecipe(count: number): Promise<RowDataPacket[]> {
+		return await RecipeRepository.em.query(`select * from RECIPE order by rand() limit ${count}`);
+	}
 }
