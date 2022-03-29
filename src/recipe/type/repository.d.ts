@@ -21,4 +21,5 @@ export abstract class AbsRecipeRepository {
 	findByLatestCreated(): Promise<Recipe[]>;
 	findById(id: number): Promise<Recipe>;
 	findAll(): Promise<Recipe[]>;
+	findRandomRecipe(count: number): Promise<RowDataPacket[]>;
 }
