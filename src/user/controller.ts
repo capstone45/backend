@@ -28,7 +28,7 @@ export default class UserController implements AbsUserController {
 		if (UserController.instance) return;
 
 		UserController.router.get('/search', this.getByNickname);
-		UserController.router.get('/todayChef', this.getTodayChef);
+		UserController.router.get('/today-chef', this.getTodayChef);
 		UserController.router.get('/:id', this.getById);
 
 		UserController.router.post('/signin', this.signIn);
