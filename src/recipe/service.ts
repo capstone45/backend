@@ -8,6 +8,7 @@ import User from '../user/entity';
 
 import { AbsRecipeDescriptionRepository } from '../recipeDescription/type/repository';
 import { AbsRecipeIngredientRepository } from '../recipeIngredient/type/repository';
+import { AbsUserIngredientRepository } from '../userIngredient/type/repository';
 import { AbsIngredientRepository } from '../ingredient/type/repository';
 import { AbsRecipeTagRepository } from '../recipeTag/type/repository';
 import { AbsUserRepository } from '../user/type/repository';
@@ -24,6 +25,7 @@ export default class RecipeService implements AbsRecipeService {
 
 	private static recipeDescriptionRepository: AbsRecipeDescriptionRepository;
 	private static recipeIngredientRepository: AbsRecipeIngredientRepository;
+	private static userIngredientRepository: AbsUserIngredientRepository;
 	private static ingredientRepository: AbsIngredientRepository;
 	private static recipeTagRepository: AbsRecipeTagRepository;
 	private static recipeRepository: AbsRecipeRepository;
@@ -47,16 +49,7 @@ export default class RecipeService implements AbsRecipeService {
 		RecipeService.recipeDescriptionRepository = dependency.recipeDescriptionRepository;
 		RecipeService.recipeIngredientRepository = dependency.recipeIngredientRepository;
 		RecipeService.recipeTagRepository = dependency.recipeTagRepository;
-	}
-
-	private static getIncludeRate(ingredients: RecipeIngredient[], keywords: string[]): boolean {
-		let count = 0;
-		ingredients.forEach((ingredient) => {
-			if (keywords.includes(ingredient.ingredient.name)) {
-				count += 1;
-			}
-		});
-		return count / ingredients.length >= RecipeService.INCLUDE_THRESHOLD ? true : false;
+		RecipeService.userIngredientRepository = dependency.userIngredientRepository;
 	}
 
 	async deleteRecipe(userId: number, recipeId: number): Promise<void | Error> {
@@ -225,14 +218,56 @@ export default class RecipeService implements AbsRecipeService {
 		return findRecipes.map((recipe) => new BaseRecipeDTO(recipe.RECIPE_ID, recipe.TITLE, recipe.THUMBNAIL_URL));
 	}
 
-	async findByIngredient(keywords: string[]): Promise<Recipe[] | Error> {
+	private static hasEnoughIngredient(ingredients: RecipeIngredient[], keywords: string[]): boolean {
+		let count = 0;
+		ingredients.forEach((ingredient) => {
+			if (keywords.includes(ingredient.ingredient.name)) {
+				count += 1;
+			}
+		});
+		return count / ingredients.length >= RecipeService.INCLUDE_THRESHOLD ? true : false;
+	}
+
+	async findByIngredient(keywords: string[]): Promise<Recipe[]> {
 		const allRecipes = await RecipeService.recipeRepository.findAll();
 
 		return await Promise.all(
 			allRecipes.filter(async (recipe) => {
 				const ingredients = await recipe.recipeIngredients;
-				if (RecipeService.getIncludeRate(ingredients, keywords)) return recipe;
+				if (RecipeService.hasEnoughIngredient(ingredients, keywords)) return recipe;
 			})
 		);
+	}
+
+	private static getRandomRecipe(recipes: Recipe[]) {
+		const randomNumber = Math.floor(Math.random() * recipes.length);
+		return recipes[randomNumber];
+	}
+
+	async findRecommendation(userId: number): Promise<BaseRecipeDTO[] | Error> {
+		const ingredients = (await RecipeService.userIngredientRepository.findIngredientByUserId(userId)).map(
+			(userIngredient) => userIngredient.ingredient.name
+		);
+
+		const recipes: BaseRecipeDTO[] = [];
+		let index = 0;
+
+		while (index < ingredients.length) {
+			const randomRecipe = RecipeService.getRandomRecipe(await this.findByIngredient([ingredients[index]]));
+			const notIncluded = recipes.every((recipe) => Number(recipe.id) !== Number(randomRecipe.id));
+			if (notIncluded) {
+				recipes.push(new BaseRecipeDTO(randomRecipe.id, randomRecipe.title, randomRecipe.thumbnailUrl));
+				index++;
+			}
+		}
+
+		(await RecipeService.recipeRepository.findRandomRecipe(6)).every((newRecipe) => {
+			const notIncluded = recipes.every((includeRecipe) => Number(includeRecipe.id) !== Number(newRecipe.RECIPE_ID));
+			if (notIncluded) recipes.push(new BaseRecipeDTO(newRecipe.RECIPE_ID, newRecipe.TITLE, newRecipe.THUMBNAIL_URL));
+			if (recipes.length >= 6) return false;
+			else return true;
+		});
+
+		return recipes;
 	}
 }
