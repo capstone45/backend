@@ -1,4 +1,4 @@
-import express, { Router, Request, Response } from 'express';
+import express, { Router, Request, Response, NextFunction } from 'express';
 
 import { AbsUserService } from './service';
 
@@ -13,11 +13,12 @@ export abstract class AbsUserController {
 	private constructor(dependency);
 	initRouter(app: express.Application): void;
 
+	auth(req: Request, res: Response, next: NextFunction): Promise<void>;
+
 	signIn(req: Request, res: Response): Promise<void>;
 	signOut(req: Request, res: Response): Promise<void>;
 
 	logIn(req: Request, res: Response): Promise<void>;
-	auth(req: Request, res: Response): Promise<void>;
 	logOut(req: Request, res: Response): Promise<void>;
 
 	getById(req: Request, res: Response): Promise<void>;

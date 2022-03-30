@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 
 import { AbsUserController } from './type/controller';
 import { AbsUserService } from './type/service';
@@ -33,17 +33,27 @@ export default class UserController implements AbsUserController {
 
 		UserController.router.post('/signin', this.signIn);
 		UserController.router.post('/login', this.logIn);
-		UserController.router.post('/auth', this.auth);
-		UserController.router.post('/logout', this.logOut);
+		UserController.router.post('/logout', this.auth ,this.logOut);
 
-		UserController.router.patch('/:id', this.updateUserInfomation);
-		UserController.router.put('/thumbnail/:id', this.updateThumbnail);
+		UserController.router.patch('/:id', this.auth,this.updateUserInfomation);
+		UserController.router.put('/thumbnail/:id', this.auth, this.updateThumbnail);
 
-		UserController.router.delete('/thumbnail/:id', this.deleteThumbnail);
-		UserController.router.delete('/signout', this.signOut);
+		UserController.router.delete('/thumbnail/:id', this.auth, this.deleteThumbnail);
+		UserController.router.delete('/signout', this.auth, this.signOut);
 
 		app.use(UserController.PATH, UserController.router);
 	}
+
+	//middleware
+	async auth(req: Request, res: Response, next: NextFunction): Promise<void> {
+		const token = req.cookies.x_auth;
+		const userId = await UserController.userService.auth(token);
+		
+		// 해결 필요
+		// req.userId = userId;
+		next();
+	}
+	// 에러처리
 
 	async signIn(req: Request, res: Response): Promise<void> {
 		try {
@@ -96,23 +106,6 @@ export default class UserController implements AbsUserController {
 					return;
 				case UserError.PASSWORD_NOT_MATCH.message:
 					res.status(UserError.PASSWORD_NOT_MATCH.code).send(UserError.PASSWORD_NOT_MATCH.message);
-					return;
-				default:
-					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
-					return;
-			}
-		}
-	}
-
-	async auth(req: Request, res: Response): Promise<void> {
-		try {
-			const token = req.cookies.x_auth;
-			const user = await UserController.userService.auth(token);
-			res.status(200).send(user);
-		} catch (error) {
-			switch (error.message) {
-				case UserError.NOT_AUTHORIZED.message:
-					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
 					return;
 				default:
 					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
