@@ -72,7 +72,6 @@ export default class UserService implements AbsUserService {
 		const isMatch = await this.comparePassword(logInUserInformation.loginPassword, user.loginPassword);
 		if (!isMatch) throw new Error(UserError.PASSWORD_NOT_MATCH.message);
 
-		// loginId만 할 것인지 고민, 토큰 유효기간 고민
 		// bug: id가 number가 아닌 string으로 저장되는 문제
 		const tokenInfo: TokenInfoObj = { id: Number(user.id) };
 		const userToken = jwt.sign(tokenInfo, 'capstone10');
@@ -80,12 +79,12 @@ export default class UserService implements AbsUserService {
 		return userToken;
 	}
 
-	async auth(token: string): Promise<ReadUserDetailDTO | Error> {
+	async auth(token: string): Promise<number | Error> {
 		const decoded = jwt.verify(token, 'capstone10') as TokenInfoObj;
-		const user = await this.findById(decoded.id);
-		if (!user) throw new Error(UserError.NOT_AUTHORIZED.message);
+		const userId = decoded.id;
+		if (!userId) throw new Error(UserError.NOT_FOUND.message);
 
-		return user;
+		return userId;
 	}
 
 	async updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void | Error> {
