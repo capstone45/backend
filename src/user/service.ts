@@ -80,14 +80,12 @@ export default class UserService implements AbsUserService {
 		return userToken;
 	}
 
-	async auth(token: string): Promise<ReadUserDTO | Error> {
+	async auth(token: string): Promise<ReadUserDetailDTO | Error> {
 		const decoded = jwt.verify(token, 'capstone10') as TokenInfoObj;
-		const user = await UserService.userRepository.findById(decoded.id);
+		const user = await this.findById(decoded.id);
 		if (!user) throw new Error(UserError.NOT_AUTHORIZED.message);
 
-		const readUser = new ReadUserDTO(user);
-
-		return readUser;
+		return user;
 	}
 
 	async updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void | Error> {
