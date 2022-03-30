@@ -107,7 +107,6 @@ export default class UserController implements AbsUserController {
 	async auth(req: Request, res: Response): Promise<void> {
 		try {
 			const token = req.cookies.x_auth;
-			// 뭘 넘겨야할지 정하기
 			const user = await UserController.userService.auth(token);
 			res.status(200).send(user);
 		} catch (error) {
