@@ -72,7 +72,6 @@ export default class UserService implements AbsUserService {
 		const isMatch = await this.comparePassword(logInUserInformation.loginPassword, user.loginPassword);
 		if (!isMatch) throw new Error(UserError.PASSWORD_NOT_MATCH.message);
 
-		// loginId만 할 것인지 고민, 토큰 유효기간 고민
 		// bug: id가 number가 아닌 string으로 저장되는 문제
 		const tokenInfo: TokenInfoObj = { id: Number(user.id) };
 		const userToken = jwt.sign(tokenInfo, 'capstone10');
@@ -80,34 +79,29 @@ export default class UserService implements AbsUserService {
 		return userToken;
 	}
 
-	async auth(token: string): Promise<ReadUserDTO | Error> {
+	async auth(token: string): Promise<number | Error> {
 		const decoded = jwt.verify(token, 'capstone10') as TokenInfoObj;
-		const user = await UserService.userRepository.findById(decoded.id);
-		if (!user) throw new Error(UserError.NOT_AUTHORIZED.message);
+		const userId = decoded.id;
+		if (!userId) throw new Error(UserError.NOT_FOUND.message);
 
-		const readUser = new ReadUserDTO(user);
-
-		return readUser;
+		return userId;
 	}
 
-	async updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void | Error> {
-		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
+	async updateThumbnail(userId: number, thumbnailUrl: string): Promise<void | Error> {
 
 		await UserService.userRepository.updateThumbnail(userId, thumbnailUrl);
 	}
 
-	async deleteThumbnail(targetUserId: number, userId: number): Promise<void> {
-		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
+	async deleteThumbnail(userId: number): Promise<void> {
 
 		await UserService.userRepository.deleteThumbnail(userId);
 	}
 
-	async updateUserInfomation(targetUserId: number, userId: number, updateUserInfomation: UpdateUserDTO): Promise<void | Error> {
+	async updateUserInfomation(userId: number, updateUserInfomation: UpdateUserDTO): Promise<void | Error> {
 		const { loginPassword, confirmPassword } = updateUserInfomation;
 		if (loginPassword !== confirmPassword) throw new Error(UserError.PASSWORD_NOT_MATCH.message);
-		if (targetUserId !== userId) throw new Error(UserError.NOT_AUTHORIZED.message);
 
-		const user = await UserService.userRepository.findById(targetUserId);
+		const user = await UserService.userRepository.findById(userId);
 		if (!user) throw new Error(UserError.NOT_FOUND.message);
 
 		// 비밀번호를 변경하지 않았을 때에도 암호화 할 것인지 고민

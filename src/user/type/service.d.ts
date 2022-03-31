@@ -16,14 +16,14 @@ export abstract class AbsUserService {
 	signOut(userId: number): Promise<void | Error>;
 
 	logIn(logInUserInformation: LogInUserDTO): Promise<string | Error>;
-	auth(token: string): Promise<ReadUserDTO | Error>;
+	auth(token: string): Promise<number | Error>;
 
 	findById(id: number): Promise<ReadUserDetailDTO | Error>;
 	findByNickname(nickname: string): Promise<ReadUserDTO[] | Error>;
 	getTodayChef(): Promise<BaseUserDTO[] | Error>;
 
-	updateThumbnail(targetUserId: number, userId: number, thumbnailUrl: string): Promise<void | Error>;
-	updateUserInfomation(targetUserId: number, userId: number, updateUserInfomation: UpdateUserDTO): Promise<void | Error>;
+	updateThumbnail(userId: number, thumbnailUrl: string): Promise<void | Error>;
+	updateUserInfomation(userId: number, updateUserInfomation: UpdateUserDTO): Promise<void | Error>;
 
-	deleteThumbnail(targetUserId: number, userId: number): Promise<void | Error>;
+	deleteThumbnail(userId: number): Promise<void | Error>;
 }
