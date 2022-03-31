@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 
-import { AbsUserController } from './type/controller';
+import { AbsUserController, IRequest } from './type/controller';
 import { AbsUserService } from './type/service';
 
 import { ServerError } from '../helper/helper';
@@ -35,25 +35,27 @@ export default class UserController implements AbsUserController {
 		UserController.router.post('/login', this.logIn);
 		UserController.router.post('/logout', this.auth ,this.logOut);
 
-		UserController.router.patch('/:id', this.auth,this.updateUserInfomation);
-		UserController.router.put('/thumbnail/:id', this.auth, this.updateThumbnail);
+		UserController.router.patch('/', this.auth,this.updateUserInfomation);
+		UserController.router.put('/thumbnail', this.auth, this.updateThumbnail);
 
-		UserController.router.delete('/thumbnail/:id', this.auth, this.deleteThumbnail);
+		UserController.router.delete('/thumbnail', this.auth, this.deleteThumbnail);
 		UserController.router.delete('/signout', this.auth, this.signOut);
 
 		app.use(UserController.PATH, UserController.router);
 	}
 
 	//middleware
-	async auth(req: Request, res: Response, next: NextFunction): Promise<void> {
-		const token = req.cookies.x_auth;
+	async auth(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+		try {
+			const token = req.cookies.x_auth;
 		const userId = await UserController.userService.auth(token);
 		
-		// 해결 필요
-		// req.userId = userId;
+		req.userId = userId;
 		next();
-	}
-	// 에러처리
+		} catch (error) {
+			next(error)
+		}
+	} 
 
 	async signIn(req: Request, res: Response): Promise<void> {
 		try {
@@ -76,9 +78,9 @@ export default class UserController implements AbsUserController {
 		}
 	}
 
-	async signOut(req: Request, res: Response): Promise<void> {
+	async signOut(req: IRequest, res: Response): Promise<void> {
 		try {
-			const { userId } = req.body;
+			const userId = Number(req.userId);
 			await UserController.userService.signOut(userId);
 
 			res.status(204).send();
@@ -129,12 +131,12 @@ export default class UserController implements AbsUserController {
 		}
 	}
 
-	async updateThumbnail(req: Request, res: Response): Promise<void> {
+	async updateThumbnail(req: IRequest, res: Response): Promise<void> {
 		try {
-			const targetUserId = Number(req.params.id);
-			const { userId, thumbnailUrl } = req.body;
+			const userId = Number(req.userId);
+			const { thumbnailUrl } = req.body;
 
-			await UserController.userService.updateThumbnail(targetUserId, userId, thumbnailUrl);
+			await UserController.userService.updateThumbnail(userId, thumbnailUrl);
 
 			res.status(204).send();
 		} catch (error) {
@@ -149,12 +151,11 @@ export default class UserController implements AbsUserController {
 		}
 	}
 
-	async deleteThumbnail(req: Request, res: Response): Promise<void> {
+	async deleteThumbnail(req: IRequest, res: Response): Promise<void> {
 		try {
-			const targetUserId = Number(req.params.id);
-			const { userId } = req.body;
+			const userId = Number(req.userId);
 
-			await UserController.userService.deleteThumbnail(targetUserId, userId);
+			await UserController.userService.deleteThumbnail(userId);
 
 			res.status(204).send();
 		} catch (error) {
@@ -169,12 +170,12 @@ export default class UserController implements AbsUserController {
 		}
 	}
 
-	async updateUserInfomation(req: Request, res: Response): Promise<void> {
+	async updateUserInfomation(req: IRequest, res: Response): Promise<void> {
 		try {
-			const targetUserId = Number(req.params.id);
-			const { userId, updateUserInfomation } = req.body;
+			const userId = Number(req.userId);
+			const updateUserInfomation  = req.body;
 
-			await UserController.userService.updateUserInfomation(targetUserId, userId, updateUserInfomation);
+			await UserController.userService.updateUserInfomation(userId, updateUserInfomation);
 
 			res.status(204).send();
 		} catch (error) {

@@ -2,6 +2,10 @@ import express, { Router, Request, Response, NextFunction } from 'express';
 
 import { AbsUserService } from './service';
 
+export interface IRequest extends Request {
+	userId: number | Error;
+	}
+
 export abstract class AbsUserController {
 	private static instance: AbsUserController;
 	private static readonly router: Router;
@@ -13,10 +17,10 @@ export abstract class AbsUserController {
 	private constructor(dependency);
 	initRouter(app: express.Application): void;
 
-	auth(req: Request, res: Response, next: NextFunction): Promise<void>;
+	auth(req: IRequest, res: Response, next: NextFunction): Promise<void>;
 
 	signIn(req: Request, res: Response): Promise<void>;
-	signOut(req: Request, res: Response): Promise<void>;
+	signOut(req: IRequest, res: Response): Promise<void>;
 
 	logIn(req: Request, res: Response): Promise<void>;
 	logOut(req: Request, res: Response): Promise<void>;
@@ -25,8 +29,8 @@ export abstract class AbsUserController {
 	getByNickname(req: Request, res: Response): Promise<void>;
 	getTodayChef(req: Request, res: Response): Promise<void>;
 
-	updateUserInfomation(req: Request, res: Response): Promise<void>;
-	updateThumbnail(req: Request, res: Response): Promise<void>;
+	updateUserInfomation(req: IRequest, res: Response): Promise<void>;
+	updateThumbnail(req: IRequest, res: Response): Promise<void>;
 
-	deleteThumbnail(req: Request, res: Response): Promise<void>;
+	deleteThumbnail(req: IRequest, res: Response): Promise<void>;
 }
