@@ -14,35 +14,41 @@
 # How to Start
 
 ### yarn package 설치
+- yarn 설치 후 진행
+- package.json 패키지 설치 
 ```shell
-// yarn 설치 후 진행
-// package.json 패키지 설치 
-
 yarn install
 ```
 ### API 테스트 환경 설정
+
+- vscode extensions [rest client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) 설치
+- `.rest` 파일 생성
+- [API 명세서](https://coal-bee-2c7.notion.site/API-0f1484a8eeb648d3b3b9cbc1fc5542b9) 참고하여 확인
 ```shell
-// vscode extensions `rest client` 설치
-// `.rest` 파일 생성
-// API 명세서 참고하여 확인
-
 ### 유저 정보 확인  
-GET http://localhost:4000/users/1 HTTP/1.1
+POST http://localhost:4000/users HTTP/1.1
+Content-Type: application/json
 
+{
+    "userId": 1,
+    ...
+}
 ```
 ### DB(MySQL) 연동 설정 방법
+- MySQL 설치 후 서버 연동 
+- `root`에 `.env` 환경변수 파일 생성 후 작성
+
 ```shell
-// .env 생성 후 작성
-DB_LOCAL_HOST = 0.0.0.0 //IP address
-DB_LOCAL_PORT = 3306 // Port number
-DB_LOCAL_USERNAME = root // Username
-DB_LOCAL_PASSWORD = 0000 // Password of DB
-DB_LOCAL_DATABASENAME = capstone // DB name
+DB_LOCAL_HOST = localhost #IP address
+DB_LOCAL_PORT = 3306 # Port number
+DB_LOCAL_USERNAME = root # Username
+DB_LOCAL_PASSWORD = 0000 # Password of DB
+DB_LOCAL_DATABASENAME = capstone # DB name
 ```
 
 ## 서버 실행
 
-### 1. 로컬 환경
+### 로컬 환경에서 실행
 
 ```shell
 yarn local
@@ -50,32 +56,29 @@ yarn local
 
 # Backend 구조
 
-## Contanier 구조 설정
-
-### 1. Contanier
-- 
-### 2. Bean
-- 
-## Entity 관리 및 API 서비스 구조
-
+## API Layer 구조
 ```
+src
+│
 ...
-├── type
-│   ├── controller.d.ts
-│   ├── service.d.ts
-│   ├── repository.d.ts
-│   ├── dto.ts
-│   └── error.ts
-├── controller.ts
-├── service.ts
-├── repository.ts
-└── entity.ts
+├── firstDomiain
+│    ├── type
+│    │   ├── controller.d.ts
+│    │   ├── service.d.ts
+│    │   ├── repository.d.ts
+│    │   ├── dto.ts
+│    │   └── error.ts
+│    ├── controller.ts
+│    ├── service.ts
+│    ├── repository.ts
+│    └── entity.ts
+...
+
 ```
 
 ### 1. `controller.d.ts`, `controller.ts`
 
-- API address
-- API method
+- API method & url
 
 ### 2. `service.d.ts`, `service.ts`
 
@@ -91,6 +94,38 @@ yarn local
 - TypeORM
 - DTO
 
+## Domain 구성
+```
+src
+│
+...
+├── user/
+├── tag/
+├── recipe/
+├── recipeTag/
+├── recipeIngredient/
+├── recipeDescription/
+├── ingredient/
+├── dateInfo/
+├── bookmark/
+├── subscribe/
+├── userIngredient/
+...
+```
+## Contanier 구조 설정
+```
+src
+│
+...
+├── container.ts
+└── index.ts
+...
+
+```
+### 1. Contanier
+- `Controller`,`Service`,`Repository` 
+### 2. Bean
+- 
 ## 그 외 정보
 - [DB 구조 보러가기](https://coal-bee-2c7.notion.site/DB-295b97c06f034e38a40c1c1876d8b2f3)
 
