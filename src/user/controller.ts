@@ -33,9 +33,9 @@ export default class UserController implements AbsUserController {
 
 		UserController.router.post('/signin', this.signIn);
 		UserController.router.post('/login', this.logIn);
-		UserController.router.post('/logout', this.auth ,this.logOut);
+		UserController.router.post('/logout', this.auth, this.logOut);
 
-		UserController.router.patch('/', this.auth,this.updateUserInfomation);
+		UserController.router.patch('/', this.auth, this.updateUserInfomation);
 		UserController.router.put('/thumbnail', this.auth, this.updateThumbnail);
 
 		UserController.router.delete('/thumbnail', this.auth, this.deleteThumbnail);
@@ -48,14 +48,14 @@ export default class UserController implements AbsUserController {
 	async auth(req: IRequest, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const token = req.cookies.x_auth;
-		const userId = await UserController.userService.auth(token);
-		
-		req.userId = userId;
-		next();
+			const userId = await UserController.userService.auth(token);
+
+			req.userId = userId;
+			next();
 		} catch (error) {
-			next(error)
+			next(error);
 		}
-	} 
+	}
 
 	async signIn(req: Request, res: Response): Promise<void> {
 		try {
@@ -173,7 +173,7 @@ export default class UserController implements AbsUserController {
 	async updateUserInfomation(req: IRequest, res: Response): Promise<void> {
 		try {
 			const userId = Number(req.userId);
-			const updateUserInfomation  = req.body;
+			const updateUserInfomation = req.body;
 
 			await UserController.userService.updateUserInfomation(userId, updateUserInfomation);
 
