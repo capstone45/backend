@@ -40,6 +40,15 @@ export default class RecipeRepository implements AbsRecipeRepository {
 		return await RecipeRepository.em.findOne(Recipe, id);
 	}
 
+	async findByIds(ids: number[]): Promise<Recipe[]> {
+		return await RecipeRepository.em
+			.getRepository(Recipe)
+			.createQueryBuilder('recipe')
+			.select()
+			.where('recipe.id in (:ids)', { ids })
+			.getMany();
+	}
+
 	async findByTitle(title: string): Promise<Recipe[]> {
 		return await RecipeRepository.em.getRepository(Recipe).find({ where: { title: title } });
 	}

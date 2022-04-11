@@ -1,4 +1,5 @@
 import { EntityManager } from 'typeorm';
+import Ingredient from '../../ingredient/entity';
 import UserIngredient from '../entity';
 
 export abstract class AbsUserIngredientRepository {
@@ -8,5 +9,6 @@ export abstract class AbsUserIngredientRepository {
 	public static getInstance(dependency): AbsUserIngredientRepository;
 	private constructor(dependency);
 
-	findIngredientByUserId(userId: number): Promise<UserIngredient[]>;
+	findByUserId(userId: number): Promise<UserIngredient[]>;
+	findByUserIdAndIngredient(userId: number, ingredient: Ingredient): Promise<UserIngredient>;
 }

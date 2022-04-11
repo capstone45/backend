@@ -1,4 +1,5 @@
 import { EntityManager } from 'typeorm';
+import Ingredient from '../ingredient/entity';
 import UserIngredient from './entity';
 
 import { AbsUserIngredientRepository } from './type/repository';
@@ -18,7 +19,11 @@ export default class UserIngredientRepository implements AbsUserIngredientReposi
 		UserIngredientRepository.em = dependency.em;
 	}
 
-	async findIngredientByUserId(userId: number): Promise<UserIngredient[]> {
+	async findByUserId(userId: number): Promise<UserIngredient[]> {
 		return await UserIngredientRepository.em.find(UserIngredient, { where: { user: userId }, order: { count: 'DESC' } });
+	}
+
+	async findByUserIdAndIngredient(userId: number, ingredient: Ingredient): Promise<UserIngredient> {
+		return await UserIngredientRepository.em.findOne(UserIngredient, { where: { user: userId, ingredient } });
 	}
 }

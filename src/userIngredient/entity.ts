@@ -4,7 +4,7 @@ import User from '../user/entity';
 
 @Entity({ name: 'USER_INGREDIENT' })
 export default class UserIngredient {
-	@ManyToOne(() => User, (user) => user.ingredients, { primary: true })
+	@ManyToOne(() => User, (user) => user.ingredients, { primary: true, onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'USER_ID' })
 	user: User;
 
@@ -14,4 +14,11 @@ export default class UserIngredient {
 
 	@Column({ name: 'COUNT', type: 'bigint', nullable: false, default: 1 })
 	count: number;
+
+	static create(user: User, ingredient: Ingredient) {
+		const userIngredient = new UserIngredient();
+		userIngredient.user = user;
+		userIngredient.ingredient = ingredient;
+		return userIngredient;
+	}
 }

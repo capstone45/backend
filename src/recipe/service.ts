@@ -19,6 +19,7 @@ import { AbsRecipeService } from './type/service';
 import { BaseRecipeDTO, ModifyRecipeDTO, ReadRecipeDetailDTO } from './type/dto';
 import UserError from '../user/type/error';
 import RecipeError from './type/error';
+import UserIngredient from '../userIngredient/entity';
 
 export default class RecipeService implements AbsRecipeService {
 	private static instance: AbsRecipeService;
@@ -31,8 +32,6 @@ export default class RecipeService implements AbsRecipeService {
 	private static recipeRepository: AbsRecipeRepository;
 	private static userRepository: AbsUserRepository;
 	private static tagRepository: AbsTagRepository;
-
-	private static INCLUDE_THRESHOLD = 0.5;
 
 	public static getInstance(dependency): AbsRecipeService {
 		if (!RecipeService.instance) {
@@ -218,25 +217,29 @@ export default class RecipeService implements AbsRecipeService {
 		return findRecipes.map((recipe) => new BaseRecipeDTO(recipe.RECIPE_ID, recipe.TITLE, recipe.THUMBNAIL_URL));
 	}
 
-	private static hasEnoughIngredient(ingredients: RecipeIngredient[], keywords: string[]): boolean {
-		let count = 0;
-		ingredients.forEach((ingredient) => {
-			if (keywords.includes(ingredient.ingredient.name)) {
-				count += 1;
-			}
-		});
-		return count / ingredients.length >= RecipeService.INCLUDE_THRESHOLD ? true : false;
-	}
+	async findByIngredient(rawIngredients: string[], userId: number): Promise<Recipe[]> {
+		const ingredients = await RecipeService.ingredientRepository.findByNameList(rawIngredients);
+		if (userId !== undefined) {
+			const user = await RecipeService.userRepository.findById(userId);
+			const userIngredients = await Promise.all(
+				ingredients.map(async (ingredient) => await RecipeService.userIngredientRepository.findByUserIdAndIngredient(userId, ingredient))
+			);
 
-	async findByIngredient(keywords: string[]): Promise<Recipe[]> {
-		const allRecipes = await RecipeService.recipeRepository.findAll();
+			const updatedUserIngredients = userIngredients.map((userIngredient, index) => {
+				if (userIngredient === undefined) {
+					return UserIngredient.create(user, ingredients[index]);
+				} else {
+					userIngredient.user = user;
+					userIngredient.count++;
+					return userIngredient;
+				}
+			});
+			user.ingredients = updatedUserIngredients;
+			await RecipeService.userRepository.save(user);
+		}
 
-		return await Promise.all(
-			allRecipes.filter(async (recipe) => {
-				const ingredients = await recipe.recipeIngredients;
-				if (RecipeService.hasEnoughIngredient(ingredients, keywords)) return recipe;
-			})
-		);
+		const includeRecipes = (await RecipeService.recipeIngredientRepository.findByIngredients(ingredients)).map((recipe) => recipe.recipeId);
+		return await RecipeService.recipeRepository.findByIds(includeRecipes);
 	}
 
 	private static getRandomRecipe(recipes: Recipe[]) {
@@ -245,7 +248,7 @@ export default class RecipeService implements AbsRecipeService {
 	}
 
 	async findRecommendation(userId: number): Promise<BaseRecipeDTO[] | Error> {
-		const ingredients = (await RecipeService.userIngredientRepository.findIngredientByUserId(userId)).map(
+		const ingredients = (await RecipeService.userIngredientRepository.findByUserId(userId)).map(
 			(userIngredient) => userIngredient.ingredient.name
 		);
 
@@ -253,7 +256,7 @@ export default class RecipeService implements AbsRecipeService {
 		let index = 0;
 
 		while (index < ingredients.length) {
-			const randomRecipe = RecipeService.getRandomRecipe(await this.findByIngredient([ingredients[index]]));
+			const randomRecipe = RecipeService.getRandomRecipe(await this.findByIngredient([ingredients[index]], userId));
 			const notIncluded = recipes.every((recipe) => Number(recipe.id) !== Number(randomRecipe.id));
 			if (notIncluded) {
 				recipes.push(new BaseRecipeDTO(randomRecipe.id, randomRecipe.title, randomRecipe.thumbnailUrl));

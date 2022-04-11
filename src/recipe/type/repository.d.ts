@@ -20,6 +20,7 @@ export abstract class AbsRecipeRepository {
 	findByTodaysMostLiked(): Promise<Recipe[]>;
 	findByLatestCreated(): Promise<Recipe[]>;
 	findById(id: number): Promise<Recipe>;
+	findByIds(ids: number[]): Promise<Recipe[]>;
 	findAll(): Promise<Recipe[]>;
 	findRandomRecipe(count: number): Promise<RowDataPacket[]>;
 }
