@@ -184,8 +184,8 @@ export default class RecipeController implements AbsRecipeController {
 
 	async getByIngredient(req: Request, res: Response): Promise<void> {
 		try {
-			const { ingredients } = req.body;
-			const findRecipes = await RecipeController.recipeService.findByIngredient(ingredients);
+			const { ingredients, userId } = req.body;
+			const findRecipes = await RecipeController.recipeService.findByIngredient(ingredients, userId);
 
 			res.status(200).send(findRecipes);
 		} catch (error) {
