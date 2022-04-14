@@ -25,6 +25,8 @@ import RecipeIngredientRepository from './recipeIngredient/repository';
 import IngredientRepository from './ingredient/repository';
 import RecipeTagRepository from './recipeTag/repository';
 import UserIngredientRepository from './userIngredient/repository';
+import RecipeTagController from './recipeTag/controller';
+import RecipeTagService from './recipeTag/service';
 
 export default class Container {
 	private static isInitialzied = false;
@@ -68,6 +70,10 @@ export default class Container {
 			...commonDependency,
 			bookmarkService: Container.getBean(layer.SERVICE, domain.BOOKMARK),
 		});
+		Container.bean[layer.CONTROLLER][domain.RECIPE_TAG] = RecipeTagController.getInstance({
+			...commonDependency,
+			recipeTagService: Container.getBean(layer.SERVICE, domain.RECIPE_TAG),
+		});
 	}
 
 	private static initService() {
@@ -95,6 +101,10 @@ export default class Container {
 			bookmarkRepository: Container.getBean(layer.REPOSITORY, domain.BOOKMARK),
 			recipeRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE),
 			userRepository: Container.getBean(layer.REPOSITORY, domain.USER),
+		});
+		Container.bean[layer.SERVICE][domain.RECIPE_TAG] = RecipeTagService.getInstance({
+			recipeTagRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE_TAG),
+			tagRepository: Container.getBean(layer.REPOSITORY, domain.TAG),
 		});
 	}
 
