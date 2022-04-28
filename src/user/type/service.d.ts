@@ -9,10 +9,12 @@ export abstract class AbsUserService {
 	public static getInstance(dependency): AbsUserService;
 	private constructor(dependency);
 
+	checkIsValidEmail(email: string): Promise<boolean>;
+
 	bcryptPassword(loginPassword: string): Promise<string>;
 	comparePassword(loginPassword: string, confirmPassword: string): Promise<boolean>;
 
-	signIn(createUserInformation: CreateUserDTO): Promise<BaseUserDTO | Error>;
+	signup(createUserInformation: CreateUserDTO): Promise<BaseUserDTO | Error>;
 	signOut(userId: number): Promise<void | Error>;
 
 	logIn(logInUserInformation: LogInUserDTO): Promise<string | Error>;

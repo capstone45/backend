@@ -1,3 +1,6 @@
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
 import User from './entity';
 
 import { AbsUserRepository } from './type/repository';
@@ -6,8 +9,6 @@ import { AbsUserService } from './type/service';
 import { BaseRecipeDTO } from '../recipe/type/dto';
 import { UpdateUserDTO, ReadUserDetailDTO, ReadUserDTO, CreateUserDTO, BaseUserDTO, LogInUserDTO } from './type/dto';
 import UserError from './type/error';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 
 interface TokenInfoObj {
 	id: number;
@@ -29,6 +30,11 @@ export default class UserService implements AbsUserService {
 		UserService.userRepository = dependency.userRepository;
 	}
 
+	async checkIsValidEmail(email: string): Promise<boolean> {
+		const user = await UserService.userRepository.findByLoginId(email);
+		return user ? false : true;
+	}
+
 	async bcryptPassword(loginPassword: string): Promise<string> {
 		const hash = await bcrypt.hash(loginPassword, SALT_ROUNDS);
 		return hash;
@@ -39,22 +45,23 @@ export default class UserService implements AbsUserService {
 		return isMatch;
 	}
 
-	async signIn(createUserInformation: CreateUserDTO): Promise<BaseUserDTO | Error> {
-		if (createUserInformation.loginPassword !== createUserInformation.confirmPassword)
+	async signup(createUserInformation: CreateUserDTO): Promise<BaseUserDTO | Error> {
+		if (createUserInformation.loginPassword !== createUserInformation.confirmPassword) {
 			throw new Error(UserError.PASSWORD_NOT_MATCH.message);
+		}
 
 		const findUser = await UserService.userRepository.findByLoginId(createUserInformation.loginId);
-		if (findUser) throw new Error(UserError.USER_ID_EXISTS.message);
+		if (findUser) {
+			throw new Error(UserError.USER_ID_EXISTS.message);
+		}
 
 		const encodedPassword = await this.bcryptPassword(createUserInformation.loginPassword);
-
 		createUserInformation.loginPassword = encodedPassword;
 
 		const newUser = User.create(createUserInformation);
 		await UserService.userRepository.save(newUser);
 
 		const userDto = new BaseUserDTO(newUser.id, newUser.nickname, newUser.thumbnailUrl);
-
 		return userDto;
 	}
 
@@ -88,12 +95,10 @@ export default class UserService implements AbsUserService {
 	}
 
 	async updateThumbnail(userId: number, thumbnailUrl: string): Promise<void | Error> {
-
 		await UserService.userRepository.updateThumbnail(userId, thumbnailUrl);
 	}
 
 	async deleteThumbnail(userId: number): Promise<void> {
-
 		await UserService.userRepository.deleteThumbnail(userId);
 	}
 

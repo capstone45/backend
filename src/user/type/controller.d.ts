@@ -4,7 +4,7 @@ import { AbsUserService } from './service';
 
 export interface IRequest extends Request {
 	userId: number | Error;
-	}
+}
 
 export abstract class AbsUserController {
 	private static instance: AbsUserController;
@@ -17,9 +17,10 @@ export abstract class AbsUserController {
 	private constructor(dependency);
 	initRouter(app: express.Application): void;
 
+	checkDuplicateEmail(req: IRequest, res: Response, next: NextFunction);
 	auth(req: IRequest, res: Response, next: NextFunction): Promise<void>;
 
-	signIn(req: Request, res: Response): Promise<void>;
+	signup(req: Request, res: Response): Promise<void>;
 	signOut(req: IRequest, res: Response): Promise<void>;
 
 	logIn(req: Request, res: Response): Promise<void>;

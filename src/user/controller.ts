@@ -31,7 +31,8 @@ export default class UserController implements AbsUserController {
 		UserController.router.get('/today-chef', this.getTodayChef);
 		UserController.router.get('/:id', this.getById);
 
-		UserController.router.post('/signin', this.signIn);
+		UserController.router.post('/isEmailValide', this.checkDuplicateEmail);
+		UserController.router.post('/signup', this.signup);
 		UserController.router.post('/login', this.logIn);
 		UserController.router.post('/logout', this.auth, this.logOut);
 
@@ -42,6 +43,20 @@ export default class UserController implements AbsUserController {
 		UserController.router.delete('/signout', this.auth, this.signOut);
 
 		app.use(UserController.PATH, UserController.router);
+	}
+
+	async checkDuplicateEmail(req: IRequest, res: Response): Promise<void> {
+		try {
+			const { email } = req.body;
+			const isValidEmail = await UserController.userService.checkIsValidEmail(email);
+			res.status(200).send({ isValidEmail });
+		} catch (error) {
+			switch (error.message) {
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 
 	//middleware
@@ -57,10 +72,10 @@ export default class UserController implements AbsUserController {
 		}
 	}
 
-	async signIn(req: Request, res: Response): Promise<void> {
+	async signup(req: Request, res: Response): Promise<void> {
 		try {
 			const createUserInformation = req.body;
-			const user = await UserController.userService.signIn(createUserInformation);
+			const user = await UserController.userService.signup(createUserInformation);
 
 			res.status(201).send(user);
 		} catch (error) {
