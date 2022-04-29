@@ -18,7 +18,6 @@ export abstract class AbsUserController {
 	initRouter(app: express.Application): void;
 
 	checkDuplicateEmail(req: IRequest, res: Response, next: NextFunction);
-	auth(req: IRequest, res: Response, next: NextFunction): Promise<void>;
 
 	signup(req: Request, res: Response): Promise<void>;
 	signOut(req: IRequest, res: Response): Promise<void>;
