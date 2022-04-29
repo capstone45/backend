@@ -4,8 +4,6 @@ import DateInfo from '../dateInfo/entity';
 import Recipe from '../recipe/entity';
 import UserIngredient from '../userIngredient/entity';
 
-import { CreateUserDTO } from './type/dto';
-
 export enum loginMethod {
 	LOCAL = 'local',
 	GOOGLE = 'google',
@@ -92,11 +90,11 @@ export default class User {
 	@Column({ name: 'NUMBER_OF_FAN', type: 'int', default: 0, nullable: false, unsigned: true })
 	numberOfFan: number;
 
-	static create(createUserInformation: CreateUserDTO): User {
+	static create(loginId: string, loginPassword: string): User {
 		const user = new User();
-		user.loginId = createUserInformation.loginId;
-		user.loginPassword = createUserInformation.loginPassword;
-		user.nickname = createUserInformation.loginId;
+		user.loginId = loginId;
+		user.loginPassword = loginPassword;
+		user.nickname = loginId;
 		return user;
 	}
 }

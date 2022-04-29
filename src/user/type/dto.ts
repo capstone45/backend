@@ -1,7 +1,7 @@
 import User from '../entity';
 import { BaseRecipeDTO } from '../../recipe/type/dto';
 
-export class BaseUserDTO {
+class BaseUserDTO {
 	readonly id: number;
 	readonly nickname: string;
 	readonly thumbnailUrl: string;
@@ -13,7 +13,7 @@ export class BaseUserDTO {
 	}
 }
 
-export class ReadUserDTO extends BaseUserDTO {
+class ReadUserDTO extends BaseUserDTO {
 	readonly description: string;
 	readonly grade: string;
 	readonly numberOfFan: number;
@@ -27,7 +27,7 @@ export class ReadUserDTO extends BaseUserDTO {
 	}
 }
 
-export class ReadUserDetailDTO extends ReadUserDTO {
+class ReadUserDetailDTO extends ReadUserDTO {
 	readonly myRecipe: BaseRecipeDTO[];
 	readonly likeRecipe: BaseRecipeDTO[];
 	readonly subscribingUser: BaseUserDTO[];
@@ -40,20 +40,17 @@ export class ReadUserDetailDTO extends ReadUserDTO {
 	}
 }
 
-export class UpdateUserDTO {
-	public nickname: string;
-	public loginPassword: string;
-	readonly confirmPassword: string;
-	public description: string;
+interface LoginUserDTO {
+	jwt: string;
+	user: BaseUserDTO;
 }
 
-export class CreateUserDTO {
-	readonly loginId: string;
-	public loginPassword: string;
+interface UpdateUserDTO {
+	nickname: string;
+	loginPassword: string;
 	readonly confirmPassword: string;
+	description: string;
 }
 
-export class LogInUserDTO {
-	readonly loginId: string;
-	public loginPassword: string;
-}
+export { BaseUserDTO, ReadUserDTO, ReadUserDetailDTO };
+export type { UpdateUserDTO, LoginUserDTO };

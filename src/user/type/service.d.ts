@@ -1,6 +1,6 @@
 import { AbsUserRepository } from './repository';
 
-import { ReadUserDTO, ReadUserDetailDTO, UpdateUserDTO, CreateUserDTO, BaseUserDTO, LogInUserDTO } from './dto';
+import { ReadUserDTO, ReadUserDetailDTO, UpdateUserDTO, BaseUserDTO, LoginUserDTO } from './dto';
 
 export abstract class AbsUserService {
 	private static instance: AbsUserService;
@@ -9,15 +9,15 @@ export abstract class AbsUserService {
 	public static getInstance(dependency): AbsUserService;
 	private constructor(dependency);
 
-	checkIsValidEmail(email: string): Promise<boolean>;
+	checkEmailDuplication(email: string): Promise<boolean>;
 
-	bcryptPassword(loginPassword: string): Promise<string>;
-	comparePassword(loginPassword: string, confirmPassword: string): Promise<boolean>;
+	getEncryptedPassword(loginPassword: string): Promise<string>;
+	checkPasswordValidation(loginPassword: string, confirmPassword: string): Promise<boolean>;
 
-	signup(createUserInformation: CreateUserDTO): Promise<BaseUserDTO | Error>;
+	signup(loginId: string, loginPassword: string, confirmPassword: string): Promise<void | Error>;
 	signOut(userId: number): Promise<void | Error>;
 
-	logIn(logInUserInformation: LogInUserDTO): Promise<string | Error>;
+	logIn(loginId: string, password: string): Promise<LoginUserDTO>;
 	auth(token: string): Promise<number | Error>;
 
 	findById(id: number): Promise<ReadUserDetailDTO | Error>;

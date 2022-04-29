@@ -1,10 +1,11 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 
 import { AbsUserController, IRequest } from './type/controller';
 import { AbsUserService } from './type/service';
 
 import { ServerError } from '../helper/helper';
 import UserError from './type/error';
+import { auth } from '../helper/middleware';
 
 export default class UserController implements AbsUserController {
 	private static instance: AbsUserController;
@@ -31,16 +32,16 @@ export default class UserController implements AbsUserController {
 		UserController.router.get('/today-chef', this.getTodayChef);
 		UserController.router.get('/:id', this.getById);
 
-		UserController.router.post('/isEmailValide', this.checkDuplicateEmail);
+		UserController.router.post('/check-duplication', this.checkDuplicateEmail);
 		UserController.router.post('/signup', this.signup);
 		UserController.router.post('/login', this.logIn);
-		UserController.router.post('/logout', this.auth, this.logOut);
+		UserController.router.post('/logout', auth, this.logOut);
 
-		UserController.router.patch('/', this.auth, this.updateUserInfomation);
-		UserController.router.put('/thumbnail', this.auth, this.updateThumbnail);
+		UserController.router.patch('/', auth, this.updateUserInfomation);
+		UserController.router.put('/thumbnail', auth, this.updateThumbnail);
 
-		UserController.router.delete('/thumbnail', this.auth, this.deleteThumbnail);
-		UserController.router.delete('/signout', this.auth, this.signOut);
+		UserController.router.delete('/thumbnail', auth, this.deleteThumbnail);
+		UserController.router.delete('/signout', auth, this.signOut);
 
 		app.use(UserController.PATH, UserController.router);
 	}
@@ -48,8 +49,8 @@ export default class UserController implements AbsUserController {
 	async checkDuplicateEmail(req: IRequest, res: Response): Promise<void> {
 		try {
 			const { email } = req.body;
-			const isValidEmail = await UserController.userService.checkIsValidEmail(email);
-			res.status(200).send({ isValidEmail });
+			const idDuplicated = await UserController.userService.checkEmailDuplication(email);
+			res.status(200).send({ idDuplicated });
 		} catch (error) {
 			switch (error.message) {
 				default:
@@ -59,25 +60,11 @@ export default class UserController implements AbsUserController {
 		}
 	}
 
-	//middleware
-	async auth(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-		try {
-			const token = req.cookies.x_auth;
-			const userId = await UserController.userService.auth(token);
-
-			req.userId = userId;
-			next();
-		} catch (error) {
-			next(error);
-		}
-	}
-
 	async signup(req: Request, res: Response): Promise<void> {
 		try {
-			const createUserInformation = req.body;
-			const user = await UserController.userService.signup(createUserInformation);
-
-			res.status(201).send(user);
+			const { loginId, loginPassword, confirmPassword } = req.body;
+			await UserController.userService.signup(loginId, loginPassword, confirmPassword);
+			this.logIn(req, res);
 		} catch (error) {
 			switch (error.message) {
 				case UserError.USER_ID_EXISTS.message:
@@ -113,9 +100,9 @@ export default class UserController implements AbsUserController {
 
 	async logIn(req: Request, res: Response): Promise<void> {
 		try {
-			const logInUserInformation = req.body;
-			const userToken = await UserController.userService.logIn(logInUserInformation);
-			res.cookie('x_auth', userToken).status(204).send();
+			const { loginId, password } = req.body;
+			const { jwt, user } = await UserController.userService.logIn(loginId, password);
+			res.status(200).cookie('jwt', jwt, { httpOnly: true }).send(user);
 		} catch (error) {
 			switch (error.message) {
 				case UserError.NOT_FOUND.message:
