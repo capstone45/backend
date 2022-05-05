@@ -17,12 +17,13 @@ export abstract class AbsUserController {
 	private constructor(dependency);
 	initRouter(app: express.Application): void;
 
+	getBaseDto(req: IRequest, res: Response): Promise<void>;
 	checkDuplicateEmail(req: IRequest, res: Response, next: NextFunction);
 
 	signup(req: Request, res: Response): Promise<void>;
 	signOut(req: IRequest, res: Response): Promise<void>;
 
-	logIn(req: Request, res: Response): Promise<void>;
+	static logIn(req: Request, res: Response): Promise<void>;
 	logOut(req: Request, res: Response): Promise<void>;
 
 	getById(req: Request, res: Response): Promise<void>;

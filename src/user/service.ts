@@ -30,6 +30,11 @@ export default class UserService implements AbsUserService {
 		UserService.userRepository = dependency.userRepository;
 	}
 
+	async getBaseUserDto(userId: number): Promise<BaseUserDTO> {
+		const user = await UserService.userRepository.findById(userId);
+		return new BaseUserDTO(user.id, user.nickname, user.thumbnailUrl);
+	}
+
 	async checkEmailDuplication(email: string): Promise<boolean> {
 		const user = await UserService.userRepository.findByLoginId(email);
 		return user ? false : true;
@@ -69,7 +74,6 @@ export default class UserService implements AbsUserService {
 	async logIn(loginId: string, password: string): Promise<LoginUserDTO> {
 		const user = await UserService.userRepository.findByLoginId(loginId);
 		if (!user) throw new Error(UserError.NOT_FOUND.message);
-
 		const isPasswordMatch = await this.checkPasswordValidation(password, user.loginPassword);
 		if (!isPasswordMatch) throw new Error(UserError.PASSWORD_NOT_MATCH.message);
 

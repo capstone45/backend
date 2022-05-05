@@ -30,11 +30,12 @@ export default class UserController implements AbsUserController {
 
 		UserController.router.get('/search', this.getByNickname);
 		UserController.router.get('/today-chef', this.getTodayChef);
+		UserController.router.get('/base-dto', auth, this.getBaseDto);
 		UserController.router.get('/:id', this.getById);
 
 		UserController.router.post('/check-duplication', this.checkDuplicateEmail);
 		UserController.router.post('/signup', this.signup);
-		UserController.router.post('/login', this.logIn);
+		UserController.router.post('/login', UserController.logIn);
 		UserController.router.post('/logout', auth, this.logOut);
 
 		UserController.router.patch('/', auth, this.updateUserInfomation);
@@ -44,6 +45,24 @@ export default class UserController implements AbsUserController {
 		UserController.router.delete('/signout', auth, this.signOut);
 
 		app.use(UserController.PATH, UserController.router);
+	}
+
+	async getBaseDto(req: IRequest, res: Response): Promise<void> {
+		try {
+			console.log('hihihihihi');
+			const { userId } = req.body;
+			console.log(userId);
+			const baseUserDto = await UserController.userService.getBaseUserDto(userId);
+			res.status(200).send(baseUserDto);
+		} catch (error) {
+			switch (error.message) {
+				case UserError.NOT_FOUND:
+					res.status(UserError.NOT_FOUND.code).send(UserError.NOT_FOUND.message);
+					break;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+			}
+		}
 	}
 
 	async checkDuplicateEmail(req: IRequest, res: Response): Promise<void> {
@@ -64,7 +83,7 @@ export default class UserController implements AbsUserController {
 		try {
 			const { loginId, loginPassword, confirmPassword } = req.body;
 			await UserController.userService.signup(loginId, loginPassword, confirmPassword);
-			this.logIn(req, res);
+			UserController.logIn(req, res);
 		} catch (error) {
 			switch (error.message) {
 				case UserError.USER_ID_EXISTS.message:
@@ -98,12 +117,15 @@ export default class UserController implements AbsUserController {
 		}
 	}
 
-	async logIn(req: Request, res: Response): Promise<void> {
+	static async logIn(req: Request, res: Response): Promise<void> {
 		try {
-			const { loginId, password } = req.body;
-			const { jwt, user } = await UserController.userService.logIn(loginId, password);
-			res.status(200).cookie('jwt', jwt, { httpOnly: true }).send(user);
+			const { loginId, loginPassword } = req.body;
+			const { jwt, user } = await UserController.userService.logIn(loginId, loginPassword);
+			console.log(jwt);
+			console.log(user);
+			res.status(200).cookie('jwt', jwt).send({ user, jwt });
 		} catch (error) {
+			console.log(error);
 			switch (error.message) {
 				case UserError.NOT_FOUND.message:
 					res.status(UserError.NOT_FOUND.code).send(UserError.NOT_FOUND.message);

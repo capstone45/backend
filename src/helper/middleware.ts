@@ -12,14 +12,13 @@ async function auth(req: Request, res: Response, next: NextFunction): Promise<vo
 			return;
 		}
 
-		const userId = jwt.verify(accessToken, process.env.JWT_SECRETE);
-
+		const userId = Object.values(jwt.verify(accessToken, process.env.JWT_SECRET))[0];
 		if (!userId) {
 			res.status(401).send({ msg: 'invalid JWT' });
 			return;
 		}
 
-		req['userId'] = Number(userId);
+		req.body.userId = Number(userId);
 		next();
 	} catch (error) {
 		res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);

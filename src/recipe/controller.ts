@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { ServerError } from '../helper/helper';
+import { auth } from '../helper/middleware';
 import UserError from '../user/type/error';
 
 import { AbsRecipeController } from './type/controller';
@@ -27,7 +28,7 @@ export default class RecipeController implements AbsRecipeController {
 	initRouter(app: express.Application): void {
 		if (RecipeController.instance) return;
 
-		RecipeController.router.get('/subscribe-chef-latest', this.getSubscribingChefsLatest);
+		RecipeController.router.get('/subscribe-chef-latest', auth, this.getSubscribingChefsLatest);
 		RecipeController.router.get('/recommendation', this.getRecommendation);
 		RecipeController.router.get('/today-most-liked', this.getTodaysMostLiked);
 		RecipeController.router.get('/latest', this.getLatestCreated);
@@ -156,7 +157,6 @@ export default class RecipeController implements AbsRecipeController {
 	async getLatestCreated(req: Request, res: Response): Promise<void> {
 		try {
 			const findRecipes = await RecipeController.recipeService.findLatestCreated();
-
 			res.status(200).send(findRecipes);
 		} catch (error) {
 			switch (error.message) {
@@ -171,7 +171,6 @@ export default class RecipeController implements AbsRecipeController {
 		try {
 			const { userId } = req.body;
 			const findRecipes = await RecipeController.recipeService.findSubscribingChefsLatest(Number(userId));
-
 			res.status(200).send(findRecipes);
 		} catch (error) {
 			switch (error.message) {

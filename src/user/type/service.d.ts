@@ -9,6 +9,7 @@ export abstract class AbsUserService {
 	public static getInstance(dependency): AbsUserService;
 	private constructor(dependency);
 
+	getBaseUserDto(userId: number): Promise<BaseUserDTO>;
 	checkEmailDuplication(email: string): Promise<boolean>;
 
 	getEncryptedPassword(loginPassword: string): Promise<string>;
