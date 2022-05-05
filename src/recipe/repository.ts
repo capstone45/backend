@@ -50,7 +50,12 @@ export default class RecipeRepository implements AbsRecipeRepository {
 	}
 
 	async findByTitle(title: string): Promise<Recipe[]> {
-		return await RecipeRepository.em.getRepository(Recipe).find({ where: { title: title } });
+		return await RecipeRepository.em
+			.getRepository(Recipe)
+			.createQueryBuilder('recipe')
+			.select()
+			.where(`recipe.title like :title`, { title: `%${title}%` })
+			.getMany();
 	}
 
 	async findByTodaysMostLiked(): Promise<Recipe[]> {

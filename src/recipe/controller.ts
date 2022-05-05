@@ -129,7 +129,6 @@ export default class RecipeController implements AbsRecipeController {
 			const title = String(req.query.title);
 
 			const findRecipes = await RecipeController.recipeService.findByTitle(title);
-
 			res.status(200).send(findRecipes);
 		} catch (error) {
 			switch (error.message) {
@@ -185,7 +184,6 @@ export default class RecipeController implements AbsRecipeController {
 		try {
 			const { ingredients, userId } = req.body;
 			const findRecipes = await RecipeController.recipeService.findByIngredient(ingredients, userId);
-
 			res.status(200).send(findRecipes);
 		} catch (error) {
 			switch (error.message) {
