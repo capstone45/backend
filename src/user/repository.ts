@@ -52,7 +52,12 @@ export default class UserRepository implements AbsUserRepository {
 	}
 
 	async findByNickname(nickname: string): Promise<User[]> {
-		return await UserRepository.em.find(User, { where: { nickname } });
+		return await UserRepository.em
+			.getRepository(User)
+			.createQueryBuilder('user')
+			.select()
+			.where('user.nickname like :nickname', { nickname: `%${nickname}%` })
+			.getMany();
 	}
 
 	async findByLoginId(loginId: string): Promise<User> {
