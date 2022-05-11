@@ -29,15 +29,15 @@ export default class RecipeController implements AbsRecipeController {
 		if (RecipeController.instance) return;
 
 		RecipeController.router.get('/subscribe-chef-latest', auth, this.getSubscribingChefsLatest);
-		RecipeController.router.get('/recommendation', this.getRecommendation);
+		RecipeController.router.get('/recommendation', auth, this.getRecommendation);
 		RecipeController.router.get('/today-most-liked', this.getTodaysMostLiked);
 		RecipeController.router.get('/latest', this.getLatestCreated);
 		RecipeController.router.get('/search', this.getByTitle);
 		RecipeController.router.get('/:id', this.getById);
 		RecipeController.router.post('/search', this.getByIngredient);
-		RecipeController.router.post('/', this.createRecipe);
-		RecipeController.router.put('/:id', this.updateRecipe);
-		RecipeController.router.delete('/:id', this.deleteRecipe);
+		RecipeController.router.post('/', auth, this.createRecipe);
+		RecipeController.router.put('/:id', auth, this.updateRecipe);
+		RecipeController.router.delete('/:id', auth, this.deleteRecipe);
 
 		app.use(RecipeController.PATH, RecipeController.router);
 	}

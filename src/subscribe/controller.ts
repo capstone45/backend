@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { ServerError } from '../helper/helper';
+import { auth } from '../helper/middleware';
 import UserError from '../user/type/error';
 
 import { AbsSubscribeController } from './type/controller';
@@ -27,7 +28,7 @@ export default class SubscribeController {
 	initRouter(app: express.Application): void {
 		if (SubscribeController.instance) return;
 
-		SubscribeController.router.post('/', this.changeSubscribe);
+		SubscribeController.router.post('/', auth, this.changeSubscribe);
 
 		app.use(SubscribeController.PATH, SubscribeController.router);
 	}

@@ -49,9 +49,7 @@ export default class UserController implements AbsUserController {
 
 	async getBaseDto(req: IRequest, res: Response): Promise<void> {
 		try {
-			console.log('hihihihihi');
 			const { userId } = req.body;
-			console.log(userId);
 			const baseUserDto = await UserController.userService.getBaseUserDto(userId);
 			res.status(200).send(baseUserDto);
 		} catch (error) {
