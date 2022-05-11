@@ -32,8 +32,8 @@ export default class RecipeRepository implements AbsRecipeRepository {
 		return RecipeRepository.em.create(Recipe, { title: rawRecipe.title });
 	}
 
-	async save(recipe: Recipe): Promise<void> {
-		await RecipeRepository.em.save(recipe);
+	async save(recipe: Recipe): Promise<number> {
+		return (await RecipeRepository.em.save(recipe)).id;
 	}
 
 	async findById(id: number): Promise<Recipe> {

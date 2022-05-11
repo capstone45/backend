@@ -14,7 +14,7 @@ export abstract class AbsRecipeRepository {
 
 	remove(recipe: Recipe): Promise<void>;
 	create(rawRecipe: ModifyRecipeDTO): Recipe;
-	save(recipe: Recipe): Promise<void>;
+	save(recipe: Recipe): Promise<number>;
 	findBySubscribingChefsLatest(id: number): Promise<RowDataPacket[]>;
 	findByTitle(title: string): Promise<Recipe[]>;
 	findByTodaysMostLiked(): Promise<Recipe[]>;

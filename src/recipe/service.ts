@@ -61,22 +61,22 @@ export default class RecipeService implements AbsRecipeService {
 		await RecipeService.recipeRepository.remove(recipe);
 	}
 
-	async createRecipe(userId: number, body: ModifyRecipeDTO): Promise<void | Error> {
+	async createRecipe(userId: number, rawRecipe: ModifyRecipeDTO): Promise<number | Error> {
 		// user 찾기
 		const user = await RecipeService.userRepository.findById(userId);
 		if (!user) throw new Error(UserError.NOT_FOUND.message);
 
 		// 미완성 recipe Object 만들기
-		const recipe = Recipe.create(body, user);
+		const recipe = Recipe.create(rawRecipe, user);
 
 		// recipeDescription 만들기
-		const recipeDescriptions = body.recipeDescriptions.map((rawRecipeDescription) =>
+		const recipeDescriptions = rawRecipe.recipeDescriptions.map((rawRecipeDescription) =>
 			RecipeDescription.create(recipe, rawRecipeDescription)
 		);
 
 		// ingredient 찾기 & 없으면 만들기
 		const ingredients = await Promise.all(
-			body.ingredients.map(async (rawIngredient) => {
+			rawRecipe.ingredients.map(async (rawIngredient) => {
 				const ingredient = (await RecipeService.ingredientRepository.findByName(rawIngredient.name))[0];
 				return ingredient ? ingredient : Ingredient.create(rawIngredient);
 			})
@@ -84,12 +84,12 @@ export default class RecipeService implements AbsRecipeService {
 
 		// RecipeIngredient 만들기
 		const recipeIngredients = ingredients.map((ingredient, index) =>
-			RecipeIngredient.create(recipe, ingredient, body.ingredients[index].amount)
+			RecipeIngredient.create(recipe, ingredient, rawRecipe.ingredients[index].amount)
 		);
 
 		// tag 찾기 & 없으면 만들기
 		const tags = await Promise.all(
-			body.tags.map(async (tagName) => {
+			rawRecipe.tags.map(async (tagName) => {
 				const tag = await RecipeService.tagRepository.findTagByName(tagName);
 				return tag ? tag : Tag.create(tagName);
 			})
@@ -104,7 +104,7 @@ export default class RecipeService implements AbsRecipeService {
 		recipe.recipeTags = recipeTags;
 
 		// Recipe 저장
-		await RecipeService.recipeRepository.save(recipe);
+		return await RecipeService.recipeRepository.save(recipe);
 	}
 
 	async updateRecipe(userId: number, recipeId: number, body: ModifyRecipeDTO): Promise<void | Error> {

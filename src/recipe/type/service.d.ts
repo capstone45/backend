@@ -19,7 +19,7 @@ export abstract class AbsRecipeService {
 	private constructor(dependency);
 
 	deleteRecipe(userId: number, recipeId: number): Promise<void | Error>;
-	createRecipe(userId: number, body: ModifyRecipeDTO): Promise<void | Error>;
+	createRecipe(userId: number, body: ModifyRecipeDTO): Promise<number | Error>;
 	findSubscribingChefsLatest(id: number): Promise<BaseRecipeDTO[] | Error>;
 	findByIngredient(ingredients: string[], userId: number): Promise<ReadRecipeDTO[] | Error>;
 	findByTitle(title: string): Promise<ReadRecipeDTO[] | Error>;
