@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { ServerError } from '../helper/helper';
+import { auth } from '../helper/middleware';
 import RecipeError from '../recipe/type/error';
 import UserError from '../user/type/error';
 
@@ -28,7 +29,7 @@ export default class BookmarkController {
 	initRouter(app: express.Application): void {
 		if (BookmarkController.instance) return;
 
-		BookmarkController.router.post('/', this.changeBookmark);
+		BookmarkController.router.post('/', auth, this.changeBookmark);
 
 		app.use(BookmarkController.PATH, BookmarkController.router);
 	}
