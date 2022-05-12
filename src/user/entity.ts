@@ -30,7 +30,7 @@ export default class User {
 	recipes: Promise<Recipe[]>;
 
 	@ManyToMany(() => Recipe, (recipe) => recipe.likeUsers, { lazy: true, nullable: false })
-	@JoinTable({ name: 'BOOKMARK', joinColumn: { name: 'RECIPE_ID' }, inverseJoinColumn: { name: 'USER_ID' } })
+	@JoinTable({ name: 'BOOKMARK', joinColumn: { name: 'USER_ID' }, inverseJoinColumn: { name: 'RECIPE_ID' } })
 	bookmarks: Recipe[];
 
 	// 나를 구독하는 사람들
