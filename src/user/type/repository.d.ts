@@ -16,7 +16,6 @@ export abstract class AbsUserRepository {
 	remove(user: User): Promise<void>;
 
 	updateUserInfomation(id: number, updateUserInfomation: UpdateUserDTO): Promise<void>;
-	updateThumbnail(id: number, thumbnailUrl: string): Promise<void>;
 
 	deleteThumbnail(id: number): Promise<void>;
 

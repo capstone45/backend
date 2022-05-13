@@ -95,7 +95,12 @@ export default class UserService implements AbsUserService {
 	}
 
 	async updateThumbnail(userId: number, thumbnailUrl: string): Promise<void | Error> {
-		await UserService.userRepository.updateThumbnail(userId, thumbnailUrl);
+		const user = await UserService.userRepository.findById(userId);
+
+		if (!user) throw new Error(UserError.NOT_FOUND.message);
+		user.thumbnailUrl = thumbnailUrl;
+
+		await UserService.userRepository.save(user);
 	}
 
 	async deleteThumbnail(userId: number): Promise<void> {

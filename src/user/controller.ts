@@ -166,6 +166,9 @@ export default class UserController implements AbsUserController {
 				case UserError.NOT_AUTHORIZED.message:
 					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
 					return;
+				case UserError.NOT_FOUND.message:
+					res.status(UserError.NOT_FOUND.code).send(UserError.NOT_FOUND.message);
+					return;
 				default:
 					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
 					return;
@@ -175,7 +178,7 @@ export default class UserController implements AbsUserController {
 
 	async deleteThumbnail(req: IRequest, res: Response): Promise<void> {
 		try {
-			const userId = Number(req.userId);
+			const { userId } = req.body;
 
 			await UserController.userService.deleteThumbnail(userId);
 
