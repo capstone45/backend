@@ -68,9 +68,9 @@ export default class RecipeController implements AbsRecipeController {
 		try {
 			const { userId, recipe } = req.body;
 
-			const recipeId = await RecipeController.recipeService.createRecipe(userId, recipe);
+			await RecipeController.recipeService.createRecipe(userId, recipe);
 
-			res.status(200).send(recipeId);
+			res.status(200).send();
 		} catch (error) {
 			switch (error.message) {
 				case UserError.NOT_FOUND.message:
@@ -129,6 +129,7 @@ export default class RecipeController implements AbsRecipeController {
 			const title = String(req.query.title);
 
 			const findRecipes = await RecipeController.recipeService.findByTitle(title);
+
 			res.status(200).send(findRecipes);
 		} catch (error) {
 			switch (error.message) {
@@ -156,6 +157,7 @@ export default class RecipeController implements AbsRecipeController {
 	async getLatestCreated(req: Request, res: Response): Promise<void> {
 		try {
 			const findRecipes = await RecipeController.recipeService.findLatestCreated();
+
 			res.status(200).send(findRecipes);
 		} catch (error) {
 			switch (error.message) {
@@ -170,6 +172,7 @@ export default class RecipeController implements AbsRecipeController {
 		try {
 			const { userId } = req.body;
 			const findRecipes = await RecipeController.recipeService.findSubscribingChefsLatest(Number(userId));
+
 			res.status(200).send(findRecipes);
 		} catch (error) {
 			switch (error.message) {
@@ -184,6 +187,7 @@ export default class RecipeController implements AbsRecipeController {
 		try {
 			const { ingredients, userId } = req.body;
 			const findRecipes = await RecipeController.recipeService.findByIngredient(ingredients, userId);
+
 			res.status(200).send(findRecipes);
 		} catch (error) {
 			switch (error.message) {
@@ -198,6 +202,7 @@ export default class RecipeController implements AbsRecipeController {
 		try {
 			const { userId } = req.body;
 			const recipes = await RecipeController.recipeService.findRecommendation(userId);
+
 			res.status(200).send(recipes);
 		} catch (error) {
 			switch (error.message) {

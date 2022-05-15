@@ -90,6 +90,7 @@ export default class Container {
 			ingredientRepository: Container.getBean(layer.REPOSITORY, domain.INGREDIENT),
 			recipeTagRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE_TAG),
 			recipeIngredientRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE_INGREDIENT),
+			recipeDescriptionRepository: Container.getBean(layer.REPOSITORY, domain.RECIPE_DESCRIPTION),
 			bookmarkRepository: Container.getBean(layer.REPOSITORY, domain.BOOKMARK),
 			userIngredientRepository: Container.getBean(layer.REPOSITORY, domain.USER_INGREDIENT),
 		});

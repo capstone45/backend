@@ -76,22 +76,24 @@ export default class RecipeService implements AbsRecipeService {
 
 		// ingredient 찾기 & 없으면 만들기
 		const ingredients = await Promise.all(
-			rawRecipe.ingredients.map(async (rawIngredient) => {
-				const ingredient = (await RecipeService.ingredientRepository.findByName(rawIngredient.name))[0];
-				return ingredient ? ingredient : Ingredient.create(rawIngredient);
+			rawRecipe.recipeIngredients.map(async (recipeIngredient) => {
+				console.log(recipeIngredient);
+				const ingredient = (await RecipeService.ingredientRepository.findByName(recipeIngredient.ingredient.name))[0];
+				console.log(ingredient);
+				return ingredient ? ingredient : Ingredient.create(recipeIngredient.ingredient);
 			})
 		);
 
 		// RecipeIngredient 만들기
 		const recipeIngredients = ingredients.map((ingredient, index) =>
-			RecipeIngredient.create(recipe, ingredient, rawRecipe.ingredients[index].amount)
+			RecipeIngredient.create(recipe, ingredient, rawRecipe.recipeIngredients[index].amount)
 		);
 
 		// tag 찾기 & 없으면 만들기
 		const tags = await Promise.all(
-			rawRecipe.tags.map(async (tagName) => {
-				const tag = await RecipeService.tagRepository.findTagByName(tagName);
-				return tag ? tag : Tag.create(tagName);
+			rawRecipe.tags.map(async (rawTag: Tag) => {
+				const tag = await RecipeService.tagRepository.findTagByName(rawTag.name);
+				return tag ? tag : Tag.create(rawTag.name);
 			})
 		);
 
@@ -107,7 +109,7 @@ export default class RecipeService implements AbsRecipeService {
 		return await RecipeService.recipeRepository.save(recipe);
 	}
 
-	async updateRecipe(userId: number, recipeId: number, body: ModifyRecipeDTO): Promise<void | Error> {
+	async updateRecipe(userId: number, recipeId: number, body: ModifyRecipeDTO): Promise<number | Error> {
 		const recipe = await RecipeService.recipeRepository.findById(recipeId);
 		if (!recipe) throw new Error(RecipeError.NOT_FOUND.message);
 
@@ -129,9 +131,9 @@ export default class RecipeService implements AbsRecipeService {
 
 		// ingredient 찾기 & 없으면 만들기
 		const ingredients = await Promise.all(
-			body.ingredients.map(async (rawIngredient) => {
-				const ingredient = (await RecipeService.ingredientRepository.findByName(rawIngredient.name))[0];
-				return ingredient ? ingredient : Ingredient.create(rawIngredient);
+			body.recipeIngredients.map(async (recipeIngredient) => {
+				const ingredient = (await RecipeService.ingredientRepository.findByName(recipeIngredient.ingredient.name))[0];
+				return ingredient ? ingredient : Ingredient.create(recipeIngredient.ingredient);
 			})
 		);
 
@@ -145,16 +147,17 @@ export default class RecipeService implements AbsRecipeService {
 
 		// Recipe Ingredient 만들기
 		const recipeIngredients = ingredients.map((ingredient, index) =>
-			RecipeIngredient.create(recipe, ingredient, body.ingredients[index].amount)
+			RecipeIngredient.create(recipe, ingredient, body.recipeIngredients[index].amount)
 		);
 
 		// tag 찾기 & 없으면 만들기
 		const tags = await Promise.all(
-			body.tags.map(async (tagName) => {
-				const tag = await RecipeService.tagRepository.findTagByName(tagName);
-				return tag ? tag : Tag.create(tagName);
+			body.tags.map(async (rawTag: Tag) => {
+				const tag = await RecipeService.tagRepository.findTagByName(rawTag.name);
+				return tag ? tag : Tag.create(rawTag.name);
 			})
 		);
+
 		// 이전 recipe tag 제거
 		const oldRecipeTags = await recipe.recipeTags;
 		await Promise.all(
@@ -176,7 +179,7 @@ export default class RecipeService implements AbsRecipeService {
 		recipe.recipeIngredients = recipeIngredients;
 		recipe.recipeTags = recipeTags;
 
-		await RecipeService.recipeRepository.save(recipe);
+		return await RecipeService.recipeRepository.save(recipe);
 	}
 
 	async findById(recipeId: number, userId: number): Promise<ReadRecipeDetailDTO | Error> {
