@@ -29,17 +29,38 @@ export default class SubscribeController {
 		if (SubscribeController.instance) return;
 
 		SubscribeController.router.post('/', auth, this.changeSubscribe);
+		SubscribeController.router.get('/:id', auth, this.checkSubscription);
 
 		app.use(SubscribeController.PATH, SubscribeController.router);
+	}
+
+	async checkSubscription(req: Request, res: Response): Promise<void> {
+		try {
+			const { userId } = req.body;
+			const starId = Number(req.params.id);
+
+			const hasSubscribed = await SubscribeController.subscribeService.checkSubscription(userId, starId);
+
+			res.status(200).send(hasSubscribed);
+		} catch (error) {
+			switch (error.message) {
+				case UserError.NOT_FOUND.message:
+					res.status(UserError.NOT_FOUND.code).send(UserError.NOT_FOUND.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
 	}
 
 	async changeSubscribe(req: Request, res: Response): Promise<void> {
 		try {
 			const { userId, starId } = req.body;
 
-			await SubscribeController.subscribeService.changeSubscribe(userId, starId);
+			const isSubscription = await SubscribeController.subscribeService.changeSubscribe(userId, starId);
 
-			res.status(200).send();
+			res.status(200).send(isSubscription);
 		} catch (error) {
 			switch (error.message) {
 				case UserError.NOT_FOUND.message:

@@ -20,6 +20,8 @@ export enum grade {
 	LEVEL5 = 5,
 }
 
+const DEFAULT_THUMBNAIL_PATH = '/image/icon/header/defaultProfile.png';
+
 @Entity({ name: 'USER' })
 export default class User {
 	@PrimaryColumn({ name: 'USER_ID', type: 'bigint', unsigned: true })
@@ -69,7 +71,7 @@ export default class User {
 	@Column({ name: 'NICKNAME', type: 'varchar', length: 50, nullable: false, unique: true })
 	nickname: string;
 
-	@Column({ name: 'THUMBNAIL_URL', type: 'varchar', length: 2048, default: 'empty', nullable: false })
+	@Column({ name: 'THUMBNAIL_URL', type: 'varchar', length: 2048, default: DEFAULT_THUMBNAIL_PATH, nullable: false })
 	thumbnailUrl: string;
 
 	@Column({
