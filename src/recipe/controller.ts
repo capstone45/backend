@@ -68,9 +68,9 @@ export default class RecipeController implements AbsRecipeController {
 		try {
 			const { userId, recipe } = req.body;
 
-			await RecipeController.recipeService.createRecipe(userId, recipe);
+			const recipeId = await RecipeController.recipeService.createRecipe(userId, recipe);
 
-			res.status(200).send();
+			res.status(200).send(recipeId);
 		} catch (error) {
 			switch (error.message) {
 				case UserError.NOT_FOUND.message:
