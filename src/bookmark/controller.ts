@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { send } from 'process';
 import { ServerError } from '../helper/helper';
 import { auth } from '../helper/middleware';
 import RecipeError from '../recipe/type/error';
@@ -30,10 +31,30 @@ export default class BookmarkController {
 		if (BookmarkController.instance) return;
 
 		BookmarkController.router.post('/', auth, this.changeBookmark);
+		BookmarkController.router.post('/check', auth, this.checkBookmark);
 
 		app.use(BookmarkController.PATH, BookmarkController.router);
 	}
 
+	async checkBookmark(req: Request, res: Response): Promise<void> {
+		try {
+			const { recipeId, userId } = req.body;
+			const hasBookmarked = await BookmarkController.bookmarkService.checkBookmark(recipeId, userId);
+			res.status(200).send(hasBookmarked);
+		} catch (error) {
+			switch (error.message) {
+				case UserError.NOT_FOUND.message:
+					res.status(UserError.NOT_FOUND.code).send(UserError.NOT_FOUND.message);
+					return;
+				case RecipeError.NOT_FOUND.message:
+					res.status(RecipeError.NOT_FOUND.code).send(RecipeError.NOT_FOUND.message);
+					return;
+				default:
+					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
+					return;
+			}
+		}
+	}
 	async changeBookmark(req: Request, res: Response): Promise<void> {
 		try {
 			const { recipeId, userId } = req.body;

@@ -182,7 +182,7 @@ export default class RecipeService implements AbsRecipeService {
 		return await RecipeService.recipeRepository.save(recipe);
 	}
 
-	async findById(recipeId: number, userId: number): Promise<ReadRecipeDetailDTO | Error> {
+	async findById(recipeId: number): Promise<ReadRecipeDetailDTO | Error> {
 		const recipe = await RecipeService.recipeRepository.findById(recipeId);
 		if (!recipe) throw new Error(RecipeError.NOT_FOUND.message);
 
@@ -190,12 +190,7 @@ export default class RecipeService implements AbsRecipeService {
 		const tags = (await recipe.recipeTags).map((recipeTag) => recipeTag.tag);
 		const recipeIngredient = await recipe.recipeIngredients;
 		const recipeDescription = await recipe.recipeDescriptions;
-		const bookmark = userId === undefined ? false : RecipeService.include(await recipe.likeUsers, user) ? true : false;
-		return new ReadRecipeDetailDTO(recipe, tags, user, recipeIngredient, recipeDescription, bookmark);
-	}
-
-	private static include(likeUsers: User[], user: User): boolean {
-		return likeUsers.filter((likeUser) => likeUser.id === user.id).length !== 0 ? true : false;
+		return new ReadRecipeDetailDTO(recipe, tags, user, recipeIngredient, recipeDescription, false);
 	}
 
 	async findByTitle(title: string): Promise<ReadRecipeDTO[] | Error> {

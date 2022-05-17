@@ -25,7 +25,7 @@ export abstract class AbsRecipeService {
 	findByTitle(title: string): Promise<ReadRecipeDTO[] | Error>;
 	findTodaysMostLiked(): Promise<BaseRecipeDTO[] | Error>;
 	findLatestCreated(): Promise<BaseRecipeDTO[] | Error>;
-	findById(recipeId: number, userId: number): Promise<ReadRecipeDetailDTO | Error>;
+	findById(recipeId: number): Promise<ReadRecipeDetailDTO | Error>;
 	findRecommendation(userId: number): Promise<BaseRecipeDTO[] | Error>;
 	updateRecipe(userId: number, recipeId: number, body: ModifyRecipeDTO): Promise<number | Error>;
 }
