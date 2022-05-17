@@ -27,6 +27,4 @@ export abstract class AbsUserService {
 
 	updateThumbnail(userId: number, thumbnailUrl: string): Promise<void | Error>;
 	updateUserInfomation(userId: number, updateUserInfomation: UpdateUserDTO): Promise<void | Error>;
-
-	deleteThumbnail(userId: number): Promise<void | Error>;
 }

@@ -41,7 +41,6 @@ export default class UserController implements AbsUserController {
 		UserController.router.patch('/', auth, this.updateUserInfomation);
 		UserController.router.put('/thumbnail', auth, this.updateThumbnail);
 
-		UserController.router.delete('/thumbnail', auth, this.deleteThumbnail);
 		UserController.router.delete('/signout', auth, this.signOut);
 
 		app.use(UserController.PATH, UserController.router);
@@ -155,13 +154,13 @@ export default class UserController implements AbsUserController {
 
 	async updateThumbnail(req: IRequest, res: Response): Promise<void> {
 		try {
-			const userId = Number(req.userId);
-			const { thumbnailUrl } = req.body;
+			const { userId, thumbnailUrl } = req.body;
 
 			await UserController.userService.updateThumbnail(userId, thumbnailUrl);
 
 			res.status(204).send();
 		} catch (error) {
+			console.log(error);
 			switch (error.message) {
 				case UserError.NOT_AUTHORIZED.message:
 					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
@@ -176,29 +175,9 @@ export default class UserController implements AbsUserController {
 		}
 	}
 
-	async deleteThumbnail(req: IRequest, res: Response): Promise<void> {
-		try {
-			const { userId } = req.body;
-
-			await UserController.userService.deleteThumbnail(userId);
-
-			res.status(204).send();
-		} catch (error) {
-			switch (error.message) {
-				case UserError.NOT_AUTHORIZED.message:
-					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);
-					return;
-				default:
-					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);
-					return;
-			}
-		}
-	}
-
 	async updateUserInfomation(req: IRequest, res: Response): Promise<void> {
 		try {
-			const userId = Number(req.userId);
-			const updateUserInfomation = req.body;
+			const { userId, updateUserInfomation } = req.body;
 
 			await UserController.userService.updateUserInfomation(userId, updateUserInfomation);
 

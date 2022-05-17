@@ -103,10 +103,6 @@ export default class UserService implements AbsUserService {
 		await UserService.userRepository.save(user);
 	}
 
-	async deleteThumbnail(userId: number): Promise<void> {
-		await UserService.userRepository.deleteThumbnail(userId);
-	}
-
 	async updateUserInfomation(userId: number, updateUserInfomation: UpdateUserDTO): Promise<void | Error> {
 		const { loginPassword, confirmPassword } = updateUserInfomation;
 		if (loginPassword !== confirmPassword) throw new Error(UserError.PASSWORD_NOT_MATCH.message);

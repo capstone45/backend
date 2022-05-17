@@ -32,6 +32,4 @@ export abstract class AbsUserController {
 
 	updateUserInfomation(req: IRequest, res: Response): Promise<void>;
 	updateThumbnail(req: IRequest, res: Response): Promise<void>;
-
-	deleteThumbnail(req: IRequest, res: Response): Promise<void>;
 }

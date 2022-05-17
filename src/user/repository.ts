@@ -29,10 +29,6 @@ export default class UserRepository implements AbsUserRepository {
 		await UserRepository.em.remove(user);
 	}
 
-	async deleteThumbnail(id: number): Promise<void> {
-		await UserRepository.em.createQueryBuilder().update(User).set({ thumbnailUrl: 'empty' }).where('id = :id', { id }).execute();
-	}
-
 	async updateUserInfomation(id: number, updateUserInfomation: UpdateUserDTO): Promise<void> {
 		const { nickname, loginPassword, description } = updateUserInfomation;
 		await UserRepository.em
