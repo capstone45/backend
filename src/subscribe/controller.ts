@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { ServerError } from '../helper/helper';
-import { auth } from '../helper/middleware';
+import { mustAuth } from '../helper/middleware';
 import UserError from '../user/type/error';
 
 import { AbsSubscribeController } from './type/controller';
@@ -28,8 +28,8 @@ export default class SubscribeController {
 	initRouter(app: express.Application): void {
 		if (SubscribeController.instance) return;
 
-		SubscribeController.router.post('/', auth, this.changeSubscribe);
-		SubscribeController.router.get('/:id', auth, this.checkSubscription);
+		SubscribeController.router.post('/', mustAuth, this.changeSubscribe);
+		SubscribeController.router.get('/:id', mustAuth, this.checkSubscription);
 
 		app.use(SubscribeController.PATH, SubscribeController.router);
 	}

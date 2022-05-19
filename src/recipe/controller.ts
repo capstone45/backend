@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { ServerError } from '../helper/helper';
-import { auth } from '../helper/middleware';
+import { mustAuth, optionalAuth } from '../helper/middleware';
 import UserError from '../user/type/error';
 
 import { AbsRecipeController } from './type/controller';
@@ -28,16 +28,16 @@ export default class RecipeController implements AbsRecipeController {
 	initRouter(app: express.Application): void {
 		if (RecipeController.instance) return;
 
-		RecipeController.router.get('/subscribe-chef-latest', auth, this.getSubscribingChefsLatest);
-		RecipeController.router.get('/recommendation', auth, this.getRecommendation);
+		RecipeController.router.get('/subscribe-chef-latest', mustAuth, this.getSubscribingChefsLatest);
+		RecipeController.router.get('/recommendation', mustAuth, this.getRecommendation);
 		RecipeController.router.get('/today-most-liked', this.getTodaysMostLiked);
 		RecipeController.router.get('/latest', this.getLatestCreated);
 		RecipeController.router.get('/search', this.getByTitle);
 		RecipeController.router.get('/:id', this.getById);
-		RecipeController.router.post('/search', this.getByIngredient);
-		RecipeController.router.post('/', auth, this.createRecipe);
-		RecipeController.router.put('/:id', auth, this.updateRecipe);
-		RecipeController.router.delete('/:id', auth, this.deleteRecipe);
+		RecipeController.router.post('/search', optionalAuth, this.getByIngredient);
+		RecipeController.router.post('/', mustAuth, this.createRecipe);
+		RecipeController.router.put('/:id', mustAuth, this.updateRecipe);
+		RecipeController.router.delete('/:id', mustAuth, this.deleteRecipe);
 
 		app.use(RecipeController.PATH, RecipeController.router);
 	}

@@ -5,7 +5,7 @@ import { AbsUserService } from './type/service';
 
 import { ServerError } from '../helper/helper';
 import UserError from './type/error';
-import { auth } from '../helper/middleware';
+import { mustAuth } from '../helper/middleware';
 
 export default class UserController implements AbsUserController {
 	private static instance: AbsUserController;
@@ -30,18 +30,18 @@ export default class UserController implements AbsUserController {
 
 		UserController.router.get('/search', this.getByNickname);
 		UserController.router.get('/today-chef', this.getTodayChef);
-		UserController.router.get('/base-dto', auth, this.getBaseDto);
+		UserController.router.get('/base-dto', mustAuth, this.getBaseDto);
 		UserController.router.get('/:id', this.getById);
 
 		UserController.router.post('/check-duplication', this.checkDuplicateEmail);
 		UserController.router.post('/signup', this.signup);
 		UserController.router.post('/login', UserController.logIn);
-		UserController.router.post('/logout', auth, this.logOut);
+		UserController.router.post('/logout', mustAuth, this.logOut);
 
-		UserController.router.patch('/', auth, this.updateUserInfomation);
-		UserController.router.put('/thumbnail', auth, this.updateThumbnail);
+		UserController.router.patch('/', mustAuth, this.updateUserInfomation);
+		UserController.router.put('/thumbnail', mustAuth, this.updateThumbnail);
 
-		UserController.router.delete('/signout', auth, this.signOut);
+		UserController.router.delete('/signout', mustAuth, this.signOut);
 
 		app.use(UserController.PATH, UserController.router);
 	}
