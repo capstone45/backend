@@ -246,6 +246,11 @@ export default class RecipeService implements AbsRecipeService {
 		const includeRecipesId = (await RecipeService.recipeIngredientRepository.findByIngredients(ingredients)).map(
 			(recipe) => recipe.recipeId
 		);
+
+		if (includeRecipesId.length == 0) {
+			return [];
+		}
+
 		const findRecipes = await RecipeService.recipeRepository.findByIds(includeRecipesId);
 		return await Promise.all(
 			findRecipes.map(async (recipe) => {
