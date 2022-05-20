@@ -4,7 +4,6 @@ import Ingredient from '../ingredient/entity';
 import RecipeTag from '../recipeTag/entity';
 import Recipe from './entity';
 import Tag from '../tag/entity';
-import User from '../user/entity';
 
 import { AbsRecipeDescriptionRepository } from '../recipeDescription/type/repository';
 import { AbsRecipeIngredientRepository } from '../recipeIngredient/type/repository';

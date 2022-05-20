@@ -81,7 +81,16 @@ export default class RecipeRepository implements AbsRecipeRepository {
 
 	async findBySubscribingChefsLatest(id: number): Promise<RowDataPacket[]> {
 		return await RecipeRepository.em.query(`
-			select * from recipe as r where (r.user_id, r.create_date) in (SELECT r.user_id, max(r.create_date) FROM (select STAR_ID from SUBSCRIBE where FAN_ID = ${id}) as p JOIN RECIPE as r ON p.STAR_ID = r.USER_ID group by r.user_id);`);
+			select * 
+			from RECIPE as r 
+			where (r.user_id, r.create_date) in (
+				SELECT r.user_id, max(r.create_date) 
+				FROM (
+					select STAR_ID 
+					from SUBSCRIBE 
+					where FAN_ID = ${id}) as p JOIN RECIPE as r ON p.STAR_ID = r.USER_ID 
+				group by r.user_id
+			);`);
 	}
 
 	async findAll(): Promise<Recipe[]> {

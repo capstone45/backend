@@ -41,7 +41,7 @@ export default class RecipeIngredientRepository implements AbsRecipeIngredientRe
 		return await RecipeIngredientRepository.em.query(`
 			select subTable.recipeId as recipeId 
 			from (select ri.recipe_id as recipeId, count(*) / ${ingredients.length} as includeRate
-					from recipe_ingredient as ri
+					from RECIPE_INGREDIENT as ri
 					where ri.ingredient_id in (${queryString})
 					group by ri.recipe_id) as subTable
 			where subTable.includeRate > ${RecipeIngredientRepository.INCLUDE_THRESHOLD}
