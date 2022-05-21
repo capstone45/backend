@@ -35,7 +35,6 @@ export default class RecipeTagController implements AbsRecipeTagController {
 			const recipes = await RecipeTagController.recipeTagService.getRecipeByTag(<string>tag);
 			res.status(200).send(recipes);
 		} catch (error) {
-			console.log(error);
 			switch (error.message) {
 				default:
 					res.status(ServerError.SERVER_ERROR.code).send(ServerError.SERVER_ERROR.message);

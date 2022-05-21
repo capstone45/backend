@@ -76,9 +76,7 @@ export default class RecipeService implements AbsRecipeService {
 		// ingredient 찾기 & 없으면 만들기
 		const ingredients = await Promise.all(
 			rawRecipe.recipeIngredients.map(async (recipeIngredient) => {
-				console.log(recipeIngredient);
 				const ingredient = (await RecipeService.ingredientRepository.findByName(recipeIngredient.ingredient.name))[0];
-				console.log(ingredient);
 				return ingredient ? ingredient : Ingredient.create(recipeIngredient.ingredient);
 			})
 		);

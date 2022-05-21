@@ -118,11 +118,8 @@ export default class UserController implements AbsUserController {
 		try {
 			const { loginId, loginPassword } = req.body;
 			const { jwt, user } = await UserController.userService.logIn(loginId, loginPassword);
-			console.log(jwt);
-			console.log(user);
 			res.status(200).cookie('jwt', jwt).send({ user, jwt });
 		} catch (error) {
-			console.log(error);
 			switch (error.message) {
 				case UserError.NOT_FOUND.message:
 					res.status(UserError.NOT_FOUND.code).send(UserError.NOT_FOUND.message);
@@ -160,7 +157,6 @@ export default class UserController implements AbsUserController {
 
 			res.status(204).send();
 		} catch (error) {
-			console.log(error);
 			switch (error.message) {
 				case UserError.NOT_AUTHORIZED.message:
 					res.status(UserError.NOT_AUTHORIZED.code).send(UserError.NOT_AUTHORIZED.message);

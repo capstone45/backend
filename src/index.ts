@@ -39,7 +39,7 @@ export default class Application {
 	}
 
 	private static initApplication(): void {
-		Application.app.listen(4000, () => console.log('Application started successfully'));
+		Application.app.listen(4000);
 	}
 }
 
