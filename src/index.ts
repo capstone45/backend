@@ -30,8 +30,7 @@ export default class Application {
 			})
 		);
 		Application.app.use(express.urlencoded({ extended: true }));
-		Application.app.use(cookieParser())
-
+		Application.app.use(cookieParser());
 	}
 
 	private static async initDatabase(): Promise<Connection> {

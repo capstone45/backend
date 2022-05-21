@@ -41,7 +41,7 @@ export default class UserController implements AbsUserController {
 		UserController.router.patch('/', mustAuth, this.updateUserInfomation);
 		UserController.router.put('/thumbnail', mustAuth, this.updateThumbnail);
 
-		UserController.router.delete('/signout', mustAuth, this.signOut);
+		UserController.router.delete('/', mustAuth, this.signOut);
 
 		app.use(UserController.PATH, UserController.router);
 	}
