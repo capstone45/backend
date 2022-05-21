@@ -194,6 +194,7 @@ export default class RecipeService implements AbsRecipeService {
 
 	async findByTitle(title: string): Promise<ReadRecipeDTO[] | Error> {
 		const findRecipes = await RecipeService.recipeRepository.findByTitle(title);
+		if (findRecipes.length === 0) return [];
 		return await Promise.all(
 			findRecipes.map(async (recipe) => {
 				const recipeTags = await recipe.recipeTags;
@@ -223,6 +224,7 @@ export default class RecipeService implements AbsRecipeService {
 
 	async findByIngredient(rawIngredients: string[], userId: number): Promise<ReadRecipeDTO[]> {
 		const ingredients = await RecipeService.ingredientRepository.findByNameList(rawIngredients);
+		if (ingredients.length === 0) return [];
 
 		if (userId !== undefined) {
 			const user = await RecipeService.userRepository.findById(userId);

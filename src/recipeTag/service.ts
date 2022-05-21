@@ -21,6 +21,7 @@ export default class RecipeTagService implements AbsRecipeTagService {
 	}
 	async getRecipeByTag(tagName: string): Promise<ReadRecipeDTO[]> {
 		const tag = await RecipeTagService.tagRepository.findTagByName(tagName);
+		if (tag === undefined) return [];
 		const recipeTags = await RecipeTagService.recipeTagRepository.findByTag(tag);
 		const recipes = await Promise.all(recipeTags.map(async (recipeTag) => await recipeTag.recipe));
 		return await Promise.all(
