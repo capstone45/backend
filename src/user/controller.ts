@@ -98,7 +98,7 @@ export default class UserController implements AbsUserController {
 
 	async signOut(req: IRequest, res: Response): Promise<void> {
 		try {
-			const userId = Number(req.userId);
+			const { userId } = req.body;
 			await UserController.userService.signOut(userId);
 
 			res.status(204).send();
