@@ -222,24 +222,27 @@ export default class RecipeService implements AbsRecipeService {
 
 	async findByIngredient(rawIngredients: string[], userId: number): Promise<ReadRecipeDTO[]> {
 		const ingredients = await RecipeService.ingredientRepository.findByNameList(rawIngredients);
-		if (ingredients.length === 0) return [];
+		if (ingredients.length === 0) {
+			return [];
+		}
 
 		if (userId !== undefined) {
+			const userIngredients = await RecipeService.userIngredientRepository.findByUserId(userId);
 			const user = await RecipeService.userRepository.findById(userId);
-			const userIngredients = await Promise.all(
-				ingredients.map(async (ingredient) => await RecipeService.userIngredientRepository.findByUserIdAndIngredient(userId, ingredient))
-			);
-
-			const updatedUserIngredients = userIngredients.map((userIngredient, index) => {
-				if (userIngredient === undefined) {
-					return UserIngredient.create(user, ingredients[index]);
-				} else {
-					userIngredient.user = user;
-					userIngredient.count++;
-					return userIngredient;
+			for (const ingredient of ingredients) {
+				let include = false;
+				for (const userIngredient of userIngredients) {
+					if (ingredient.id === userIngredient.ingredient.id) {
+						userIngredient.count++;
+						include = true;
+						break;
+					}
 				}
-			});
-			user.ingredients = updatedUserIngredients;
+				if (!include) {
+					userIngredients.push(UserIngredient.create(user, ingredient));
+				}
+			}
+			user.ingredients = userIngredients;
 			await RecipeService.userRepository.save(user);
 		}
 
