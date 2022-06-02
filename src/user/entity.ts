@@ -44,7 +44,7 @@ export default class User {
 	@ManyToMany(() => User, (user) => user.fans, { lazy: true, nullable: false })
 	stars: User[];
 
-	@OneToMany(() => UserIngredient, (userIngredient) => userIngredient.user, { cascade: true })
+	@OneToMany(() => UserIngredient, (userIngredient) => userIngredient.user, { lazy: true, cascade: true })
 	ingredients: UserIngredient[];
 
 	@Column(() => DateInfo, { prefix: false })
